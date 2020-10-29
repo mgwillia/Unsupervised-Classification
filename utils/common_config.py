@@ -122,7 +122,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
     # Base dataset
     if p['train_db_name'] == 'cifar-10':
         from data.cifar import CIFAR10
-        dataset = CIFAR10(train=True, transform=transform, download=True)
+        dataset = CIFAR10(train=True, transform=transform, download=False)
 
     elif p['train_db_name'] == 'cifar-20':
         from data.cifar import CIFAR20
