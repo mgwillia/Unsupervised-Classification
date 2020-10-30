@@ -53,7 +53,7 @@ DATASET_YEAR_DICT = {
 }
 
 
-class VOCSegmentation(VisionDataset):
+class VOCSegmentation(Dataset):
     """`Pascal VOC <http://host.robots.ox.ac.uk/pascal/VOC/>`_ Segmentation Dataset.
 
     Args:
@@ -137,7 +137,7 @@ class VOCSegmentation(VisionDataset):
 
 
 
-class VOCDetection(VisionDataset):
+class VOCDetection(Dataset):
     """`Pascal VOC <http://host.robots.ox.ac.uk/pascal/VOC/>`_ Detection Dataset.
 
     Args:
