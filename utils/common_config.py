@@ -6,6 +6,7 @@ import os
 import math
 import numpy as np
 import torch
+import torchvision
 import torchvision.transforms as transforms
 from data.augment import Augment, Cutout
 from utils.collate import collate_custom
@@ -135,6 +136,10 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
     elif p['train_db_name'] == 'stl-10':
         from data.stl import STL10
         dataset = STL10(split=split, transform=transform, download=True)
+
+    elif p['train_db_name'] == 'pascal-voc':
+        from data.pascal import PascalVOC
+        dataset = torchvision.datasets.VOCDetection(root='/fs/vulcan-datasets/pascal_voc/', image_set='train', download=False, transform=transform)
 
     elif p['train_db_name'] == 'imagenet':
         from data.imagenet import ImageNet
