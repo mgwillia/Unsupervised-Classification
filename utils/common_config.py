@@ -179,6 +179,10 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False):
     elif p['val_db_name'] == 'stl-10':
         from data.stl import STL10
         dataset = STL10(split='test', transform=transform, download=True)
+
+    elif p['train_db_name'] == 'pascal-voc':
+        from data.pascal_voc import VOCSegmentation
+        dataset = VOCSegmentation(root='/fs/vulcan-datasets/pascal_voc/', image_set='val', download=False, transform=transform)
     
     elif p['val_db_name'] == 'imagenet':
         from data.imagenet import ImageNet
