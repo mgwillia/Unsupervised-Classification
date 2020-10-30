@@ -138,8 +138,8 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
         dataset = STL10(split=split, transform=transform, download=True)
 
     elif p['train_db_name'] == 'pascal-voc':
-        from data.pascal import PascalVOC
-        dataset = torchvision.datasets.VOCDetection(root='/fs/vulcan-datasets/pascal_voc/', image_set='train', download=False, transform=transform)
+        from data.pascal_voc import VOCSegmentation
+        dataset = VOCSegmentation(root='/fs/vulcan-datasets/pascal_voc/', image_set='train', download=False, transform=transform)
 
     elif p['train_db_name'] == 'imagenet':
         from data.imagenet import ImageNet
