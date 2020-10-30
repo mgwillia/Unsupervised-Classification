@@ -1,7 +1,7 @@
 import os
 import tarfile
 import collections
-from .vision import VisionDataset
+from torch.utils.data import Dataset
 import xml.etree.ElementTree as ET
 from PIL import Image
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
