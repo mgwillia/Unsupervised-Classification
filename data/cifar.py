@@ -25,7 +25,7 @@ class CIFAR10(Dataset):
             puts it in root directory. If dataset is already downloaded, it is not
             downloaded again.
     """
-    base_folder = 'cifar-10-batches-py'
+    base_folder = ''
     url = "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
     filename = "cifar-10-python.tar.gz"
     tgz_md5 = 'c58f30108f718f92721af3b95e74349a'
