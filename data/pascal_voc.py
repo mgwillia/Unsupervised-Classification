@@ -1,7 +1,7 @@
 import os
 import tarfile
 import collections
-from torch.utils.data import Dataset
+from torchvision.datasets.vision import VisionDataset
 import xml.etree.ElementTree as ET
 from PIL import Image
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
@@ -53,7 +53,7 @@ DATASET_YEAR_DICT = {
 }
 
 
-class VOCSegmentation(Dataset):
+class VOCSegmentation(VisionDataset):
     """`Pascal VOC <http://host.robots.ox.ac.uk/pascal/VOC/>`_ Segmentation Dataset.
 
     Args:
@@ -137,7 +137,7 @@ class VOCSegmentation(Dataset):
 
 
 
-class VOCDetection(Dataset):
+class VOCDetection(VisionDataset):
     """`Pascal VOC <http://host.robots.ox.ac.uk/pascal/VOC/>`_ Detection Dataset.
 
     Args:
