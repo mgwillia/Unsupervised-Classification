@@ -5,7 +5,7 @@ from torch.utils.data import Dataset
 import xml.etree.ElementTree as ET
 from PIL import Image
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
-from torch.utils import download_url, check_integrity, verify_str_arg
+from torchvision.datasets.utils import download_url, check_integrity, verify_str_arg
 
 DATASET_YEAR_DICT = {
     '2012': {
