@@ -129,7 +129,7 @@ class VOCSegmentation(VisionDataset):
         if self.transforms is not None:
             img, target = self.transforms(img, target)
 
-        return img, target
+        return {'image': img, 'target': target}
 
 
     def __len__(self) -> int:
