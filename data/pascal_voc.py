@@ -81,7 +81,8 @@ class VOCSegmentation(VisionDataset):
             target_transform: Optional[Callable] = None,
             transforms: Optional[Callable] = None,
     ):
-        super(VOCSegmentation, self).__init__(root, transforms, transform, target_transform)
+        #NOTE: I had to switch transform and transforms here. Could cause confusion later on
+        super(VOCSegmentation, self).__init__(root, transform, transforms, target_transform)
         self.year = year
         if year == "2007" and image_set == "test":
             year = "2007-test"
