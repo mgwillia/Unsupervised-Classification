@@ -128,7 +128,7 @@ class VOCSegmentation(VisionDataset):
         target = Image.open(self.masks[index])
 
         if self.transforms is not None:
-            img self.transforms(img)
+            img = self.transforms(img)
 
         return {'image': img, 'target': target}
 
