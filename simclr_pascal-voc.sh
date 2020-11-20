@@ -9,4 +9,4 @@
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
-srun bash -c "hostname; python simclr.py --config_env configs/env.yml --config_exp configs/pretext/simclr_pascal-voc.yml"
+srun bash -c "hostname; CUDA_LAUNCH_BLOCKING=1 python simclr.py --config_env configs/env.yml --config_exp configs/pretext/simclr_mod_pascal-voc.yml"
