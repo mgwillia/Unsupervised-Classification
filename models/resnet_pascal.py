@@ -48,7 +48,8 @@ class BasicBlock(nn.Module):
 
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
-        out += self.downsample(x)
+        if self.downsample is not None:
+            out += self.downsample(x)
         preact = out
         out = F.relu(out)
         if self.is_last:
@@ -113,7 +114,7 @@ class Bottleneck(nn.Module):
         out = self.relu(out)
 
         return out
-        
+
 
 class ResNet(nn.Module):
 
