@@ -52,10 +52,7 @@ class BasicBlock(nn.Module):
             out += self.downsample(x)
         preact = out
         out = F.relu(out)
-        if self.is_last:
-            return out, preact
-        else:
-            return out
+        return out
 
 
 class Bottleneck(nn.Module):
