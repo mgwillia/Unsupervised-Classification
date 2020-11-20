@@ -24,7 +24,8 @@ class MyPath(object):
             return '/path/to/imagenet/'
 
         elif database == 'pascal-voc':
-            return '/fs/vulcan-datasets/pascal_voc/'
+            #return '/fs/vulcan-datasets/pascal_voc/'
+            return '/cfarhomes/mgwillia/pascal-voc-modified/'
         
         else:
             raise NotImplementedError

@@ -52,6 +52,10 @@ def get_model(p, pretrain_path=None):
         elif p['train_db_name'] == 'stl-10':
             from models.resnet_stl import resnet18
             backbone = resnet18()
+
+        elif p['train_db_name'] == 'pascal-voc':
+            from models.resnet_pascal import resnet18
+            backbone = resnet18()
         
         else:
             raise NotImplementedError
@@ -62,7 +66,7 @@ def get_model(p, pretrain_path=None):
             backbone = resnet50()  
 
         elif p['train_db_name'] == 'pascal-voc':
-            from models.resnet import resnet50
+            from models.resnet_pascal import resnet50
             backbone = resnet50()
 
         else:
