@@ -44,7 +44,7 @@ class PASCALVOC(Dataset):
         img = Image.open(imgFileName).convert("RGB")
         className = self.classNames[index]
         target = self.classDict[className]    
-        imgSize = (img.shape[0], img.shape[1])    
+        imgSize = img.size#(img.shape[0], img.shape[1])    
 
         if self.transform is not None:
             img = self.transform(img)
