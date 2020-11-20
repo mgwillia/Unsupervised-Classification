@@ -25,7 +25,7 @@ class PASCALVOC(Dataset):
         self.classes = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor']
         self.classDict = {}
         for i, name in enumerate(self.classes):
-            self.classDict[name] = i + 1
+            self.classDict[name] = i# + 1
 
         with open(self.root + '/bndBoxImageLabels.txt', 'r') as labelFile:
             for line in labelFile.readlines():
