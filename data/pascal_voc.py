@@ -40,7 +40,7 @@ class PASCALVOC(Dataset):
         Returns:
             dict: {'image': image, 'target': index of target class, 'meta': dict}
         """
-        imgFileName = os.path.join(str(self.root) + '/BBoxImages/' + str(self.imgNames[index]))
+        imgFileName = os.path.join(str(self.root) + '/BBoxImages/' + str(self.imgNames[index]) + '.jpg')
         img = Image.open(imgFileName).convert("RGB")
         className = self.classNames[index]
         target = self.classDict[className]    
