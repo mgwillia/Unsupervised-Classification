@@ -30,7 +30,7 @@ class PASCALVOC(Dataset):
         with open(self.root + '/bndBoxImageLabels.txt', 'r') as labelFile:
             for line in labelFile.readlines():
                 self.imgNames.append(line.split(' ')[0])
-                self.classNames.append(line.split(' ')[1])
+                self.classNames.append(line.split(' ')[1].strip())
 
 
     def __getitem__(self, index):
