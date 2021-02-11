@@ -229,5 +229,5 @@ class ResNet(nn.Module):
 def resnet18(**kwargs):
     return {'backbone': ResNet(BasicBlock, [2, 2, 2, 2], **kwargs), 'dim': 512}
 
-#def resnet50(**kwargs):
-#    return {'backbone': ResNet(Bottleneck, [3, 4, 6, 3], **kwargs), 'dim': 512}
+def resnet50(**kwargs):
+    return {'backbone': ResNet(Bottleneck, [3, 4, 6, 3], **kwargs), 'dim': 512}
