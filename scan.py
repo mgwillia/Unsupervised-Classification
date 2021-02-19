@@ -134,6 +134,10 @@ def main():
     predictions = get_predictions(p, val_dataloader, model)
     gt_targets = predictions[model_checkpoint['head']]['targets']
     cluster_predictions = predictions[model_checkpoint['head']]['predictions']
+    print(gt_targets.shape)
+    print(cluster_predictions.shape)
+    torch.save(gt_targets, 'scan_gt_targets.pth.tar')
+    torch.save(cluster_predictions, 'scan_cluster_predictions.pth.tar')
     clustering_stats = hungarian_evaluate(model_checkpoint['head'], predictions, 
                             class_names=val_dataset.dataset.classes, 
                             compute_confusion_matrix=True, 
