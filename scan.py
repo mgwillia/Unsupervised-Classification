@@ -19,6 +19,7 @@ from utils.train_utils import scan_train
 FLAGS = argparse.ArgumentParser(description='SCAN Loss')
 FLAGS.add_argument('--config_env', help='Location of path config file')
 FLAGS.add_argument('--config_exp', help='Location of experiments config file')
+FLAGS.add_argument('--mode', help='evaluate or train')
 
 def main():
     args = FLAGS.parse_args()
@@ -63,73 +64,76 @@ def main():
     criterion.cuda()
     print(criterion)
 
-    # Checkpoint
-    if os.path.exists(p['scan_checkpoint']):
-        print(colored('Restart from checkpoint {}'.format(p['scan_checkpoint']), 'blue'))
-        checkpoint = torch.load(p['scan_checkpoint'], map_location='cpu')
-        model.load_state_dict(checkpoint['model'])
-        optimizer.load_state_dict(checkpoint['optimizer'])        
-        start_epoch = checkpoint['epoch']
-        best_loss = checkpoint['best_loss']
-        best_loss_head = checkpoint['best_loss_head']
-
-    else:
-        print(colored('No checkpoint file at {}'.format(p['scan_checkpoint']), 'blue'))
-        start_epoch = 0
-        best_loss = 1e4
-        best_loss_head = None
- 
-    # Main loop
-    print(colored('Starting main loop', 'blue'))
-
-    for epoch in range(start_epoch, p['epochs']):
-        print(colored('Epoch %d/%d' %(epoch+1, p['epochs']), 'yellow'))
-        print(colored('-'*15, 'yellow'))
-
-        # Adjust lr
-        lr = adjust_learning_rate(p, optimizer, epoch)
-        print('Adjusted learning rate to {:.5f}'.format(lr))
-
-        # Train
-        print('Train ...')
-        scan_train(train_dataloader, model, criterion, optimizer, epoch, p['update_cluster_head_only'])
-
-        # Evaluate 
-        print('Make prediction on validation set ...')
-        predictions = get_predictions(p, val_dataloader, model)
-
-        print('Evaluate based on SCAN loss ...')
-        scan_stats = scan_evaluate(predictions)
-        print(scan_stats)
-        lowest_loss_head = scan_stats['lowest_loss_head']
-        lowest_loss = scan_stats['lowest_loss']
-       
-        if lowest_loss < best_loss:
-            print('New lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
-            print('Lowest loss head is %d' %(lowest_loss_head))
-            best_loss = lowest_loss
-            best_loss_head = lowest_loss_head
-            torch.save({'model': model.module.state_dict(), 'head': best_loss_head}, p['scan_model'])
+    if args.mode == 'train':
+        # Checkpoint
+        if os.path.exists(p['scan_checkpoint']):
+            print(colored('Restart from checkpoint {}'.format(p['scan_checkpoint']), 'blue'))
+            checkpoint = torch.load(p['scan_checkpoint'], map_location='cpu')
+            model.load_state_dict(checkpoint['model'])
+            optimizer.load_state_dict(checkpoint['optimizer'])        
+            start_epoch = checkpoint['epoch']
+            best_loss = checkpoint['best_loss']
+            best_loss_head = checkpoint['best_loss_head']
 
         else:
-            print('No new lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
-            print('Lowest loss head is %d' %(best_loss_head))
+            print(colored('No checkpoint file at {}'.format(p['scan_checkpoint']), 'blue'))
+            start_epoch = 0
+            best_loss = 1e4
+            best_loss_head = None
+    
+        # Main loop
+        print(colored('Starting main loop', 'blue'))
 
-        print('Evaluate with hungarian matching algorithm ...')
-        clustering_stats = hungarian_evaluate(lowest_loss_head, predictions, compute_confusion_matrix=False)
-        print(clustering_stats)     
+        for epoch in range(start_epoch, p['epochs']):
+            print(colored('Epoch %d/%d' %(epoch+1, p['epochs']), 'yellow'))
+            print(colored('-'*15, 'yellow'))
 
-        # Checkpoint
-        print('Checkpoint ...')
-        torch.save({'optimizer': optimizer.state_dict(), 'model': model.state_dict(), 
-                    'epoch': epoch + 1, 'best_loss': best_loss, 'best_loss_head': best_loss_head},
-                     p['scan_checkpoint'])
+            # Adjust lr
+            lr = adjust_learning_rate(p, optimizer, epoch)
+            print('Adjusted learning rate to {:.5f}'.format(lr))
+
+            # Train
+            print('Train ...')
+            scan_train(train_dataloader, model, criterion, optimizer, epoch, p['update_cluster_head_only'])
+
+            # Evaluate 
+            print('Make prediction on validation set ...')
+            predictions = get_predictions(p, val_dataloader, model)
+
+            print('Evaluate based on SCAN loss ...')
+            scan_stats = scan_evaluate(predictions)
+            print(scan_stats)
+            lowest_loss_head = scan_stats['lowest_loss_head']
+            lowest_loss = scan_stats['lowest_loss']
+        
+            if lowest_loss < best_loss:
+                print('New lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
+                print('Lowest loss head is %d' %(lowest_loss_head))
+                best_loss = lowest_loss
+                best_loss_head = lowest_loss_head
+                torch.save({'model': model.module.state_dict(), 'head': best_loss_head}, p['scan_model'])
+
+            else:
+                print('No new lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
+                print('Lowest loss head is %d' %(best_loss_head))
+
+            print('Evaluate with hungarian matching algorithm ...')
+            clustering_stats = hungarian_evaluate(lowest_loss_head, predictions, compute_confusion_matrix=False)
+            print(clustering_stats)     
+
+            # Checkpoint
+            print('Checkpoint ...')
+            torch.save({'optimizer': optimizer.state_dict(), 'model': model.state_dict(), 
+                        'epoch': epoch + 1, 'best_loss': best_loss, 'best_loss_head': best_loss_head},
+                        p['scan_checkpoint'])
     
     # Evaluate and save the final model
     print(colored('Evaluate best model based on SCAN metric at the end', 'blue'))
     model_checkpoint = torch.load(p['scan_model'], map_location='cpu')
     model.module.load_state_dict(model_checkpoint['model'])
     predictions = get_predictions(p, val_dataloader, model)
+    gt_targets = predictions[model_checkpoint['head']]['targets']
+    cluster_predictions = predictions[model_checkpoint['head']]['predictions']
     clustering_stats = hungarian_evaluate(model_checkpoint['head'], predictions, 
                             class_names=val_dataset.dataset.classes, 
                             compute_confusion_matrix=True, 
