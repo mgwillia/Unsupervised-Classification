@@ -66,7 +66,7 @@ def get_model(p, pretrain_path=None):
             from models.resnet import resnet50
             backbone = resnet50()  
 
-        elif p['train_db_name'] == 'pascal-voc' or p['train_db_name'] == 'pascal-voc-large' or p['train_db_name'] == 'pascal-pretrained':
+        elif p['train_db_name'] == 'pascal-voc' or p['train_db_name'] == 'pascal-voc-large' or p['train_db_name'] == 'pascal-pretrained' or p['train_db_name'] == 'pascal-large-batches':
             from models.resnet_wider import resnet50x1
             backbone = resnet50x1()
             if p['train_db_name'] == 'pascal-pretrained':
@@ -145,7 +145,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
         from data.stl import STL10
         dataset = STL10(split=split, transform=transform, download=True)
 
-    elif p['train_db_name'] == 'pascal-voc' or p['train_db_name'] == 'pascal-voc-large' or p['train_db_name'] == 'pascal-pretrained':
+    elif p['train_db_name'] == 'pascal-voc' or p['train_db_name'] == 'pascal-voc-large' or p['train_db_name'] == 'pascal-pretrained' or p['train_db_name'] == 'pascal-large-batches':
         from data.pascal_voc import PASCALVOC
         dataset = PASCALVOC(transform=transform)
 
@@ -188,7 +188,7 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False):
         from data.stl import STL10
         dataset = STL10(split='test', transform=transform, download=True)
 
-    elif p['train_db_name'] == 'pascal-voc' or p['train_db_name'] == 'pascal-voc-large' or p['train_db_name'] == 'pascal-pretrained':
+    elif p['train_db_name'] == 'pascal-voc' or p['train_db_name'] == 'pascal-voc-large' or p['train_db_name'] == 'pascal-pretrained' or p['train_db_name'] == 'pascal-large-batches':
         from data.pascal_voc import PASCALVOC
         dataset = PASCALVOC(transform=transform)
     
