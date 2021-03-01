@@ -200,6 +200,7 @@ class ResNet(nn.Module):
 
 
 def resnet50x1(**kwargs):
+    backbone = ResNet(Bottleneck, [3, 4, 6, 3], width_mult=1)
     return {'backbone': backbone, 'dim': 2048}
 
 def resnet50x2(**kwargs):
