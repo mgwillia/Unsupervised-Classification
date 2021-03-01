@@ -90,10 +90,12 @@ def main():
         model.load_state_dict(checkpoint['model'])
         model.cuda()
         start_epoch = checkpoint['epoch']
-
     else:
         print(colored('No checkpoint file at {}'.format(p['pretext_checkpoint']), 'blue'))
         start_epoch = 0
+        if p['train_db_name'] == 'pascal-pretrained':
+            print('loading pretrained')
+            model.load_state_dict(torch.load('resnet50-1x.pth')['state_dict'])
         model = model.cuda()
     
     # Training

@@ -191,7 +191,7 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
-        x = self.fc(x)
+        #x = self.fc(x)
 
         return x
 
@@ -200,7 +200,7 @@ class ResNet(nn.Module):
 
 
 def resnet50x1(**kwargs):
-    return {'backbone': ResNet(Bottleneck, [3, 4, 6, 3], width_mult=1), 'dim': 2048}
+    return {'backbone': backbone, 'dim': 2048}
 
 def resnet50x2(**kwargs):
     return ResNet(Bottleneck, [3, 4, 6, 3], width_mult=2)
