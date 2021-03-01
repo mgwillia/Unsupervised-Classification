@@ -67,8 +67,8 @@ def get_model(p, pretrain_path=None):
             backbone = resnet50()  
 
         elif p['train_db_name'] == 'pascal-voc' or p['train_db_name'] == 'pascal-voc-large':
-            from models.resnet_pascal import resnet50
-            backbone = resnet50()
+            from models.resnet_wider import resnet50x1
+            backbone = resnet50x1()
 
         else:
             raise NotImplementedError 
