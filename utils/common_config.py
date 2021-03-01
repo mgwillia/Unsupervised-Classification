@@ -71,7 +71,7 @@ def get_model(p, pretrain_path=None):
             backbone = resnet50x1()
             if p['train_db_name'] == 'pascal-pretrained':
                 print('loading pretrained')
-                backbone.load_state_dict(torch.load('resnet50-1x.pth')['state_dict'])
+                backbone['backbone'].load_state_dict(torch.load('resnet50-1x.pth')['state_dict'])
 
         else:
             raise NotImplementedError 
