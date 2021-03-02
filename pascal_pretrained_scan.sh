@@ -9,4 +9,4 @@
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0 python scan.py --config_env configs/env.yml --config_exp configs/scan/pascal_pretrained.yml"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0 python scan.py --config_env configs/env.yml --config_exp configs/scan/pascal_pretrained.yml --mode train"
