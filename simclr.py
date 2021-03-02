@@ -109,15 +109,16 @@ def main():
         print('Train ...')
         simclr_train(train_dataloader, model, criterion, optimizer, epoch)
 
-        # Fill memory bank
-        print('Fill memory bank for kNN...')
-        fill_memory_bank(base_dataloader, model, memory_bank_base)
-
-        # Evaluate (To monitor progress - Not for validation)
-        print('Evaluate ...')
-        top1 = contrastive_evaluate(val_dataloader, model, memory_bank_base)
-        print('Result of kNN evaluation is %.2f' %(top1)) 
-        
+        if epoch % 10 == 0 or epoch == p['epochs'] - 1:
+            # Fill memory bank
+            print('Fill memory bank for kNN...')
+            fill_memory_bank(base_dataloader, model, memory_bank_base)
+            
+            # Evaluate (To monitor progress - Not for validation)
+            print('Evaluate ...')
+            top1 = contrastive_evaluate(val_dataloader, model, memory_bank_base)
+            print('Result of kNN evaluation is %.2f' %(top1)) 
+            
         # Checkpoint
         print('Checkpoint ...')
         torch.save({'optimizer': optimizer.state_dict(), 'model': model.state_dict(), 
