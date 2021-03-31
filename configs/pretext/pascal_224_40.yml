@@ -8,8 +8,8 @@ model_kwargs:
    features_dim: 128
 
 # Dataset
-train_db_name: pascal-pretrained-224
-val_db_name: pascal-pretrained-224
+train_db_name: pascal-pretrained-224-40
+val_db_name: pascal-pretrained-22440
 num_classes: 40
 
 # Loss
