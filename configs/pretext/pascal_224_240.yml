@@ -8,9 +8,9 @@ model_kwargs:
    features_dim: 128
 
 # Dataset
-train_db_name: pascal-pretrained-224-40
-val_db_name: pascal-pretrained-224-40
-num_classes: 40
+train_db_name: pascal-pretrained-224-240
+val_db_name: pascal-pretrained-224-240
+num_classes: 240
 
 # Loss
 criterion: simclr
