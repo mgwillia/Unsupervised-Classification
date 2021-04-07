@@ -160,7 +160,7 @@ class SCANFLoss(nn.Module):
         #total_loss = consistency_loss + stranger_loss
         total_loss = consistency_loss + stranger_loss - self.entropy_weight * entropy_loss
         
-        return total_loss, consistency_loss, stranger_loss #entropy_loss
+        return total_loss, consistency_loss, stranger_loss, entropy_loss
 
 
 class SimCLRLoss(nn.Module):
