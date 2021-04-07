@@ -135,7 +135,10 @@ def main():
     print('Mine the nearest neighbors (Top-%d)' %(topk)) 
     indices, acc = memory_bank_base.mine_nearest_neighbors(topk)
     print('Accuracy of top-%d nearest neighbors on train set is %.2f' %(topk, 100*acc))
-    np.save(p['topk_neighbors_train_path'], indices)   
+    np.save(p['topk_neighbors_train_path'], indices)
+    indices, acc = memory_bank_base.mine_farthest_neighbors(topk)
+    print('Accuracy of top-%d farthest strangers on train set is %.2f' %(topk, 100*acc))
+    np.save(p['topk_strangers_train_path'], indices)
 
    
     # Mine the topk nearest neighbors at the very end (Val)
@@ -146,7 +149,10 @@ def main():
     print('Mine the nearest neighbors (Top-%d)' %(topk)) 
     indices, acc = memory_bank_val.mine_nearest_neighbors(topk)
     print('Accuracy of top-%d nearest neighbors on val set is %.2f' %(topk, 100*acc))
-    np.save(p['topk_neighbors_val_path'], indices)   
+    np.save(p['topk_neighbors_val_path'], indices) 
+    indices, acc = memory_bank_val.mine_farthest_neighbors(topk)
+    print('Accuracy of top-%d farthest strangers on val set is %.2f' %(topk, 100*acc))
+    np.save(p['topk_strangers_val_path'], indices)  
 
  
 if __name__ == '__main__':

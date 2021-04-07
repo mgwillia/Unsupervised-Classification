@@ -64,6 +64,24 @@ class MemoryBank(object):
         else:
             return indices
 
+    def mine_farthest_neighbors(self, topk, calculate_accuracy=True):
+        # mine the topk farthest strangers for every sample
+        features = self.features.cpu().numpy()
+        normalized_features = features / np.linalg.norm(features, ord=2, axis=1, keepdims=True)
+        similarities = normalized_features.dot(normalized_features.T)
+        indices = np.argpartition(similarities, topk)[:,:topk]
+        
+        # evaluate 
+        if calculate_accuracy:
+            targets = self.targets.cpu().numpy()
+            stranger_targets = np.take(targets, indices[:,:], axis=0) # Exclude sample itself for eval
+            anchor_targets = np.repeat(targets.reshape(-1,1), topk, axis=1)
+            accuracy = np.mean(stranger_targets == anchor_targets)
+            return indices, accuracy
+        
+        else:
+            return indices
+
     def reset(self):
         self.ptr = 0 
         
