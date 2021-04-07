@@ -80,3 +80,54 @@ class NeighborsDataset(Dataset):
         output['target'] = anchor['target']
         
         return output
+
+class SCANFDataset(Dataset):
+    def __init__(self, dataset, neighbor_indices, stranger_indices, num_neighbors=None, num_strangers=None):
+        super(SCANFDataset, self).__init__()
+        transform = dataset.transform
+        
+        if isinstance(transform, dict):
+            self.anchor_transform = transform['standard']
+            self.neighbor_transform = transform['augment']
+            self.stranger_transform = transform['augment']
+        else:
+            self.anchor_transform = transform
+            self.neighbor_transform = transform
+            self.stranger_transform = transform
+       
+        dataset.transform = None
+        self.dataset = dataset
+        self.neighbor_indices = neighbor_indices
+        self.stranger_indices = stranger_indices
+        if num_neighbors is not None:
+            self.neighbor_indices = self.neighbor_indices[:, :num_neighbors+1]
+        if num_strangers is not None:
+            self.stranger_indices = self.stranger_indices[:, :num_strangers+1]
+        assert(self.neighbor_indices.shape[0] == len(self.dataset))
+        assert(self.stranger_indices.shape[0] == len(self.dataset))
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, index):
+        output = {}
+        anchor = self.dataset.__getitem__(index)
+        
+        neighbor_index = np.random.choice(self.neighbor_indices[index], 1)[0]
+        neighbor = self.dataset.__getitem__(neighbor_index)
+        
+        stranger_index = np.random.choice(self.stranger_indices[index], 1)[0]
+        stranger = self.dataset.__getitem__(stranger_index)
+
+        anchor['image'] = self.anchor_transform(anchor['image'])
+        neighbor['image'] = self.neighbor_transform(neighbor['image'])
+        stranger['image'] = self.stranger_transform(stranger['image'])
+
+        output['anchor'] = anchor['image']
+        output['neighbor'] = neighbor['image']
+        output['stranger'] = stranger['image']
+        output['possible_neighbors'] = torch.from_numpy(self.neighbor_indices[index])
+        output['possible_strangers'] = torch.from_numpy(self.stranger_indices[index])
+        output['target'] = anchor['target']
+        
+        return output

@@ -34,8 +34,8 @@ def main():
     train_transformations = get_train_transformations(p)
     val_transformations = get_val_transformations(p)
     train_dataset = get_train_dataset(p, train_transformations, 
-                                        split='train', to_neighbors_dataset = True)
-    val_dataset = get_val_dataset(p, val_transformations, to_neighbors_dataset = True)
+                                        split='train', to_neighbors_strangers_dataset = True)
+    val_dataset = get_val_dataset(p, val_transformations, to_neighbors_strangers_dataset = True)
     train_dataloader = get_train_dataloader(p, train_dataset)
     val_dataloader = get_val_dataloader(p, val_dataset)
     print('Train transforms:', train_transformations)
@@ -66,9 +66,9 @@ def main():
 
     if args.mode == 'train':
         # Checkpoint
-        if os.path.exists(p['scan_checkpoint']):
-            print(colored('Restart from checkpoint {}'.format(p['scan_checkpoint']), 'blue'))
-            checkpoint = torch.load(p['scan_checkpoint'], map_location='cpu')
+        if os.path.exists(p['scanf_checkpoint']):
+            print(colored('Restart from checkpoint {}'.format(p['scanf_checkpoint']), 'blue'))
+            checkpoint = torch.load(p['scanf_checkpoint'], map_location='cpu')
             model.load_state_dict(checkpoint['model'])
             optimizer.load_state_dict(checkpoint['optimizer'])        
             start_epoch = checkpoint['epoch']
@@ -76,7 +76,7 @@ def main():
             best_loss_head = checkpoint['best_loss_head']
 
         else:
-            print(colored('No checkpoint file at {}'.format(p['scan_checkpoint']), 'blue'))
+            print(colored('No checkpoint file at {}'.format(p['scanf_checkpoint']), 'blue'))
             start_epoch = 0
             best_loss = 1e4
             best_loss_head = None
@@ -101,17 +101,17 @@ def main():
             predictions = get_predictions(p, val_dataloader, model)
 
             print('Evaluate based on SCAN loss ...')
-            scan_stats = scan_evaluate(predictions)
-            print(scan_stats)
-            lowest_loss_head = scan_stats['lowest_loss_head']
-            lowest_loss = scan_stats['lowest_loss']
+            scanf_stats = scan_evaluate(predictions)
+            print(scanf_stats)
+            lowest_loss_head = scanf_stats['lowest_loss_head']
+            lowest_loss = scanf_stats['lowest_loss']
         
             if lowest_loss < best_loss:
                 print('New lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
                 print('Lowest loss head is %d' %(lowest_loss_head))
                 best_loss = lowest_loss
                 best_loss_head = lowest_loss_head
-                torch.save({'model': model.module.state_dict(), 'head': best_loss_head}, p['scan_model'])
+                torch.save({'model': model.module.state_dict(), 'head': best_loss_head}, p['scanf_model'])
 
             else:
                 print('No new lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
@@ -125,23 +125,23 @@ def main():
             print('Checkpoint ...')
             torch.save({'optimizer': optimizer.state_dict(), 'model': model.state_dict(), 
                         'epoch': epoch + 1, 'best_loss': best_loss, 'best_loss_head': best_loss_head},
-                        p['scan_checkpoint'])
+                        p['scanf_checkpoint'])
     
     # Evaluate and save the final model
     print(colored('Evaluate best model based on SCAN metric at the end', 'blue'))
-    model_checkpoint = torch.load(p['scan_model'], map_location='cpu')
+    model_checkpoint = torch.load(p['scanf_model'], map_location='cpu')
     model.module.load_state_dict(model_checkpoint['model'])
     predictions = get_predictions(p, val_dataloader, model)
     gt_targets = predictions[model_checkpoint['head']]['targets']
     cluster_predictions = predictions[model_checkpoint['head']]['predictions']
     print(gt_targets.shape)
     print(cluster_predictions.shape)
-    torch.save(gt_targets, 'scan_gt_targets.pth.tar')
-    torch.save(cluster_predictions, 'scan_cluster_predictions.pth.tar')
+    torch.save(gt_targets, 'scanf_gt_targets.pth.tar')
+    torch.save(cluster_predictions, 'scanf_cluster_predictions.pth.tar')
     clustering_stats = hungarian_evaluate(model_checkpoint['head'], predictions, 
                             class_names=val_dataset.dataset.classes, 
                             compute_confusion_matrix=True, 
-                            confusion_matrix_file=os.path.join(p['scan_dir'], 'confusion_matrix.png'))
+                            confusion_matrix_file=os.path.join(p['scanf_dir'], 'confusion_matrix.png'))
     print(clustering_stats)         
     
 if __name__ == "__main__":

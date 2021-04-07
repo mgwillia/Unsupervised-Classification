@@ -18,6 +18,7 @@ train_db_name: cifar-10
 val_db_name: cifar-10
 num_classes: 10
 num_neighbors: 20
+num_strangers: 20
 
 # Transformations
 augmentation_strategy: ours 

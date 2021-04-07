@@ -135,7 +135,7 @@ def get_model(p, pretrain_path=None):
 
 
 def get_train_dataset(p, transform, to_augmented_dataset=False,
-                        to_neighbors_dataset=False, split=None):
+                        to_neighbors_dataset=False, to_neighbors_strangers_dataset=False, split=None):
     # Base dataset
     if p['train_db_name'] == 'cifar-10':
         from data.cifar import CIFAR10
@@ -178,6 +178,12 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
         from data.custom_dataset import NeighborsDataset
         indices = np.load(p['topk_neighbors_train_path'])
         dataset = NeighborsDataset(dataset, indices, p['num_neighbors'])
+
+    if to_neighbors_strangers_dataset:
+        from data.custom_dataset import SCANFDataset
+        neighbor_indices = np.load(p['topk_neighbors_train_path'])
+        stranger_indices = np.load(p['topk_strangers_train_path'])
+        dataset = SCANFDataset(dataset, neighbor_indices, stranger_indices, p['num_neighbors'], p['num_strangers'])
     
     return dataset
 
@@ -217,6 +223,12 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False):
         from data.custom_dataset import NeighborsDataset
         indices = np.load(p['topk_neighbors_val_path'])
         dataset = NeighborsDataset(dataset, indices, 5) # Only use 5
+
+    if to_neighbors_strangers_dataset:
+        from data.custom_dataset import SCANFDataset
+        neighbor_indices = np.load(p['topk_neighbors_val_path'])
+        stranger_indices = np.load(p['topk_strangers_val_path'])
+        dataset = SCANFDataset(dataset, neighbor_indices, stranger_indices, 5, 5)
 
     return dataset
 
