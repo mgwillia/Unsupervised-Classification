@@ -31,6 +31,8 @@ def create_config(config_file_env, config_file_exp):
     cfg['pretext_model'] = os.path.join(pretext_dir, 'model.pth.tar')
     cfg['topk_neighbors_train_path'] = os.path.join(pretext_dir, 'topk-train-neighbors.npy')
     cfg['topk_neighbors_val_path'] = os.path.join(pretext_dir, 'topk-val-neighbors.npy')
+    cfg['topk_strangers_train_path'] = os.path.join(pretext_dir, 'topk-train-strangers.npy')
+    cfg['topk_strangers_val_path'] = os.path.join(pretext_dir, 'topk-val-strangers.npy')
 
     # If we perform clustering or self-labeling step we need additional paths.
     # We also include a run identifier to support multiple runs w/ same hyperparams.
