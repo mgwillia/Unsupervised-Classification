@@ -79,7 +79,7 @@ def get_predictions(p, dataloader, model, return_features=False):
     probs = [torch.cat(prob_, dim=0).cpu() for prob_ in probs]
     targets = torch.cat(targets, dim=0)
 
-    if include_neighbors:
+    if include_neighbors and not include_strangers:
         neighbors = torch.cat(neighbors, dim=0)
         out = [{'predictions': pred_, 'probabilities': prob_, 'targets': targets, 'neighbors': neighbors} for pred_, prob_ in zip(predictions, probs)]
     elif include_neighbors and include_strangers:
