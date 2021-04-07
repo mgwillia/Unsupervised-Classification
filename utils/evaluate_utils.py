@@ -141,21 +141,23 @@ def scanf_evaluate(predictions):
         probs = head['probabilities']
         neighbors = head['neighbors']
         strangers = head['strangers']
-        anchors = torch.arange(neighbors.size(0)).view(-1,1).expand_as(neighbors)
+        
+        neighbor_anchors = torch.arange(neighbors.size(0)).view(-1,1).expand_as(neighbors)
+        stranger_anchors = torch.arange(strangers.size(0)).view(-1,1).expand_as(strangers)
         
         # Consistency loss
         similarity = torch.matmul(probs, probs.t())
         neighbors = neighbors.contiguous().view(-1)
-        anchors = anchors.contiguous().view(-1)
-        similarity = similarity[anchors, neighbors]
+        neighbor_anchors = neighbor_anchors.contiguous().view(-1)
+        similarity = similarity[neighbor_anchors, neighbors]
         ones = torch.ones_like(similarity)
         consistency_loss = F.binary_cross_entropy(similarity, ones).item()
 
         # Stranger loss
         similarity = torch.matmul(probs, probs.t())  
         strangers = strangers.contiguous().view(-1)
-        anchors = anchors.contiguous().view(-1)
-        similarity = similarity[anchors, strangers]
+        stranger_anchors = stranger_anchors.contiguous().view(-1)
+        similarity = similarity[stranger_anchors, strangers]
         zeros = torch.zeros_like(similarity)
         stranger_loss = F.binary_cross_entropy(similarity, zeros).item()
         
