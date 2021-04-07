@@ -144,6 +144,9 @@ def scanf_evaluate(predictions):
         
         neighbor_anchors = torch.arange(neighbors.size(0)).view(-1,1).expand_as(neighbors)
         stranger_anchors = torch.arange(strangers.size(0)).view(-1,1).expand_as(strangers)
+
+        # Entropy loss
+        entropy_loss = entropy(torch.mean(probs, dim=0), input_as_probabilities=True).item()
         
         # Consistency loss
         similarity = torch.matmul(probs, probs.t())
@@ -162,9 +165,9 @@ def scanf_evaluate(predictions):
         stranger_loss = F.binary_cross_entropy(similarity, zeros).item()
         
         # Total loss
-        total_loss = stranger_loss + consistency_loss
+        total_loss = - entropy_loss + stranger_loss + consistency_loss
         
-        output.append({'consistency': consistency_loss, 'stranger': stranger_loss, 'total_loss': total_loss})
+        output.append({'entropy': entropy_loss, 'consistency': consistency_loss, 'stranger': stranger_loss, 'total_loss': total_loss})
 
     total_losses = [output_['total_loss'] for output_ in output]
     lowest_loss_head = np.argmin(total_losses)

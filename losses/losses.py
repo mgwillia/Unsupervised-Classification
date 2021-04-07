@@ -122,11 +122,11 @@ class SCANLoss(nn.Module):
 
 
 class SCANFLoss(nn.Module):
-    def __init__(self):#, entropy_weight = 2.0):
+    def __init__(self, entropy_weight = 2.0):
         super(SCANFLoss, self).__init__()
         self.softmax = nn.Softmax(dim = 1)
         self.bce = nn.BCELoss()
-        #self.entropy_weight = entropy_weight # Default = 2.0
+        self.entropy_weight = entropy_weight # Default = 2.0
 
     def forward(self, anchors, neighbors, strangers):
         """
@@ -153,12 +153,12 @@ class SCANFLoss(nn.Module):
         zeros = torch.zeros_like(similarity)
         stranger_loss = self.bce(similarity, zeros)
         
-        # Entropy loss
-        #entropy_loss = entropy(torch.mean(anchors_prob, 0), input_as_probabilities = True)
+        #Entropy loss
+        entropy_loss = entropy(torch.mean(anchors_prob, 0), input_as_probabilities = True)
 
         # Total loss
-        total_loss = consistency_loss + stranger_loss
-        #total_loss = consistency_loss - self.entropy_weight * entropy_loss
+        #total_loss = consistency_loss + stranger_loss
+        total_loss = consistency_loss + stranger_loss - self.entropy_weight * entropy_loss
         
         return total_loss, consistency_loss, stranger_loss #entropy_loss
 

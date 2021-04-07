@@ -103,8 +103,9 @@ def scanf_train(train_loader, model, criterion, optimizer, epoch, update_cluster
     total_losses = AverageMeter('Total Loss', ':.4e')
     consistency_losses = AverageMeter('Consistency Loss', ':.4e')
     stranger_losses = AverageMeter('Stranger Loss', ':.4e')
+    entropy_losses = AverageMeter('Entropy', ':.4e')
     progress = ProgressMeter(len(train_loader),
-        [total_losses, consistency_losses, stranger_losses],
+        [total_losses, consistency_losses, stranger_losses, entropy_losses],
         prefix="Epoch: [{}]".format(epoch))
 
     if update_cluster_head_only:
@@ -133,19 +134,21 @@ def scanf_train(train_loader, model, criterion, optimizer, epoch, update_cluster
             strangers_output = model(strangers)
 
         # Loss for every head
-        total_loss, consistency_loss, stranger_loss = [], [], []
+        total_loss, consistency_loss, stranger_loss, entropy_loss = [], [], [], []
         for anchors_output_subhead, neighbors_output_subhead, strangers_output_subhead in zip(anchors_output, 
                                                                                                 neighbors_output, strangers_output):
-            total_loss_, consistency_loss_, stranger_loss_ = criterion(anchors_output_subhead, 
+            total_loss_, consistency_loss_, stranger_loss_, entropy_loss_ = criterion(anchors_output_subhead, 
                                                                         neighbors_output_subhead, strangers_output_subhead)
             total_loss.append(total_loss_)
             consistency_loss.append(consistency_loss_)
             stranger_loss.append(stranger_loss_)
+            entropy_loss.append(entropy_loss_)
 
         # Register the mean loss and backprop the total loss to cover all subheads
         total_losses.update(np.mean([v.item() for v in total_loss]))
         consistency_losses.update(np.mean([v.item() for v in consistency_loss]))
         stranger_losses.update(np.mean([v.item() for v in stranger_loss]))
+        entropy_losses.update(np.mean([v.item() for v in entropy_loss]))
 
         total_loss = torch.sum(torch.stack(total_loss, dim=0))
 
