@@ -67,8 +67,9 @@ class MemoryBank(object):
     def mine_farthest_neighbors(self, topk, calculate_accuracy=True):
         # mine the topk farthest strangers for every sample
         features = self.features.cpu().numpy()
-        normalized_features = features / np.linalg.norm(features, ord=2, axis=1, keepdims=True)
-        similarities = normalized_features.dot(normalized_features.T)
+        #normalized_features = features / np.linalg.norm(features, ord=2, axis=1, keepdims=True)
+        #similarities = normalized_features.dot(normalized_features.T)
+        similarities = features.dot(features.T)
         indices = np.argpartition(similarities, topk)[:,:topk]
         
         # evaluate 
