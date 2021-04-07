@@ -123,7 +123,7 @@ class SCANLoss(nn.Module):
 
 class SCANFLoss(nn.Module):
     def __init__(self):#, entropy_weight = 2.0):
-        super(SCANLoss, self).__init__()
+        super(SCANFLoss, self).__init__()
         self.softmax = nn.Softmax(dim = 1)
         self.bce = nn.BCELoss()
         #self.entropy_weight = entropy_weight # Default = 2.0
