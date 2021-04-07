@@ -188,7 +188,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
     return dataset
 
 
-def get_val_dataset(p, transform=None, to_neighbors_dataset=False):
+def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_strangers_dataset=False):
     # Base dataset
     if p['val_db_name'] == 'cifar-10':
         from data.cifar import CIFAR10
