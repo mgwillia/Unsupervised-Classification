@@ -142,7 +142,8 @@ def main():
                             class_names=val_dataset.dataset.classes, 
                             compute_confusion_matrix=True, 
                             confusion_matrix_file=os.path.join(p['scanf_dir'], 'confusion_matrix.png'))
-    print(clustering_stats)         
+    print(clustering_stats)
+    print('Final Accuracy:', clustering_stats['ACC'])  
     
 if __name__ == "__main__":
     main()
