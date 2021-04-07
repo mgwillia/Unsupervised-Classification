@@ -2,6 +2,7 @@
 Authors: Wouter Van Gansbeke, Simon Vandenhende
 Licensed under the CC BY-NC 4.0 license (https://creativecommons.org/licenses/by-nc/4.0/)
 """
+from scipy.spatial.distance import pdist, squareform
 import numpy as np
 import torch
 
@@ -45,18 +46,20 @@ class MemoryBank(object):
 
     def mine_nearest_neighbors(self, topk, calculate_accuracy=True):
         # mine the topk nearest neighbors for every sample
-        import faiss
+        #import faiss
         features = self.features.cpu().numpy()
-        n, dim = features.shape[0], features.shape[1]
-        index = faiss.IndexFlatIP(dim)
-        index = faiss.index_cpu_to_all_gpus(index)
-        index.add(features)
-        distances, indices = index.search(features, topk+1) # Sample itself is included
-        
+        #n, dim = features.shape[0], features.shape[1]
+        #index = faiss.IndexFlatIP(dim)
+        #index = faiss.index_cpu_to_all_gpus(index)
+        #index.add(features)
+        #distances, indices = index.search(features, topk+1) # Sample itself is included
+        similarities = squareform(pdist(features))        
+        indices = np.argpartition(similarities, topk)[:,:topk]
+
         # evaluate 
         if calculate_accuracy:
             targets = self.targets.cpu().numpy()
-            neighbor_targets = np.take(targets, indices[:,1:], axis=0) # Exclude sample itself for eval
+            neighbor_targets = np.take(targets, indices[:,:], axis=0) # Exclude sample itself for eval
             anchor_targets = np.repeat(targets.reshape(-1,1), topk, axis=1)
             accuracy = np.mean(neighbor_targets == anchor_targets)
             return indices, accuracy
@@ -69,9 +72,12 @@ class MemoryBank(object):
         features = self.features.cpu().numpy()
         #normalized_features = features / np.linalg.norm(features, ord=2, axis=1, keepdims=True)
         #similarities = normalized_features.dot(normalized_features.T)
-        similarities = features.dot(features.T)
-        indices = np.argpartition(similarities, topk)[:,:topk]
-        
+        #similarities = features.dot(features.T)
+        similarities = squareform(pdist(features))
+        middle_index = int(features.shape[0] / 2)
+        indices = np.argpartition(similarities, middle_index)[:,middle_index:middle_index + topk]
+        print(indices.shape)       
+ 
         # evaluate 
         if calculate_accuracy:
             targets = self.targets.cpu().numpy()

@@ -45,6 +45,7 @@ def get_predictions(p, dataloader, model, return_features=False):
     if isinstance(dataloader.dataset, NeighborsDataset): # Also return the neighbors
         key_ = 'anchor'
         include_neighbors = True
+        include_strangers = False
         neighbors = []
     elif isinstance(dataloader.dataset, SCANFDataset):
         key_ = 'anchor'
