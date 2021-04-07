@@ -25,7 +25,7 @@ class MyPath(object):
 
         elif database == 'pascal-voc':
             #return '/fs/vulcan-datasets/pascal_voc/'
-            return '/cfarhomes/mgwillia/pascal-voc-modified'
+            return '/vulcanscratch/mgwillia/pascal-voc-modified'
         
         else:
             raise NotImplementedError
