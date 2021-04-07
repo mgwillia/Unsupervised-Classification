@@ -162,7 +162,7 @@ def scanf_evaluate(predictions):
         # Total loss
         total_loss = stranger_loss + consistency_loss
         
-        output.append({'consistency': consistency_loss, 'stranger': stranger_loss, , 'total_loss': total_loss})
+        output.append({'consistency': consistency_loss, 'stranger': stranger_loss, 'total_loss': total_loss})
 
     total_losses = [output_['total_loss'] for output_ in output]
     lowest_loss_head = np.argmin(total_losses)
