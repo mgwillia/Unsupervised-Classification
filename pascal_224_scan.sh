@@ -3,8 +3,9 @@
 #SBATCH --job-name=pascal_224_scan                                 # sets the job name
 #SBATCH --output=pascal_224_scan.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
 #SBATCH --error=pascal_224_scan.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
-#SBATCH --time=12:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
+#SBATCH --time=24:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
 #SBATCH --qos=high                                           # set QOS, this will determine what resources can be requested
+#SBATCH --mem=128G
 #SBATCH --gres gpu:p6000:4
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
