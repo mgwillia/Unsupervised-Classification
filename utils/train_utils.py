@@ -134,9 +134,10 @@ def scanf_train(train_loader, model, criterion, optimizer, epoch, update_cluster
 
         # Loss for every head
         total_loss, consistency_loss, stranger_loss = [], [], []
-        for anchors_output_subhead, neighbors_output_subhead, strangers_output_subhead in zip(anchors_output, neighbors_output, strangers_output):
-            total_loss_, consistency_loss_, stranger_loss_ = criterion(anchors_output_subhead,
-                                                                         neighbors_output_subhead, strangers_output_subhead)
+        for anchors_output_subhead, neighbors_output_subhead, strangers_output_subhead in zip(anchors_output, 
+                                                                                                neighbors_output, strangers_output):
+            total_loss_, consistency_loss_, stranger_loss_ = criterion(anchors_output_subhead, 
+                                                                        neighbors_output_subhead, strangers_output_subhead)
             total_loss.append(total_loss_)
             consistency_loss.append(consistency_loss_)
             stranger_loss.append(stranger_loss_)

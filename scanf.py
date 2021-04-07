@@ -13,8 +13,8 @@ from utils.common_config import get_train_transformations, get_val_transformatio
                                 get_val_dataset, get_val_dataloader,\
                                 get_optimizer, get_model, get_criterion,\
                                 adjust_learning_rate
-from utils.evaluate_utils import get_predictions, scan_evaluate, hungarian_evaluate
-from utils.train_utils import scan_train
+from utils.evaluate_utils import get_predictions, scanf_evaluate, hungarian_evaluate
+from utils.train_utils import scanf_train
 
 FLAGS = argparse.ArgumentParser(description='SCAN Loss')
 FLAGS.add_argument('--config_env', help='Location of path config file')
@@ -94,14 +94,14 @@ def main():
 
             # Train
             print('Train ...')
-            scan_train(train_dataloader, model, criterion, optimizer, epoch, p['update_cluster_head_only'])
+            scanf_train(train_dataloader, model, criterion, optimizer, epoch, p['update_cluster_head_only'])
 
             # Evaluate 
             print('Make prediction on validation set ...')
             predictions = get_predictions(p, val_dataloader, model)
 
             print('Evaluate based on SCAN loss ...')
-            scanf_stats = scan_evaluate(predictions)
+            scanf_stats = scanf_evaluate(predictions)
             print(scanf_stats)
             lowest_loss_head = scanf_stats['lowest_loss_head']
             lowest_loss = scanf_stats['lowest_loss']

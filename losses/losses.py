@@ -149,15 +149,15 @@ class SCANFLoss(nn.Module):
         consistency_loss = self.bce(similarity, ones)
 
         # Dissimilarity in output space
-        dissimilarity = torch.bmm(anchors_prob.view(b, 1, n), negatives_prob.view(b, n, 1)).squeeze()
+        similarity = torch.bmm(anchors_prob.view(b, 1, n), negatives_prob.view(b, n, 1)).squeeze()
         zeros = torch.zeros_like(similarity)
-        stranger_loss = self.bce(dissimilarity, zeros)
+        stranger_loss = self.bce(similarity, zeros)
         
         # Entropy loss
         #entropy_loss = entropy(torch.mean(anchors_prob, 0), input_as_probabilities = True)
 
         # Total loss
-        total_loss = consistency_loss - stranger_loss
+        total_loss = consistency_loss + stranger_loss
         #total_loss = consistency_loss - self.entropy_weight * entropy_loss
         
         return total_loss, consistency_loss, stranger_loss #entropy_loss

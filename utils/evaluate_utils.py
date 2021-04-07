@@ -7,7 +7,7 @@ import torch
 import torch.nn.functional as F
 from utils.common_config import get_feature_dimensions_backbone
 from utils.utils import AverageMeter, confusion_matrix
-from data.custom_dataset import NeighborsDataset
+from data.custom_dataset import NeighborsDataset, SCANFDataset
 from sklearn import metrics
 from scipy.optimize import linear_sum_assignment
 from losses.losses import entropy
@@ -46,10 +46,16 @@ def get_predictions(p, dataloader, model, return_features=False):
         key_ = 'anchor'
         include_neighbors = True
         neighbors = []
-
+    elif isinstance(dataloader.dataset, SCANFDataset):
+        key_ = 'anchor'
+        include_neighbors = True
+        include_strangers = True
+        neighbors = []
+        strangers = []
     else:
         key_ = 'image'
         include_neighbors = False
+        include_strangers = False
 
     ptr = 0
     for batch in dataloader:
@@ -66,6 +72,8 @@ def get_predictions(p, dataloader, model, return_features=False):
         targets.append(batch['target'])
         if include_neighbors:
             neighbors.append(batch['possible_neighbors'])
+        if include_strangers:
+            strangers.append(batch['possible_strangers'])
 
     predictions = [torch.cat(pred_, dim = 0).cpu() for pred_ in predictions]
     probs = [torch.cat(prob_, dim=0).cpu() for prob_ in probs]
@@ -74,7 +82,10 @@ def get_predictions(p, dataloader, model, return_features=False):
     if include_neighbors:
         neighbors = torch.cat(neighbors, dim=0)
         out = [{'predictions': pred_, 'probabilities': prob_, 'targets': targets, 'neighbors': neighbors} for pred_, prob_ in zip(predictions, probs)]
-
+    elif include_neighbors and include_strangers:
+        neighbors = torch.cat(neighbors, dim=0)
+        strangers = torch.cat(strangers, dim=0)
+        out = [{'predictions': pred_, 'probabilities': prob_, 'targets': targets, 'neighbors': neighbors, 'strangers': strangers} for pred_, prob_ in zip(predictions, probs)]
     else:
         out = [{'predictions': pred_, 'probabilities': prob_, 'targets': targets} for pred_, prob_ in zip(predictions, probs)]
 
@@ -111,6 +122,47 @@ def scan_evaluate(predictions):
         total_loss = - entropy_loss + consistency_loss
         
         output.append({'entropy': entropy_loss, 'consistency': consistency_loss, 'total_loss': total_loss})
+
+    total_losses = [output_['total_loss'] for output_ in output]
+    lowest_loss_head = np.argmin(total_losses)
+    lowest_loss = np.min(total_losses)
+
+    return {'scan': output, 'lowest_loss_head': lowest_loss_head, 'lowest_loss': lowest_loss}
+
+
+@torch.no_grad()
+def scanf_evaluate(predictions):
+    # Evaluate model based on SCAN loss.
+    num_heads = len(predictions)
+    output = []
+
+    for head in predictions:
+        # Neighbors and anchors
+        probs = head['probabilities']
+        neighbors = head['neighbors']
+        strangers = head['strangers']
+        anchors = torch.arange(neighbors.size(0)).view(-1,1).expand_as(neighbors)
+        
+        # Consistency loss
+        similarity = torch.matmul(probs, probs.t())
+        neighbors = neighbors.contiguous().view(-1)
+        anchors = anchors.contiguous().view(-1)
+        similarity = similarity[anchors, neighbors]
+        ones = torch.ones_like(similarity)
+        consistency_loss = F.binary_cross_entropy(similarity, ones).item()
+
+        # Stranger loss
+        similarity = torch.matmul(probs, probs.t())  
+        strangers = strangers.contiguous().view(-1)
+        anchors = anchors.contiguous().view(-1)
+        similarity = similarity[anchors, strangers]
+        zeros = torch.zeros_like(similarity)
+        stranger_loss = F.binary_cross_entropy(similarity, zeros).item()
+        
+        # Total loss
+        total_loss = stranger_loss + consistency_loss
+        
+        output.append({'consistency': consistency_loss, 'stranger': stranger_loss, , 'total_loss': total_loss})
 
     total_losses = [output_['total_loss'] for output_ in output]
     lowest_loss_head = np.argmin(total_losses)
