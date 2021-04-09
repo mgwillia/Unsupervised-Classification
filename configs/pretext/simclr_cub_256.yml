@@ -8,8 +8,8 @@ model_kwargs:
    features_dim: 256
 
 # Dataset
-train_db_name: cub-256-feat
-val_db_name: cub-256-feat
+train_db_name: cub-256
+val_db_name: cub-256
 num_classes: 200
 
 # Loss
