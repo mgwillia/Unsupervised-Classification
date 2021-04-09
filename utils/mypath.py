@@ -27,5 +27,8 @@ class MyPath(object):
             #return '/fs/vulcan-datasets/pascal_voc/'
             return '/vulcanscratch/mgwillia/pascal-voc-modified'
         
+        elif database == 'cub':
+            return '/fs/vulcan-datasets/CUB/CUB_200_2011/'
+
         else:
             raise NotImplementedError

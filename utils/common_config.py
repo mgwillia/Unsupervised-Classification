@@ -77,6 +77,12 @@ def get_model(p, pretrain_path=None):
                 print('loading pretrained')
                 backbone['backbone'].load_state_dict(torch.load('resnet50-1x.pth')['state_dict'])
 
+        elif 'cub' in p['train_db_name']:
+            from models.resnet_wider import resnet50x1
+            backbone = resnet50x1()
+            print('loading pretrained')
+            backbone['backbone'].load_state_dict(torch.load('resnet50-1x.pth')['state_dict'])
+
         else:
             raise NotImplementedError 
 
@@ -153,9 +159,9 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
         from data.pascal_voc import PASCALVOC
         dataset = PASCALVOC(transform=transform)
 
-    elif p['train_db_name'] == 'cub-poc':
+    elif 'cub' in p['train_db_name']:
         from data.cub import CUB
-        dataset = CUB(transform=transform)
+        dataset = CUB(train=False, transform=transform)
 
     elif p['train_db_name'] == 'imagenet':
         from data.imagenet import ImageNet
@@ -205,6 +211,10 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
     elif 'pascal-pretrained' in p['train_db_name'] or p['train_db_name'] == 'pascal-large-batches' or p['train_db_name'] == 'pascal-retrain':
         from data.pascal_voc import PASCALVOC
         dataset = PASCALVOC(transform=transform)
+    
+    elif 'cub' in p['val_db_name']:
+        from data.cub import CUB
+        dataset = CUB(train=False, transform=transform)
     
     elif p['val_db_name'] == 'imagenet':
         from data.imagenet import ImageNet

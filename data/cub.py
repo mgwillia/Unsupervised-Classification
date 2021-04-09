@@ -22,15 +22,28 @@ class CUB(Dataset):
         self.train = train
         self.imgNames = []
         self.classNames = []
-        self.classes = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor']
-        self.classDict = {}
-        for i, name in enumerate(self.classes):
-            self.classDict[name] = i# + 1
 
-        with open(self.root + '/bndBoxImageLabels.txt', 'r') as labelFile:
-            for line in labelFile.readlines():
-                self.imgNames.append(line.split(' ')[0])
-                self.classNames.append(line.split(' ')[1].strip())
+        isTrainList = []
+        with open(root + 'train_test_split.txt', 'r') as splitFile:
+            for line in splitFile.readlines():
+                isTrainList.append(int(line.strip().split(' ')[1]))
+
+        classLabels = []
+        with open(root + 'image_class_labels.txt', 'r') as labelsFile:
+            for line in labelsFile.readlines():
+                classLabels.append(int(line.strip().split(' ')[1]) - 1)
+
+        imagePaths = []
+        with open(root + 'images.txt', 'r') as imagesFile:
+            for line in imagesFile.readlines():
+                imagePaths.append(root + 'images/' + line.strip().split(' ')[1])
+
+        self.imagePaths = []
+        self.classLabels = []
+        for i, isTrain in enumerate(isTrainList):
+            if isTrain == train:
+                self.imagePaths.append(imagePaths[i])
+                self.classLabels.append(classLabels[i])
 
 
     def __getitem__(self, index):
@@ -40,23 +53,20 @@ class CUB(Dataset):
         Returns:
             dict: {'image': image, 'target': index of target class, 'meta': dict}
         """
-        imgFileName = os.path.join(str(self.root) + '/BBoxImages/' + str(self.imgNames[index]) + '.jpg')
-        img = Image.open(imgFileName).convert("RGB")
-        className = self.classNames[index]
-        target = self.classDict[className]    
+        img = Image.open(self.imagePaths[index]).convert("RGB")
+        target = self.classLabels[index]   
         imgSize = img.size#(img.shape[0], img.shape[1])    
 
         if self.transform is not None:
             img = self.transform(img)
 
-        out = {'image': img, 'target': target, 'meta': {'im_size': imgSize, 'index': index, 'class_name': className}}
+        out = {'image': img, 'target': target, 'meta': {'im_size': imgSize, 'index': index, 'class_name': self.imagePaths.split('/')[-2].split('.')[1]}}
         
         return out
 
     def get_image(self, index):
-        imgFileName = os.path.join(str(self.root) + '/BBoxImages/' + str(self.imgNames[index]))
-        img = Image.open(imgFileName).convert("RGB")
+        img = Image.open(self.imagePaths[index]).convert("RGB")
         return img
         
     def __len__(self):
-        return len(self.imgNames)
+        return len(self.imagePaths)
