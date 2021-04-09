@@ -290,16 +290,38 @@ def get_train_transformations(p):
                 n_holes = p['augmentation_kwargs']['cutout_kwargs']['n_holes'],
                 length = p['augmentation_kwargs']['cutout_kwargs']['length'],
                 random = p['augmentation_kwargs']['cutout_kwargs']['random'])])
+
+    elif p['augmentation_strategy'] == 'cub':
+        # Augmentation strategy from our paper 
+        return transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.Resize((p['augmentation_kwargs']['resize'],p['augmentation_kwargs']['resize'])),
+            transforms.RandomCrop(p['augmentation_kwargs']['crop_size']),
+            Augment(p['augmentation_kwargs']['num_strong_augs']),
+            transforms.ToTensor(),
+            transforms.Normalize(**p['augmentation_kwargs']['normalize']),
+            Cutout(
+                n_holes = p['augmentation_kwargs']['cutout_kwargs']['n_holes'],
+                length = p['augmentation_kwargs']['cutout_kwargs']['length'],
+                random = p['augmentation_kwargs']['cutout_kwargs']['random'])])
     
     else:
         raise ValueError('Invalid augmentation strategy {}'.format(p['augmentation_strategy']))
 
 
 def get_val_transformations(p):
-    return transforms.Compose([
+    if p['augmentation_strategy'] == 'cub':
+        transforms.Compose([
+            transforms.Resize((p['transformation_kwargs']['resize'],p['transformation_kwargs']['resize'])),
             transforms.CenterCrop(p['transformation_kwargs']['crop_size']),
             transforms.ToTensor(), 
             transforms.Normalize(**p['transformation_kwargs']['normalize'])])
+
+    else:
+        return transforms.Compose([
+                transforms.CenterCrop(p['transformation_kwargs']['crop_size']),
+                transforms.ToTensor(), 
+                transforms.Normalize(**p['transformation_kwargs']['normalize'])])
 
 
 def get_optimizer(p, model, cluster_head_only=False):

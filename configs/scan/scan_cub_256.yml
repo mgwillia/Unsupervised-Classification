@@ -20,8 +20,9 @@ num_classes: 200
 num_neighbors: 10
 
 # Transformations
-augmentation_strategy: ours 
+augmentation_strategy: cub 
 augmentation_kwargs:
+   resize: 256
    crop_size: 224
    normalize:
      mean: [0.485, 0.456, 0.406]
@@ -33,6 +34,7 @@ augmentation_kwargs:
      random: True
 
 transformation_kwargs:
+   resize: 256
    crop_size: 224
    normalize:
      mean: [0.485, 0.456, 0.406]
