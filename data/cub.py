@@ -60,7 +60,7 @@ class CUB(Dataset):
         if self.transform is not None:
             img = self.transform(img)
 
-        out = {'image': img, 'target': target, 'meta': {'im_size': imgSize, 'index': index, 'class_name': self.imagePaths.split('/')[-2].split('.')[1]}}
+        out = {'image': img, 'target': target, 'meta': {'im_size': imgSize, 'index': index, 'class_name': self.imagePaths[index].split('/')[-2].split('.')[1]}}
         
         return out
 
