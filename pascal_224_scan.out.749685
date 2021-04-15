@@ -1,0 +1,1071 @@
+vulcan07.umiacs.umd.edu
+[31m{'setup': 'scan', 'criterion': 'scan', 'criterion_kwargs': {'entropy_weight': 5.0}, 'update_cluster_head_only': False, 'num_heads': 1, 'backbone': 'resnet50', 'train_db_name': 'pascal-pretrained-224', 'val_db_name': 'pascal-pretrained-224', 'num_classes': 20, 'num_neighbors': 20, 'augmentation_strategy': 'ours', 'augmentation_kwargs': {'crop_size': 224, 'normalize': {'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225]}, 'num_strong_augs': 4, 'cutout_kwargs': {'n_holes': 1, 'length': 16, 'random': True}}, 'transformation_kwargs': {'crop_size': 224, 'normalize': {'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225]}}, 'optimizer': 'adam', 'optimizer_kwargs': {'lr': 0.0001, 'weight_decay': 0.0001}, 'epochs': 50, 'batch_size': 128, 'num_workers': 1, 'scheduler': 'constant', 'pretext_dir': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext', 'pretext_checkpoint': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext/checkpoint.pth.tar', 'pretext_model': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext/model.pth.tar', 'topk_neighbors_train_path': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext/topk-train-neighbors.npy', 'topk_neighbors_val_path': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext/topk-val-neighbors.npy', 'scan_dir': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/scan', 'scan_checkpoint': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/scan/checkpoint.pth.tar', 'scan_model': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/scan/model.pth.tar', 'selflabel_dir': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/selflabel', 'selflabel_checkpoint': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/selflabel/checkpoint.pth.tar', 'selflabel_model': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/selflabel/model.pth.tar'}[0m
+[34mGet dataset and dataloaders[0m
+Train transforms: Compose(
+    RandomHorizontalFlip(p=0.5)
+    RandomCrop(size=(224, 224), padding=None)
+    <data.augment.Augment object at 0x7f0176a5cf10>
+    ToTensor()
+    Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    <data.augment.Cutout object at 0x7f0176a5cf70>
+)
+Validation transforms: Compose(
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+)
+Train samples 15774 - Val samples 15774
+[34mGet model[0m
+{'setup': 'scan', 'criterion': 'scan', 'criterion_kwargs': {'entropy_weight': 5.0}, 'update_cluster_head_only': False, 'num_heads': 1, 'backbone': 'resnet50', 'train_db_name': 'pascal-pretrained-224', 'val_db_name': 'pascal-pretrained-224', 'num_classes': 20, 'num_neighbors': 20, 'augmentation_strategy': 'ours', 'augmentation_kwargs': {'crop_size': 224, 'normalize': {'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225]}, 'num_strong_augs': 4, 'cutout_kwargs': {'n_holes': 1, 'length': 16, 'random': True}}, 'transformation_kwargs': {'crop_size': 224, 'normalize': {'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225]}}, 'optimizer': 'adam', 'optimizer_kwargs': {'lr': 0.0001, 'weight_decay': 0.0001}, 'epochs': 50, 'batch_size': 128, 'num_workers': 1, 'scheduler': 'constant', 'pretext_dir': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext', 'pretext_checkpoint': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext/checkpoint.pth.tar', 'pretext_model': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext/model.pth.tar', 'topk_neighbors_train_path': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext/topk-train-neighbors.npy', 'topk_neighbors_val_path': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/pretext/topk-val-neighbors.npy', 'scan_dir': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/scan', 'scan_checkpoint': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/scan/checkpoint.pth.tar', 'scan_model': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/scan/model.pth.tar', 'selflabel_dir': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/selflabel', 'selflabel_checkpoint': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/selflabel/checkpoint.pth.tar', 'selflabel_model': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/selflabel/model.pth.tar'}
+loading pretrained
+ClusteringModel(
+  (backbone): ResNet(
+    (conv1): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+    (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu): ReLU(inplace=True)
+    (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+    (layer1): Sequential(
+      (0): Bottleneck(
+        (downsample): Sequential(
+          (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (conv1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer2): Sequential(
+      (0): Bottleneck(
+        (downsample): Sequential(
+          (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer3): Sequential(
+      (0): Bottleneck(
+        (downsample): Sequential(
+          (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (conv1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (4): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (5): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer4): Sequential(
+      (0): Bottleneck(
+        (downsample): Sequential(
+          (0): Conv2d(1024, 2048, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (conv1): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (avgpool): AdaptiveAvgPool2d(output_size=(1, 1))
+    (fc): Linear(in_features=2048, out_features=1000, bias=True)
+  )
+  (cluster_head): ModuleList(
+    (0): Linear(in_features=2048, out_features=20, bias=True)
+  )
+)
+[34mGet optimizer[0m
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.0001
+    weight_decay: 0.0001
+)
+[34mGet loss[0m
+SCANLoss(
+  (softmax): Softmax(dim=1)
+  (bce): BCELoss()
+)
+[34mNo checkpoint file at /cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224/scan/checkpoint.pth.tar[0m
+[34mStarting main loop[0m
+[33mEpoch 1/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [0][  0/123]	Total Loss -1.1973e+01 (-1.1973e+01)	Consistency Loss 2.9873e+00 (2.9873e+00)	Entropy 2.9922e+00 (2.9922e+00)
+Epoch: [0][ 25/123]	Total Loss -1.1989e+01 (-1.1984e+01)	Consistency Loss 2.9897e+00 (2.9918e+00)	Entropy 2.9957e+00 (2.9952e+00)
+Epoch: [0][ 50/123]	Total Loss -1.2035e+01 (-1.1994e+01)	Consistency Loss 2.9387e+00 (2.9829e+00)	Entropy 2.9947e+00 (2.9953e+00)
+Epoch: [0][ 75/123]	Total Loss -1.2342e+01 (-1.2050e+01)	Consistency Loss 2.6093e+00 (2.9218e+00)	Entropy 2.9902e+00 (2.9943e+00)
+Epoch: [0][100/123]	Total Loss -1.2649e+01 (-1.2160e+01)	Consistency Loss 2.3188e+00 (2.8062e+00)	Entropy 2.9935e+00 (2.9933e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9606902599334717, 'consistency': 1.6073105335235596, 'total_loss': -1.353379726409912}], 'lowest_loss_head': 0, 'lowest_loss': -1.353379726409912}
+New lowest loss on validation set: 10000.0000 -> -1.3534
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2599213896285026, 'ARI': 0.1334481832687385, 'NMI': 0.2758170112527089, 'ACC Top-5': 0.5587041967795106, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 9), (5, 16), (6, 15), (7, 11), (8, 18), (9, 10), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 4), (16, 12), (17, 14), (18, 6), (19, 1)]}
+Checkpoint ...
+[33mEpoch 2/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [1][  0/123]	Total Loss -1.2878e+01 (-1.2878e+01)	Consistency Loss 2.0734e+00 (2.0734e+00)	Entropy 2.9903e+00 (2.9903e+00)
+Epoch: [1][ 25/123]	Total Loss -1.3023e+01 (-1.2915e+01)	Consistency Loss 1.9310e+00 (2.0359e+00)	Entropy 2.9907e+00 (2.9903e+00)
+Epoch: [1][ 50/123]	Total Loss -1.3014e+01 (-1.2960e+01)	Consistency Loss 1.9543e+00 (1.9908e+00)	Entropy 2.9936e+00 (2.9901e+00)
+Epoch: [1][ 75/123]	Total Loss -1.3209e+01 (-1.3010e+01)	Consistency Loss 1.7240e+00 (1.9372e+00)	Entropy 2.9867e+00 (2.9894e+00)
+Epoch: [1][100/123]	Total Loss -1.3065e+01 (-1.3041e+01)	Consistency Loss 1.8889e+00 (1.9036e+00)	Entropy 2.9908e+00 (2.9889e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9735910892486572, 'consistency': 1.165489912033081, 'total_loss': -1.8081011772155762}], 'lowest_loss_head': 0, 'lowest_loss': -1.8081011772155762}
+New lowest loss on validation set: -1.3534 -> -1.8081
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2522505388614175, 'ARI': 0.1220828832831919, 'NMI': 0.3100122614491754, 'ACC Top-5': 0.5613668061366807, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 1), (4, 18), (5, 15), (6, 19), (7, 11), (8, 6), (9, 10), (10, 2), (11, 3), (12, 8), (13, 4), (14, 14), (15, 9), (16, 12), (17, 17), (18, 16), (19, 5)]}
+Checkpoint ...
+[33mEpoch 3/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [2][  0/123]	Total Loss -1.3272e+01 (-1.3272e+01)	Consistency Loss 1.6669e+00 (1.6669e+00)	Entropy 2.9878e+00 (2.9878e+00)
+Epoch: [2][ 25/123]	Total Loss -1.3262e+01 (-1.3229e+01)	Consistency Loss 1.6660e+00 (1.6919e+00)	Entropy 2.9856e+00 (2.9842e+00)
+Epoch: [2][ 50/123]	Total Loss -1.3327e+01 (-1.3276e+01)	Consistency Loss 1.6065e+00 (1.6441e+00)	Entropy 2.9867e+00 (2.9841e+00)
+Epoch: [2][ 75/123]	Total Loss -1.3360e+01 (-1.3296e+01)	Consistency Loss 1.5547e+00 (1.6247e+00)	Entropy 2.9830e+00 (2.9841e+00)
+Epoch: [2][100/123]	Total Loss -1.3330e+01 (-1.3293e+01)	Consistency Loss 1.5486e+00 (1.6217e+00)	Entropy 2.9757e+00 (2.9829e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.974653720855713, 'consistency': 1.0218487977981567, 'total_loss': -1.9528049230575562}], 'lowest_loss_head': 0, 'lowest_loss': -1.9528049230575562}
+New lowest loss on validation set: -1.8081 -> -1.9528
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2733612273361227, 'ARI': 0.13504481974860108, 'NMI': 0.33741032705591645, 'ACC Top-5': 0.6052998605299861, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 5), (4, 9), (5, 15), (6, 19), (7, 11), (8, 18), (9, 10), (10, 2), (11, 3), (12, 8), (13, 4), (14, 17), (15, 16), (16, 12), (17, 14), (18, 6), (19, 13)]}
+Checkpoint ...
+[33mEpoch 4/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [3][  0/123]	Total Loss -1.3430e+01 (-1.3430e+01)	Consistency Loss 1.5032e+00 (1.5032e+00)	Entropy 2.9867e+00 (2.9867e+00)
+Epoch: [3][ 25/123]	Total Loss -1.3467e+01 (-1.3374e+01)	Consistency Loss 1.4167e+00 (1.5332e+00)	Entropy 2.9768e+00 (2.9814e+00)
+Epoch: [3][ 50/123]	Total Loss -1.3267e+01 (-1.3359e+01)	Consistency Loss 1.6636e+00 (1.5477e+00)	Entropy 2.9862e+00 (2.9814e+00)
+Epoch: [3][ 75/123]	Total Loss -1.3468e+01 (-1.3367e+01)	Consistency Loss 1.4472e+00 (1.5385e+00)	Entropy 2.9831e+00 (2.9811e+00)
+Epoch: [3][100/123]	Total Loss -1.3314e+01 (-1.3363e+01)	Consistency Loss 1.5672e+00 (1.5426e+00)	Entropy 2.9763e+00 (2.9811e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9801454544067383, 'consistency': 0.9513188600540161, 'total_loss': -2.028826594352722}], 'lowest_loss_head': 0, 'lowest_loss': -2.028826594352722}
+New lowest loss on validation set: -1.9528 -> -2.0288
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.27646760491948774, 'ARI': 0.1363350457667086, 'NMI': 0.3553785803778979, 'ACC Top-5': 0.6125269430708761, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 3), (5, 15), (6, 19), (7, 11), (8, 18), (9, 10), (10, 2), (11, 6), (12, 8), (13, 4), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 1)]}
+Checkpoint ...
+[33mEpoch 5/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [4][  0/123]	Total Loss -1.3303e+01 (-1.3303e+01)	Consistency Loss 1.5948e+00 (1.5948e+00)	Entropy 2.9796e+00 (2.9796e+00)
+Epoch: [4][ 25/123]	Total Loss -1.3425e+01 (-1.3406e+01)	Consistency Loss 1.5008e+00 (1.4945e+00)	Entropy 2.9851e+00 (2.9801e+00)
+Epoch: [4][ 50/123]	Total Loss -1.3551e+01 (-1.3412e+01)	Consistency Loss 1.3557e+00 (1.4840e+00)	Entropy 2.9813e+00 (2.9792e+00)
+Epoch: [4][ 75/123]	Total Loss -1.3336e+01 (-1.3416e+01)	Consistency Loss 1.5359e+00 (1.4807e+00)	Entropy 2.9743e+00 (2.9794e+00)
+Epoch: [4][100/123]	Total Loss -1.3445e+01 (-1.3420e+01)	Consistency Loss 1.4471e+00 (1.4764e+00)	Entropy 2.9785e+00 (2.9792e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9757437705993652, 'consistency': 0.9022759795188904, 'total_loss': -2.073467791080475}], 'lowest_loss_head': 0, 'lowest_loss': -2.073467791080475}
+New lowest loss on validation set: -2.0288 -> -2.0735
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2764042094586028, 'ARI': 0.13869855755166036, 'NMI': 0.3666150584004525, 'ACC Top-5': 0.5911626727526309, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 5), (4, 10), (5, 16), (6, 19), (7, 11), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 4), (14, 17), (15, 9), (16, 12), (17, 14), (18, 6), (19, 13)]}
+Checkpoint ...
+[33mEpoch 6/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [5][  0/123]	Total Loss -1.3498e+01 (-1.3498e+01)	Consistency Loss 1.4171e+00 (1.4171e+00)	Entropy 2.9830e+00 (2.9830e+00)
+Epoch: [5][ 25/123]	Total Loss -1.3347e+01 (-1.3400e+01)	Consistency Loss 1.5391e+00 (1.4826e+00)	Entropy 2.9773e+00 (2.9765e+00)
+Epoch: [5][ 50/123]	Total Loss -1.3634e+01 (-1.3425e+01)	Consistency Loss 1.2430e+00 (1.4607e+00)	Entropy 2.9755e+00 (2.9772e+00)
+Epoch: [5][ 75/123]	Total Loss -1.3470e+01 (-1.3437e+01)	Consistency Loss 1.4427e+00 (1.4541e+00)	Entropy 2.9825e+00 (2.9782e+00)
+Epoch: [5][100/123]	Total Loss -1.3489e+01 (-1.3439e+01)	Consistency Loss 1.4202e+00 (1.4525e+00)	Entropy 2.9818e+00 (2.9783e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9843711853027344, 'consistency': 0.8781522512435913, 'total_loss': -2.106218934059143}], 'lowest_loss_head': 0, 'lowest_loss': -2.106218934059143}
+New lowest loss on validation set: -2.0735 -> -2.1062
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2776087232154178, 'ARI': 0.1418915303715395, 'NMI': 0.370686278646465, 'ACC Top-5': 0.5493850640294154, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 13), (4, 10), (5, 16), (6, 19), (7, 14), (8, 18), (9, 15), (10, 2), (11, 6), (12, 8), (13, 4), (14, 17), (15, 9), (16, 12), (17, 5), (18, 3), (19, 11)]}
+Checkpoint ...
+[33mEpoch 7/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [6][  0/123]	Total Loss -1.3431e+01 (-1.3431e+01)	Consistency Loss 1.4321e+00 (1.4321e+00)	Entropy 2.9726e+00 (2.9726e+00)
+Epoch: [6][ 25/123]	Total Loss -1.3485e+01 (-1.3484e+01)	Consistency Loss 1.4265e+00 (1.4161e+00)	Entropy 2.9822e+00 (2.9800e+00)
+Epoch: [6][ 50/123]	Total Loss -1.3380e+01 (-1.3475e+01)	Consistency Loss 1.5088e+00 (1.4231e+00)	Entropy 2.9778e+00 (2.9797e+00)
+Epoch: [6][ 75/123]	Total Loss -1.3392e+01 (-1.3475e+01)	Consistency Loss 1.5369e+00 (1.4224e+00)	Entropy 2.9858e+00 (2.9795e+00)
+Epoch: [6][100/123]	Total Loss -1.3426e+01 (-1.3474e+01)	Consistency Loss 1.4833e+00 (1.4203e+00)	Entropy 2.9819e+00 (2.9788e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.97882080078125, 'consistency': 0.850652813911438, 'total_loss': -2.128167986869812}], 'lowest_loss_head': 0, 'lowest_loss': -2.128167986869812}
+New lowest loss on validation set: -2.1062 -> -2.1282
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29783187523773297, 'ARI': 0.1526134181241786, 'NMI': 0.38566246541165, 'ACC Top-5': 0.6292633447445163, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 5), (4, 10), (5, 16), (6, 19), (7, 11), (8, 18), (9, 15), (10, 2), (11, 6), (12, 8), (13, 4), (14, 17), (15, 9), (16, 12), (17, 14), (18, 3), (19, 13)]}
+Checkpoint ...
+[33mEpoch 8/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [7][  0/123]	Total Loss -1.3561e+01 (-1.3561e+01)	Consistency Loss 1.2876e+00 (1.2876e+00)	Entropy 2.9697e+00 (2.9697e+00)
+Epoch: [7][ 25/123]	Total Loss -1.3565e+01 (-1.3494e+01)	Consistency Loss 1.3366e+00 (1.3859e+00)	Entropy 2.9803e+00 (2.9759e+00)
+Epoch: [7][ 50/123]	Total Loss -1.3642e+01 (-1.3494e+01)	Consistency Loss 1.2524e+00 (1.3939e+00)	Entropy 2.9788e+00 (2.9775e+00)
+Epoch: [7][ 75/123]	Total Loss -1.3473e+01 (-1.3492e+01)	Consistency Loss 1.4385e+00 (1.3952e+00)	Entropy 2.9823e+00 (2.9775e+00)
+Epoch: [7][100/123]	Total Loss -1.3564e+01 (-1.3497e+01)	Consistency Loss 1.3438e+00 (1.3904e+00)	Entropy 2.9816e+00 (2.9775e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.982513427734375, 'consistency': 0.8460651636123657, 'total_loss': -2.1364482641220093}], 'lowest_loss_head': 0, 'lowest_loss': -2.1364482641220093}
+New lowest loss on validation set: -2.1282 -> -2.1364
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29510587041967795, 'ARI': 0.15608514823251776, 'NMI': 0.3901262376090892, 'ACC Top-5': 0.5803854444021808, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 18), (5, 1), (6, 19), (7, 10), (8, 6), (9, 15), (10, 2), (11, 3), (12, 8), (13, 4), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 9/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [8][  0/123]	Total Loss -1.3393e+01 (-1.3393e+01)	Consistency Loss 1.5032e+00 (1.5032e+00)	Entropy 2.9793e+00 (2.9793e+00)
+Epoch: [8][ 25/123]	Total Loss -1.3360e+01 (-1.3501e+01)	Consistency Loss 1.4882e+00 (1.3909e+00)	Entropy 2.9696e+00 (2.9784e+00)
+Epoch: [8][ 50/123]	Total Loss -1.3603e+01 (-1.3499e+01)	Consistency Loss 1.2794e+00 (1.3886e+00)	Entropy 2.9764e+00 (2.9775e+00)
+Epoch: [8][ 75/123]	Total Loss -1.3373e+01 (-1.3498e+01)	Consistency Loss 1.4626e+00 (1.3905e+00)	Entropy 2.9672e+00 (2.9777e+00)
+Epoch: [8][100/123]	Total Loss -1.3433e+01 (-1.3499e+01)	Consistency Loss 1.4519e+00 (1.3878e+00)	Entropy 2.9770e+00 (2.9774e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.98317551612854, 'consistency': 0.8349921703338623, 'total_loss': -2.1481833457946777}], 'lowest_loss_head': 0, 'lowest_loss': -2.1481833457946777}
+New lowest loss on validation set: -2.1364 -> -2.1482
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29199949283631293, 'ARI': 0.15135551148009044, 'NMI': 0.3892666786249877, 'ACC Top-5': 0.5491948776467604, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 10), (5, 1), (6, 19), (7, 14), (8, 18), (9, 15), (10, 2), (11, 6), (12, 8), (13, 4), (14, 17), (15, 9), (16, 12), (17, 3), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 10/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [9][  0/123]	Total Loss -1.3582e+01 (-1.3582e+01)	Consistency Loss 1.2989e+00 (1.2989e+00)	Entropy 2.9761e+00 (2.9761e+00)
+Epoch: [9][ 25/123]	Total Loss -1.3569e+01 (-1.3528e+01)	Consistency Loss 1.3321e+00 (1.3563e+00)	Entropy 2.9803e+00 (2.9770e+00)
+Epoch: [9][ 50/123]	Total Loss -1.3477e+01 (-1.3507e+01)	Consistency Loss 1.4192e+00 (1.3779e+00)	Entropy 2.9793e+00 (2.9769e+00)
+Epoch: [9][ 75/123]	Total Loss -1.3623e+01 (-1.3523e+01)	Consistency Loss 1.2377e+00 (1.3656e+00)	Entropy 2.9722e+00 (2.9778e+00)
+Epoch: [9][100/123]	Total Loss -1.3608e+01 (-1.3527e+01)	Consistency Loss 1.3103e+00 (1.3639e+00)	Entropy 2.9836e+00 (2.9783e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9826884269714355, 'consistency': 0.8214088678359985, 'total_loss': -2.161279559135437}], 'lowest_loss_head': 0, 'lowest_loss': -2.161279559135437}
+New lowest loss on validation set: -2.1482 -> -2.1613
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29472549765436795, 'ARI': 0.15303959275585052, 'NMI': 0.390284234419765, 'ACC Top-5': 0.5822239127678458, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 5), (4, 9), (5, 13), (6, 19), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 4), (14, 17), (15, 16), (16, 12), (17, 14), (18, 6), (19, 11)]}
+Checkpoint ...
+[33mEpoch 11/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [10][  0/123]	Total Loss -1.3554e+01 (-1.3554e+01)	Consistency Loss 1.3632e+00 (1.3632e+00)	Entropy 2.9835e+00 (2.9835e+00)
+Epoch: [10][ 25/123]	Total Loss -1.3477e+01 (-1.3528e+01)	Consistency Loss 1.4407e+00 (1.3536e+00)	Entropy 2.9836e+00 (2.9763e+00)
+Epoch: [10][ 50/123]	Total Loss -1.3613e+01 (-1.3535e+01)	Consistency Loss 1.2769e+00 (1.3509e+00)	Entropy 2.9779e+00 (2.9772e+00)
+Epoch: [10][ 75/123]	Total Loss -1.3374e+01 (-1.3537e+01)	Consistency Loss 1.5301e+00 (1.3474e+00)	Entropy 2.9808e+00 (2.9769e+00)
+Epoch: [10][100/123]	Total Loss -1.3516e+01 (-1.3538e+01)	Consistency Loss 1.3602e+00 (1.3463e+00)	Entropy 2.9753e+00 (2.9769e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9841339588165283, 'consistency': 0.8213065266609192, 'total_loss': -2.162827432155609}], 'lowest_loss_head': 0, 'lowest_loss': -2.162827432155609}
+New lowest loss on validation set: -2.1613 -> -2.1628
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29605680233295295, 'ARI': 0.15711047152659713, 'NMI': 0.3927162650618203, 'ACC Top-5': 0.5477367820464055, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 10), (4, 9), (5, 1), (6, 19), (7, 14), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 4), (14, 17), (15, 16), (16, 12), (17, 5), (18, 6), (19, 11)]}
+Checkpoint ...
+[33mEpoch 12/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [11][  0/123]	Total Loss -1.3521e+01 (-1.3521e+01)	Consistency Loss 1.3620e+00 (1.3620e+00)	Entropy 2.9765e+00 (2.9765e+00)
+Epoch: [11][ 25/123]	Total Loss -1.3401e+01 (-1.3548e+01)	Consistency Loss 1.4330e+00 (1.3327e+00)	Entropy 2.9668e+00 (2.9761e+00)
+Epoch: [11][ 50/123]	Total Loss -1.3603e+01 (-1.3544e+01)	Consistency Loss 1.2758e+00 (1.3327e+00)	Entropy 2.9758e+00 (2.9753e+00)
+Epoch: [11][ 75/123]	Total Loss -1.3418e+01 (-1.3534e+01)	Consistency Loss 1.4304e+00 (1.3409e+00)	Entropy 2.9697e+00 (2.9750e+00)
+Epoch: [11][100/123]	Total Loss -1.3435e+01 (-1.3530e+01)	Consistency Loss 1.4067e+00 (1.3465e+00)	Entropy 2.9684e+00 (2.9752e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.987290382385254, 'consistency': 0.8085723519325256, 'total_loss': -2.1787180304527283}], 'lowest_loss_head': 0, 'lowest_loss': -2.1787180304527283}
+New lowest loss on validation set: -2.1628 -> -2.1787
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29199949283631293, 'ARI': 0.15369919885470373, 'NMI': 0.3953128951734071, 'ACC Top-5': 0.6279320400659313, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 13/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [12][  0/123]	Total Loss -1.3594e+01 (-1.3594e+01)	Consistency Loss 1.2808e+00 (1.2808e+00)	Entropy 2.9749e+00 (2.9749e+00)
+Epoch: [12][ 25/123]	Total Loss -1.3558e+01 (-1.3525e+01)	Consistency Loss 1.2984e+00 (1.3494e+00)	Entropy 2.9713e+00 (2.9749e+00)
+Epoch: [12][ 50/123]	Total Loss -1.3469e+01 (-1.3537e+01)	Consistency Loss 1.4234e+00 (1.3400e+00)	Entropy 2.9785e+00 (2.9754e+00)
+Epoch: [12][ 75/123]	Total Loss -1.3581e+01 (-1.3549e+01)	Consistency Loss 1.3481e+00 (1.3304e+00)	Entropy 2.9857e+00 (2.9760e+00)
+Epoch: [12][100/123]	Total Loss -1.3533e+01 (-1.3548e+01)	Consistency Loss 1.3316e+00 (1.3303e+00)	Entropy 2.9729e+00 (2.9756e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.989046096801758, 'consistency': 0.8058101534843445, 'total_loss': -2.1832359433174133}], 'lowest_loss_head': 0, 'lowest_loss': -2.1832359433174133}
+New lowest loss on validation set: -2.1787 -> -2.1832
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29339419297578295, 'ARI': 0.14896523436120784, 'NMI': 0.39278693883663285, 'ACC Top-5': 0.5947762140230759, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 10), (5, 1), (6, 6), (7, 14), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 5), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 14/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [13][  0/123]	Total Loss -1.3517e+01 (-1.3517e+01)	Consistency Loss 1.3923e+00 (1.3923e+00)	Entropy 2.9819e+00 (2.9819e+00)
+Epoch: [13][ 25/123]	Total Loss -1.3496e+01 (-1.3532e+01)	Consistency Loss 1.4117e+00 (1.3446e+00)	Entropy 2.9816e+00 (2.9754e+00)
+Epoch: [13][ 50/123]	Total Loss -1.3645e+01 (-1.3549e+01)	Consistency Loss 1.1894e+00 (1.3309e+00)	Entropy 2.9668e+00 (2.9760e+00)
+Epoch: [13][ 75/123]	Total Loss -1.3442e+01 (-1.3544e+01)	Consistency Loss 1.4646e+00 (1.3357e+00)	Entropy 2.9813e+00 (2.9759e+00)
+Epoch: [13][100/123]	Total Loss -1.3595e+01 (-1.3552e+01)	Consistency Loss 1.2965e+00 (1.3280e+00)	Entropy 2.9783e+00 (2.9759e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9860761165618896, 'consistency': 0.7886714935302734, 'total_loss': -2.197404623031616}], 'lowest_loss_head': 0, 'lowest_loss': -2.197404623031616}
+New lowest loss on validation set: -2.1832 -> -2.1974
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.298465829846583, 'ARI': 0.1515134422085219, 'NMI': 0.3979733515538749, 'ACC Top-5': 0.6328134905540763, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 15/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [14][  0/123]	Total Loss -1.3597e+01 (-1.3597e+01)	Consistency Loss 1.3054e+00 (1.3054e+00)	Entropy 2.9805e+00 (2.9805e+00)
+Epoch: [14][ 25/123]	Total Loss -1.3446e+01 (-1.3569e+01)	Consistency Loss 1.4198e+00 (1.3165e+00)	Entropy 2.9731e+00 (2.9771e+00)
+Epoch: [14][ 50/123]	Total Loss -1.3686e+01 (-1.3573e+01)	Consistency Loss 1.1723e+00 (1.3047e+00)	Entropy 2.9716e+00 (2.9755e+00)
+Epoch: [14][ 75/123]	Total Loss -1.3475e+01 (-1.3574e+01)	Consistency Loss 1.4050e+00 (1.3045e+00)	Entropy 2.9761e+00 (2.9758e+00)
+Epoch: [14][100/123]	Total Loss -1.3467e+01 (-1.3574e+01)	Consistency Loss 1.4763e+00 (1.3065e+00)	Entropy 2.9887e+00 (2.9761e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.982759952545166, 'consistency': 0.7777875065803528, 'total_loss': -2.2049724459648132}], 'lowest_loss_head': 0, 'lowest_loss': -2.2049724459648132}
+New lowest loss on validation set: -2.1974 -> -2.2050
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.296754152402688, 'ARI': 0.15647975601937367, 'NMI': 0.4005360172507387, 'ACC Top-5': 0.6276784582223913, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 16/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [15][  0/123]	Total Loss -1.3561e+01 (-1.3561e+01)	Consistency Loss 1.3217e+00 (1.3217e+00)	Entropy 2.9765e+00 (2.9765e+00)
+Epoch: [15][ 25/123]	Total Loss -1.3526e+01 (-1.3552e+01)	Consistency Loss 1.3416e+00 (1.3214e+00)	Entropy 2.9735e+00 (2.9747e+00)
+Epoch: [15][ 50/123]	Total Loss -1.3673e+01 (-1.3550e+01)	Consistency Loss 1.2677e+00 (1.3276e+00)	Entropy 2.9881e+00 (2.9756e+00)
+Epoch: [15][ 75/123]	Total Loss -1.3377e+01 (-1.3569e+01)	Consistency Loss 1.4117e+00 (1.3085e+00)	Entropy 2.9577e+00 (2.9754e+00)
+Epoch: [15][100/123]	Total Loss -1.3498e+01 (-1.3570e+01)	Consistency Loss 1.4092e+00 (1.3042e+00)	Entropy 2.9814e+00 (2.9748e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.989794969558716, 'consistency': 0.7789801359176636, 'total_loss': -2.2108148336410522}], 'lowest_loss_head': 0, 'lowest_loss': -2.2108148336410522}
+New lowest loss on validation set: -2.2050 -> -2.2108
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2902244199315329, 'ARI': 0.15475665372784683, 'NMI': 0.39489779534659913, 'ACC Top-5': 0.6425129960694814, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 17/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [16][  0/123]	Total Loss -1.3525e+01 (-1.3525e+01)	Consistency Loss 1.3182e+00 (1.3182e+00)	Entropy 2.9687e+00 (2.9687e+00)
+Epoch: [16][ 25/123]	Total Loss -1.3479e+01 (-1.3622e+01)	Consistency Loss 1.3793e+00 (1.2507e+00)	Entropy 2.9717e+00 (2.9746e+00)
+Epoch: [16][ 50/123]	Total Loss -1.3613e+01 (-1.3604e+01)	Consistency Loss 1.2263e+00 (1.2705e+00)	Entropy 2.9679e+00 (2.9748e+00)
+Epoch: [16][ 75/123]	Total Loss -1.3679e+01 (-1.3603e+01)	Consistency Loss 1.2318e+00 (1.2719e+00)	Entropy 2.9821e+00 (2.9750e+00)
+Epoch: [16][100/123]	Total Loss -1.3512e+01 (-1.3600e+01)	Consistency Loss 1.3716e+00 (1.2746e+00)	Entropy 2.9766e+00 (2.9749e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.985907554626465, 'consistency': 0.7745533585548401, 'total_loss': -2.2113541960716248}], 'lowest_loss_head': 0, 'lowest_loss': -2.2113541960716248}
+New lowest loss on validation set: -2.2108 -> -2.2114
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2859135285913529, 'ARI': 0.14288986481832672, 'NMI': 0.3914964688256003, 'ACC Top-5': 0.609357170026626, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 3), (7, 10), (8, 18), (9, 15), (10, 2), (11, 6), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 18/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [17][  0/123]	Total Loss -1.3560e+01 (-1.3560e+01)	Consistency Loss 1.2788e+00 (1.2788e+00)	Entropy 2.9678e+00 (2.9678e+00)
+Epoch: [17][ 25/123]	Total Loss -1.3719e+01 (-1.3589e+01)	Consistency Loss 1.1745e+00 (1.2828e+00)	Entropy 2.9786e+00 (2.9743e+00)
+Epoch: [17][ 50/123]	Total Loss -1.3626e+01 (-1.3591e+01)	Consistency Loss 1.2432e+00 (1.2757e+00)	Entropy 2.9739e+00 (2.9733e+00)
+Epoch: [17][ 75/123]	Total Loss -1.3793e+01 (-1.3590e+01)	Consistency Loss 1.0656e+00 (1.2771e+00)	Entropy 2.9718e+00 (2.9735e+00)
+Epoch: [17][100/123]	Total Loss -1.3590e+01 (-1.3591e+01)	Consistency Loss 1.2744e+00 (1.2765e+00)	Entropy 2.9729e+00 (2.9734e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9837632179260254, 'consistency': 0.7788470983505249, 'total_loss': -2.2049161195755005}], 'lowest_loss_head': 0, 'lowest_loss': -2.2049161195755005}
+No new lowest loss on validation set: -2.2114 -> -2.2049
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2889565107138329, 'ARI': 0.14544835831373676, 'NMI': 0.3935154432144091, 'ACC Top-5': 0.5886902497781159, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 10), (5, 1), (6, 6), (7, 14), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 5), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 19/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [18][  0/123]	Total Loss -1.3544e+01 (-1.3544e+01)	Consistency Loss 1.3760e+00 (1.3760e+00)	Entropy 2.9840e+00 (2.9840e+00)
+Epoch: [18][ 25/123]	Total Loss -1.3828e+01 (-1.3601e+01)	Consistency Loss 1.0561e+00 (1.2609e+00)	Entropy 2.9767e+00 (2.9723e+00)
+Epoch: [18][ 50/123]	Total Loss -1.3652e+01 (-1.3607e+01)	Consistency Loss 1.2267e+00 (1.2587e+00)	Entropy 2.9758e+00 (2.9731e+00)
+Epoch: [18][ 75/123]	Total Loss -1.3728e+01 (-1.3610e+01)	Consistency Loss 1.1093e+00 (1.2548e+00)	Entropy 2.9675e+00 (2.9729e+00)
+Epoch: [18][100/123]	Total Loss -1.3591e+01 (-1.3598e+01)	Consistency Loss 1.3303e+00 (1.2705e+00)	Entropy 2.9842e+00 (2.9737e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9795327186584473, 'consistency': 0.7588399648666382, 'total_loss': -2.220692753791809}], 'lowest_loss_head': 0, 'lowest_loss': -2.220692753791809}
+New lowest loss on validation set: -2.2114 -> -2.2207
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29472549765436795, 'ARI': 0.15703805225998438, 'NMI': 0.3998893168525078, 'ACC Top-5': 0.6430201597565615, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 11), (4, 4), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 5), (18, 16), (19, 14)]}
+Checkpoint ...
+[33mEpoch 20/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [19][  0/123]	Total Loss -1.3665e+01 (-1.3665e+01)	Consistency Loss 1.2028e+00 (1.2028e+00)	Entropy 2.9735e+00 (2.9735e+00)
+Epoch: [19][ 25/123]	Total Loss -1.3588e+01 (-1.3590e+01)	Consistency Loss 1.2814e+00 (1.2885e+00)	Entropy 2.9738e+00 (2.9758e+00)
+Epoch: [19][ 50/123]	Total Loss -1.3645e+01 (-1.3610e+01)	Consistency Loss 1.2570e+00 (1.2696e+00)	Entropy 2.9805e+00 (2.9759e+00)
+Epoch: [19][ 75/123]	Total Loss -1.3417e+01 (-1.3600e+01)	Consistency Loss 1.4298e+00 (1.2749e+00)	Entropy 2.9693e+00 (2.9749e+00)
+Epoch: [19][100/123]	Total Loss -1.3556e+01 (-1.3601e+01)	Consistency Loss 1.3187e+00 (1.2747e+00)	Entropy 2.9750e+00 (2.9751e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.98583984375, 'consistency': 0.759979248046875, 'total_loss': -2.225860595703125}], 'lowest_loss_head': 0, 'lowest_loss': -2.225860595703125}
+New lowest loss on validation set: -2.2207 -> -2.2259
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29554963864587297, 'ARI': 0.15129227344579166, 'NMI': 0.39608860250869876, 'ACC Top-5': 0.6375047546595664, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 21/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [20][  0/123]	Total Loss -1.3592e+01 (-1.3592e+01)	Consistency Loss 1.2806e+00 (1.2806e+00)	Entropy 2.9745e+00 (2.9745e+00)
+Epoch: [20][ 25/123]	Total Loss -1.3775e+01 (-1.3619e+01)	Consistency Loss 1.1413e+00 (1.2591e+00)	Entropy 2.9833e+00 (2.9756e+00)
+Epoch: [20][ 50/123]	Total Loss -1.3640e+01 (-1.3612e+01)	Consistency Loss 1.2510e+00 (1.2653e+00)	Entropy 2.9782e+00 (2.9755e+00)
+Epoch: [20][ 75/123]	Total Loss -1.3585e+01 (-1.3610e+01)	Consistency Loss 1.2661e+00 (1.2654e+00)	Entropy 2.9702e+00 (2.9752e+00)
+Epoch: [20][100/123]	Total Loss -1.3646e+01 (-1.3604e+01)	Consistency Loss 1.2615e+00 (1.2701e+00)	Entropy 2.9816e+00 (2.9748e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.987745523452759, 'consistency': 0.7597881555557251, 'total_loss': -2.2279573678970337}], 'lowest_loss_head': 0, 'lowest_loss': -2.2279573678970337}
+New lowest loss on validation set: -2.2259 -> -2.2280
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.297134525167998, 'ARI': 0.15440973986246334, 'NMI': 0.3970353911826829, 'ACC Top-5': 0.6410549004691264, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 22/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [21][  0/123]	Total Loss -1.3582e+01 (-1.3582e+01)	Consistency Loss 1.3132e+00 (1.3132e+00)	Entropy 2.9790e+00 (2.9790e+00)
+Epoch: [21][ 25/123]	Total Loss -1.3702e+01 (-1.3636e+01)	Consistency Loss 1.1973e+00 (1.2441e+00)	Entropy 2.9798e+00 (2.9761e+00)
+Epoch: [21][ 50/123]	Total Loss -1.3436e+01 (-1.3628e+01)	Consistency Loss 1.3476e+00 (1.2436e+00)	Entropy 2.9567e+00 (2.9742e+00)
+Epoch: [21][ 75/123]	Total Loss -1.3530e+01 (-1.3619e+01)	Consistency Loss 1.2920e+00 (1.2517e+00)	Entropy 2.9645e+00 (2.9742e+00)
+Epoch: [21][100/123]	Total Loss -1.3577e+01 (-1.3621e+01)	Consistency Loss 1.3200e+00 (1.2517e+00)	Entropy 2.9793e+00 (2.9746e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.987852096557617, 'consistency': 0.7563414573669434, 'total_loss': -2.231510639190674}], 'lowest_loss_head': 0, 'lowest_loss': -2.231510639190674}
+New lowest loss on validation set: -2.2280 -> -2.2315
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29935336629897297, 'ARI': 0.14783616332877905, 'NMI': 0.3971644646875169, 'ACC Top-5': 0.6295169265880562, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 23/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [22][  0/123]	Total Loss -1.3551e+01 (-1.3551e+01)	Consistency Loss 1.2072e+00 (1.2072e+00)	Entropy 2.9516e+00 (2.9516e+00)
+Epoch: [22][ 25/123]	Total Loss -1.3653e+01 (-1.3622e+01)	Consistency Loss 1.2360e+00 (1.2484e+00)	Entropy 2.9777e+00 (2.9741e+00)
+Epoch: [22][ 50/123]	Total Loss -1.3619e+01 (-1.3615e+01)	Consistency Loss 1.2918e+00 (1.2602e+00)	Entropy 2.9822e+00 (2.9751e+00)
+Epoch: [22][ 75/123]	Total Loss -1.3672e+01 (-1.3621e+01)	Consistency Loss 1.1577e+00 (1.2498e+00)	Entropy 2.9659e+00 (2.9742e+00)
+Epoch: [22][100/123]	Total Loss -1.3682e+01 (-1.3615e+01)	Consistency Loss 1.1864e+00 (1.2536e+00)	Entropy 2.9736e+00 (2.9737e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.984172821044922, 'consistency': 0.7578206658363342, 'total_loss': -2.2263521552085876}], 'lowest_loss_head': 0, 'lowest_loss': -2.2263521552085876}
+No new lowest loss on validation set: -2.2315 -> -2.2264
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2898440471662229, 'ARI': 0.14290706007053594, 'NMI': 0.3892328471006211, 'ACC Top-5': 0.6195004437682262, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 24/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [23][  0/123]	Total Loss -1.3579e+01 (-1.3579e+01)	Consistency Loss 1.2519e+00 (1.2519e+00)	Entropy 2.9661e+00 (2.9661e+00)
+Epoch: [23][ 25/123]	Total Loss -1.3702e+01 (-1.3631e+01)	Consistency Loss 1.1246e+00 (1.2412e+00)	Entropy 2.9652e+00 (2.9744e+00)
+Epoch: [23][ 50/123]	Total Loss -1.3682e+01 (-1.3627e+01)	Consistency Loss 1.2173e+00 (1.2423e+00)	Entropy 2.9800e+00 (2.9738e+00)
+Epoch: [23][ 75/123]	Total Loss -1.3502e+01 (-1.3618e+01)	Consistency Loss 1.3797e+00 (1.2501e+00)	Entropy 2.9763e+00 (2.9737e+00)
+Epoch: [23][100/123]	Total Loss -1.3711e+01 (-1.3620e+01)	Consistency Loss 1.1795e+00 (1.2493e+00)	Entropy 2.9780e+00 (2.9739e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9900472164154053, 'consistency': 0.7594870328903198, 'total_loss': -2.2305601835250854}], 'lowest_loss_head': 0, 'lowest_loss': -2.2305601835250854}
+No new lowest loss on validation set: -2.2315 -> -2.2306
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2897172562444529, 'ARI': 0.14668907996071914, 'NMI': 0.39254652691753883, 'ACC Top-5': 0.601622923798656, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 10), (5, 1), (6, 6), (7, 14), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 5), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 25/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [24][  0/123]	Total Loss -1.3705e+01 (-1.3705e+01)	Consistency Loss 1.1800e+00 (1.1800e+00)	Entropy 2.9770e+00 (2.9770e+00)
+Epoch: [24][ 25/123]	Total Loss -1.3549e+01 (-1.3645e+01)	Consistency Loss 1.2887e+00 (1.2261e+00)	Entropy 2.9676e+00 (2.9742e+00)
+Epoch: [24][ 50/123]	Total Loss -1.3684e+01 (-1.3640e+01)	Consistency Loss 1.2086e+00 (1.2296e+00)	Entropy 2.9786e+00 (2.9739e+00)
+Epoch: [24][ 75/123]	Total Loss -1.3645e+01 (-1.3634e+01)	Consistency Loss 1.1930e+00 (1.2331e+00)	Entropy 2.9676e+00 (2.9733e+00)
+Epoch: [24][100/123]	Total Loss -1.3670e+01 (-1.3629e+01)	Consistency Loss 1.2143e+00 (1.2357e+00)	Entropy 2.9769e+00 (2.9730e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9819083213806152, 'consistency': 0.7443627715110779, 'total_loss': -2.2375455498695374}], 'lowest_loss_head': 0, 'lowest_loss': -2.2375455498695374}
+New lowest loss on validation set: -2.2315 -> -2.2375
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.28382147838214783, 'ARI': 0.1425669162873893, 'NMI': 0.389563823927926, 'ACC Top-5': 0.6183593254722962, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 26/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [25][  0/123]	Total Loss -1.3591e+01 (-1.3591e+01)	Consistency Loss 1.2978e+00 (1.2978e+00)	Entropy 2.9778e+00 (2.9778e+00)
+Epoch: [25][ 25/123]	Total Loss -1.3696e+01 (-1.3640e+01)	Consistency Loss 1.2311e+00 (1.2260e+00)	Entropy 2.9854e+00 (2.9732e+00)
+Epoch: [25][ 50/123]	Total Loss -1.3574e+01 (-1.3643e+01)	Consistency Loss 1.2955e+00 (1.2270e+00)	Entropy 2.9739e+00 (2.9740e+00)
+Epoch: [25][ 75/123]	Total Loss -1.3624e+01 (-1.3644e+01)	Consistency Loss 1.2692e+00 (1.2301e+00)	Entropy 2.9786e+00 (2.9749e+00)
+Epoch: [25][100/123]	Total Loss -1.3630e+01 (-1.3635e+01)	Consistency Loss 1.2580e+00 (1.2404e+00)	Entropy 2.9777e+00 (2.9751e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.988626003265381, 'consistency': 0.7475141882896423, 'total_loss': -2.2411118149757385}], 'lowest_loss_head': 0, 'lowest_loss': -2.2411118149757385}
+New lowest loss on validation set: -2.2375 -> -2.2411
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.296183593254723, 'ARI': 0.15063834095599513, 'NMI': 0.39493185535194475, 'ACC Top-5': 0.6353493089894764, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 27/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [26][  0/123]	Total Loss -1.3475e+01 (-1.3475e+01)	Consistency Loss 1.3392e+00 (1.3392e+00)	Entropy 2.9628e+00 (2.9628e+00)
+Epoch: [26][ 25/123]	Total Loss -1.3518e+01 (-1.3632e+01)	Consistency Loss 1.3201e+00 (1.2299e+00)	Entropy 2.9676e+00 (2.9723e+00)
+Epoch: [26][ 50/123]	Total Loss -1.3523e+01 (-1.3617e+01)	Consistency Loss 1.3704e+00 (1.2469e+00)	Entropy 2.9787e+00 (2.9729e+00)
+Epoch: [26][ 75/123]	Total Loss -1.3703e+01 (-1.3621e+01)	Consistency Loss 1.1476e+00 (1.2434e+00)	Entropy 2.9701e+00 (2.9729e+00)
+Epoch: [26][100/123]	Total Loss -1.3395e+01 (-1.3629e+01)	Consistency Loss 1.4233e+00 (1.2362e+00)	Entropy 2.9636e+00 (2.9731e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.986515998840332, 'consistency': 0.7487297654151917, 'total_loss': -2.2377862334251404}], 'lowest_loss_head': 0, 'lowest_loss': -2.2377862334251404}
+No new lowest loss on validation set: -2.2411 -> -2.2378
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2883859515658679, 'ARI': 0.14582282071995686, 'NMI': 0.3938389442638105, 'ACC Top-5': 0.5931913275009509, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 10), (5, 1), (6, 5), (7, 14), (8, 18), (9, 15), (10, 2), (11, 6), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 3), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 28/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [27][  0/123]	Total Loss -1.3630e+01 (-1.3630e+01)	Consistency Loss 1.2713e+00 (1.2713e+00)	Entropy 2.9802e+00 (2.9802e+00)
+Epoch: [27][ 25/123]	Total Loss -1.3499e+01 (-1.3665e+01)	Consistency Loss 1.2852e+00 (1.2015e+00)	Entropy 2.9568e+00 (2.9734e+00)
+Epoch: [27][ 50/123]	Total Loss -1.3723e+01 (-1.3650e+01)	Consistency Loss 1.1768e+00 (1.2157e+00)	Entropy 2.9800e+00 (2.9731e+00)
+Epoch: [27][ 75/123]	Total Loss -1.3601e+01 (-1.3654e+01)	Consistency Loss 1.2773e+00 (1.2151e+00)	Entropy 2.9757e+00 (2.9738e+00)
+Epoch: [27][100/123]	Total Loss -1.3653e+01 (-1.3648e+01)	Consistency Loss 1.2182e+00 (1.2230e+00)	Entropy 2.9743e+00 (2.9742e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9889490604400635, 'consistency': 0.7455981373786926, 'total_loss': -2.243350923061371}], 'lowest_loss_head': 0, 'lowest_loss': -2.243350923061371}
+New lowest loss on validation set: -2.2411 -> -2.2434
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2924432610625079, 'ARI': 0.15140870636494255, 'NMI': 0.39796061714983144, 'ACC Top-5': 0.5853302903512109, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 6), (7, 17), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 14), (15, 9), (16, 12), (17, 10), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 29/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [28][  0/123]	Total Loss -1.3634e+01 (-1.3634e+01)	Consistency Loss 1.1775e+00 (1.1775e+00)	Entropy 2.9623e+00 (2.9623e+00)
+Epoch: [28][ 25/123]	Total Loss -1.3518e+01 (-1.3648e+01)	Consistency Loss 1.3359e+00 (1.2216e+00)	Entropy 2.9707e+00 (2.9740e+00)
+Epoch: [28][ 50/123]	Total Loss -1.3584e+01 (-1.3643e+01)	Consistency Loss 1.3149e+00 (1.2299e+00)	Entropy 2.9797e+00 (2.9747e+00)
+Epoch: [28][ 75/123]	Total Loss -1.3580e+01 (-1.3650e+01)	Consistency Loss 1.3233e+00 (1.2235e+00)	Entropy 2.9806e+00 (2.9746e+00)
+Epoch: [28][100/123]	Total Loss -1.3714e+01 (-1.3645e+01)	Consistency Loss 1.0880e+00 (1.2262e+00)	Entropy 2.9605e+00 (2.9742e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.989321708679199, 'consistency': 0.7393889427185059, 'total_loss': -2.2499327659606934}], 'lowest_loss_head': 0, 'lowest_loss': -2.2499327659606934}
+New lowest loss on validation set: -2.2434 -> -2.2499
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2913021427665779, 'ARI': 0.14950484476746842, 'NMI': 0.3967876815727076, 'ACC Top-5': 0.6189298846202612, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 1), (5, 15), (6, 6), (7, 14), (8, 18), (9, 10), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 5), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 30/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [29][  0/123]	Total Loss -1.3684e+01 (-1.3684e+01)	Consistency Loss 1.2165e+00 (1.2165e+00)	Entropy 2.9801e+00 (2.9801e+00)
+Epoch: [29][ 25/123]	Total Loss -1.3554e+01 (-1.3668e+01)	Consistency Loss 1.3162e+00 (1.1997e+00)	Entropy 2.9739e+00 (2.9736e+00)
+Epoch: [29][ 50/123]	Total Loss -1.3697e+01 (-1.3666e+01)	Consistency Loss 1.1904e+00 (1.2027e+00)	Entropy 2.9774e+00 (2.9738e+00)
+Epoch: [29][ 75/123]	Total Loss -1.3752e+01 (-1.3667e+01)	Consistency Loss 1.1600e+00 (1.2038e+00)	Entropy 2.9825e+00 (2.9741e+00)
+Epoch: [29][100/123]	Total Loss -1.3747e+01 (-1.3659e+01)	Consistency Loss 1.1192e+00 (1.2114e+00)	Entropy 2.9732e+00 (2.9740e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.987993001937866, 'consistency': 0.7366845011711121, 'total_loss': -2.251308500766754}], 'lowest_loss_head': 0, 'lowest_loss': -2.251308500766754}
+New lowest loss on validation set: -2.2499 -> -2.2513
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2932674020540129, 'ARI': 0.1500009715685593, 'NMI': 0.39526235857346165, 'ACC Top-5': 0.6289463674400912, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 31/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [30][  0/123]	Total Loss -1.3648e+01 (-1.3648e+01)	Consistency Loss 1.2061e+00 (1.2061e+00)	Entropy 2.9708e+00 (2.9708e+00)
+Epoch: [30][ 25/123]	Total Loss -1.3853e+01 (-1.3638e+01)	Consistency Loss 1.0476e+00 (1.2215e+00)	Entropy 2.9801e+00 (2.9718e+00)
+Epoch: [30][ 50/123]	Total Loss -1.3784e+01 (-1.3643e+01)	Consistency Loss 1.0821e+00 (1.2194e+00)	Entropy 2.9732e+00 (2.9724e+00)
+Epoch: [30][ 75/123]	Total Loss -1.3665e+01 (-1.3635e+01)	Consistency Loss 1.2537e+00 (1.2263e+00)	Entropy 2.9837e+00 (2.9722e+00)
+Epoch: [30][100/123]	Total Loss -1.3826e+01 (-1.3634e+01)	Consistency Loss 1.0875e+00 (1.2295e+00)	Entropy 2.9827e+00 (2.9727e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9891340732574463, 'consistency': 0.7460435628890991, 'total_loss': -2.243090510368347}], 'lowest_loss_head': 0, 'lowest_loss': -2.243090510368347}
+No new lowest loss on validation set: -2.2513 -> -2.2431
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2909217700012679, 'ARI': 0.1466648606583312, 'NMI': 0.39323795701467673, 'ACC Top-5': 0.6112590338531761, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 10), (4, 4), (5, 1), (6, 6), (7, 14), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 5), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 32/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [31][  0/123]	Total Loss -1.3538e+01 (-1.3538e+01)	Consistency Loss 1.3441e+00 (1.3441e+00)	Entropy 2.9764e+00 (2.9764e+00)
+Epoch: [31][ 25/123]	Total Loss -1.3758e+01 (-1.3675e+01)	Consistency Loss 1.1315e+00 (1.1967e+00)	Entropy 2.9778e+00 (2.9744e+00)
+Epoch: [31][ 50/123]	Total Loss -1.3639e+01 (-1.3663e+01)	Consistency Loss 1.2477e+00 (1.2101e+00)	Entropy 2.9773e+00 (2.9747e+00)
+Epoch: [31][ 75/123]	Total Loss -1.3571e+01 (-1.3656e+01)	Consistency Loss 1.2631e+00 (1.2156e+00)	Entropy 2.9668e+00 (2.9743e+00)
+Epoch: [31][100/123]	Total Loss -1.3878e+01 (-1.3660e+01)	Consistency Loss 1.0237e+00 (1.2122e+00)	Entropy 2.9802e+00 (2.9745e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.985105514526367, 'consistency': 0.7349928617477417, 'total_loss': -2.2501126527786255}], 'lowest_loss_head': 0, 'lowest_loss': -2.2501126527786255}
+No new lowest loss on validation set: -2.2513 -> -2.2501
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2911753518448079, 'ARI': 0.14739478479591497, 'NMI': 0.3889903401004811, 'ACC Top-5': 0.5942056548751109, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 5), (4, 4), (5, 15), (6, 6), (7, 17), (8, 18), (9, 10), (10, 2), (11, 3), (12, 8), (13, 19), (14, 14), (15, 9), (16, 12), (17, 13), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 33/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [32][  0/123]	Total Loss -1.3694e+01 (-1.3694e+01)	Consistency Loss 1.1448e+00 (1.1448e+00)	Entropy 2.9678e+00 (2.9678e+00)
+Epoch: [32][ 25/123]	Total Loss -1.3455e+01 (-1.3638e+01)	Consistency Loss 1.3335e+00 (1.2276e+00)	Entropy 2.9576e+00 (2.9732e+00)
+Epoch: [32][ 50/123]	Total Loss -1.3679e+01 (-1.3626e+01)	Consistency Loss 1.1345e+00 (1.2395e+00)	Entropy 2.9628e+00 (2.9731e+00)
+Epoch: [32][ 75/123]	Total Loss -1.3552e+01 (-1.3634e+01)	Consistency Loss 1.2933e+00 (1.2325e+00)	Entropy 2.9690e+00 (2.9734e+00)
+Epoch: [32][100/123]	Total Loss -1.3711e+01 (-1.3640e+01)	Consistency Loss 1.1627e+00 (1.2273e+00)	Entropy 2.9748e+00 (2.9735e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.98429799079895, 'consistency': 0.7264323830604553, 'total_loss': -2.257865607738495}], 'lowest_loss_head': 0, 'lowest_loss': -2.257865607738495}
+New lowest loss on validation set: -2.2513 -> -2.2579
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2934575884366679, 'ARI': 0.15512128173563416, 'NMI': 0.3996320999221612, 'ACC Top-5': 0.6333206542411564, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 34/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [33][  0/123]	Total Loss -1.3592e+01 (-1.3592e+01)	Consistency Loss 1.2409e+00 (1.2409e+00)	Entropy 2.9666e+00 (2.9666e+00)
+Epoch: [33][ 25/123]	Total Loss -1.3687e+01 (-1.3667e+01)	Consistency Loss 1.2444e+00 (1.2041e+00)	Entropy 2.9862e+00 (2.9743e+00)
+Epoch: [33][ 50/123]	Total Loss -1.3635e+01 (-1.3664e+01)	Consistency Loss 1.1173e+00 (1.2061e+00)	Entropy 2.9505e+00 (2.9739e+00)
+Epoch: [33][ 75/123]	Total Loss -1.3608e+01 (-1.3660e+01)	Consistency Loss 1.1742e+00 (1.2102e+00)	Entropy 2.9565e+00 (2.9740e+00)
+Epoch: [33][100/123]	Total Loss -1.3559e+01 (-1.3650e+01)	Consistency Loss 1.3055e+00 (1.2181e+00)	Entropy 2.9728e+00 (2.9736e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9831702709198, 'consistency': 0.7331158518791199, 'total_loss': -2.25005441904068}], 'lowest_loss_head': 0, 'lowest_loss': -2.25005441904068}
+No new lowest loss on validation set: -2.2579 -> -2.2501
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2919360973754279, 'ARI': 0.15825741407342553, 'NMI': 0.39816180370605436, 'ACC Top-5': 0.6326233041714213, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 1), (5, 15), (6, 6), (7, 14), (8, 18), (9, 10), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 5), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 35/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [34][  0/123]	Total Loss -1.3737e+01 (-1.3737e+01)	Consistency Loss 1.1366e+00 (1.1366e+00)	Entropy 2.9748e+00 (2.9748e+00)
+Epoch: [34][ 25/123]	Total Loss -1.3847e+01 (-1.3675e+01)	Consistency Loss 1.0973e+00 (1.2002e+00)	Entropy 2.9889e+00 (2.9751e+00)
+Epoch: [34][ 50/123]	Total Loss -1.3714e+01 (-1.3671e+01)	Consistency Loss 1.1967e+00 (1.1959e+00)	Entropy 2.9822e+00 (2.9734e+00)
+Epoch: [34][ 75/123]	Total Loss -1.3442e+01 (-1.3661e+01)	Consistency Loss 1.3042e+00 (1.2042e+00)	Entropy 2.9493e+00 (2.9730e+00)
+Epoch: [34][100/123]	Total Loss -1.3751e+01 (-1.3661e+01)	Consistency Loss 1.1623e+00 (1.2054e+00)	Entropy 2.9826e+00 (2.9733e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9867825508117676, 'consistency': 0.7191122174263, 'total_loss': -2.2676703333854675}], 'lowest_loss_head': 0, 'lowest_loss': -2.2676703333854675}
+New lowest loss on validation set: -2.2579 -> -2.2677
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29757829339419295, 'ARI': 0.15519988621496908, 'NMI': 0.39709788590264666, 'ACC Top-5': 0.6362368454418663, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 36/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [35][  0/123]	Total Loss -1.3827e+01 (-1.3827e+01)	Consistency Loss 1.0830e+00 (1.0830e+00)	Entropy 2.9820e+00 (2.9820e+00)
+Epoch: [35][ 25/123]	Total Loss -1.3691e+01 (-1.3695e+01)	Consistency Loss 1.1579e+00 (1.1732e+00)	Entropy 2.9698e+00 (2.9736e+00)
+Epoch: [35][ 50/123]	Total Loss -1.3746e+01 (-1.3671e+01)	Consistency Loss 1.1546e+00 (1.1924e+00)	Entropy 2.9800e+00 (2.9728e+00)
+Epoch: [35][ 75/123]	Total Loss -1.3566e+01 (-1.3658e+01)	Consistency Loss 1.3317e+00 (1.2043e+00)	Entropy 2.9795e+00 (2.9725e+00)
+Epoch: [35][100/123]	Total Loss -1.3720e+01 (-1.3666e+01)	Consistency Loss 1.1157e+00 (1.1958e+00)	Entropy 2.9671e+00 (2.9725e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9917678833007812, 'consistency': 0.7366843819618225, 'total_loss': -2.2550835013389587}], 'lowest_loss_head': 0, 'lowest_loss': -2.2550835013389587}
+No new lowest loss on validation set: -2.2677 -> -2.2551
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2900976290097629, 'ARI': 0.14709255121786416, 'NMI': 0.39698040270243856, 'ACC Top-5': 0.6255230125523012, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 1), (4, 4), (5, 15), (6, 3), (7, 5), (8, 18), (9, 10), (10, 2), (11, 6), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 37/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [36][  0/123]	Total Loss -1.3753e+01 (-1.3753e+01)	Consistency Loss 1.1142e+00 (1.1142e+00)	Entropy 2.9734e+00 (2.9734e+00)
+Epoch: [36][ 25/123]	Total Loss -1.3560e+01 (-1.3694e+01)	Consistency Loss 1.3199e+00 (1.1866e+00)	Entropy 2.9759e+00 (2.9761e+00)
+Epoch: [36][ 50/123]	Total Loss -1.3776e+01 (-1.3691e+01)	Consistency Loss 1.1389e+00 (1.1891e+00)	Entropy 2.9830e+00 (2.9760e+00)
+Epoch: [36][ 75/123]	Total Loss -1.3788e+01 (-1.3695e+01)	Consistency Loss 1.0964e+00 (1.1830e+00)	Entropy 2.9769e+00 (2.9756e+00)
+Epoch: [36][100/123]	Total Loss -1.3771e+01 (-1.3690e+01)	Consistency Loss 1.1379e+00 (1.1875e+00)	Entropy 2.9817e+00 (2.9755e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9858040809631348, 'consistency': 0.7285119891166687, 'total_loss': -2.257292091846466}], 'lowest_loss_head': 0, 'lowest_loss': -2.257292091846466}
+No new lowest loss on validation set: -2.2677 -> -2.2573
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2905413972359579, 'ARI': 0.15280774885819104, 'NMI': 0.3990271384856363, 'ACC Top-5': 0.6316089767972614, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 1), (5, 15), (6, 6), (7, 5), (8, 18), (9, 10), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 38/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [37][  0/123]	Total Loss -1.3744e+01 (-1.3744e+01)	Consistency Loss 1.1681e+00 (1.1681e+00)	Entropy 2.9824e+00 (2.9824e+00)
+Epoch: [37][ 25/123]	Total Loss -1.3791e+01 (-1.3683e+01)	Consistency Loss 1.1152e+00 (1.1867e+00)	Entropy 2.9813e+00 (2.9739e+00)
+Epoch: [37][ 50/123]	Total Loss -1.3683e+01 (-1.3677e+01)	Consistency Loss 1.2011e+00 (1.1902e+00)	Entropy 2.9768e+00 (2.9735e+00)
+Epoch: [37][ 75/123]	Total Loss -1.3782e+01 (-1.3665e+01)	Consistency Loss 1.1368e+00 (1.2044e+00)	Entropy 2.9838e+00 (2.9739e+00)
+Epoch: [37][100/123]	Total Loss -1.3794e+01 (-1.3672e+01)	Consistency Loss 1.1224e+00 (1.1963e+00)	Entropy 2.9833e+00 (2.9736e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9895524978637695, 'consistency': 0.7285082936286926, 'total_loss': -2.261044204235077}], 'lowest_loss_head': 0, 'lowest_loss': -2.261044204235077}
+No new lowest loss on validation set: -2.2677 -> -2.2610
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2911119563839229, 'ARI': 0.14973633422421512, 'NMI': 0.39333741893750934, 'ACC Top-5': 0.6246988715607963, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 3), (7, 10), (8, 18), (9, 15), (10, 2), (11, 6), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 39/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [38][  0/123]	Total Loss -1.3670e+01 (-1.3670e+01)	Consistency Loss 1.1872e+00 (1.1872e+00)	Entropy 2.9714e+00 (2.9714e+00)
+Epoch: [38][ 25/123]	Total Loss -1.3555e+01 (-1.3663e+01)	Consistency Loss 1.3334e+00 (1.2157e+00)	Entropy 2.9776e+00 (2.9758e+00)
+Epoch: [38][ 50/123]	Total Loss -1.3817e+01 (-1.3666e+01)	Consistency Loss 1.0976e+00 (1.2097e+00)	Entropy 2.9828e+00 (2.9752e+00)
+Epoch: [38][ 75/123]	Total Loss -1.3752e+01 (-1.3669e+01)	Consistency Loss 1.1165e+00 (1.2030e+00)	Entropy 2.9737e+00 (2.9744e+00)
+Epoch: [38][100/123]	Total Loss -1.3661e+01 (-1.3665e+01)	Consistency Loss 1.1875e+00 (1.2031e+00)	Entropy 2.9696e+00 (2.9737e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9854273796081543, 'consistency': 0.7279072403907776, 'total_loss': -2.2575201392173767}], 'lowest_loss_head': 0, 'lowest_loss': -2.2575201392173767}
+No new lowest loss on validation set: -2.2677 -> -2.2575
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.299797134525168, 'ARI': 0.1538289393983594, 'NMI': 0.39726028786006834, 'ACC Top-5': 0.6418156459997464, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 40/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [39][  0/123]	Total Loss -1.3615e+01 (-1.3615e+01)	Consistency Loss 1.1897e+00 (1.1897e+00)	Entropy 2.9609e+00 (2.9609e+00)
+Epoch: [39][ 25/123]	Total Loss -1.3761e+01 (-1.3680e+01)	Consistency Loss 1.1258e+00 (1.1916e+00)	Entropy 2.9773e+00 (2.9743e+00)
+Epoch: [39][ 50/123]	Total Loss -1.3737e+01 (-1.3683e+01)	Consistency Loss 1.1895e+00 (1.1890e+00)	Entropy 2.9854e+00 (2.9745e+00)
+Epoch: [39][ 75/123]	Total Loss -1.3608e+01 (-1.3672e+01)	Consistency Loss 1.2042e+00 (1.1967e+00)	Entropy 2.9624e+00 (2.9738e+00)
+Epoch: [39][100/123]	Total Loss -1.3777e+01 (-1.3675e+01)	Consistency Loss 1.1058e+00 (1.1943e+00)	Entropy 2.9765e+00 (2.9739e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.987713575363159, 'consistency': 0.7219139337539673, 'total_loss': -2.265799641609192}], 'lowest_loss_head': 0, 'lowest_loss': -2.265799641609192}
+No new lowest loss on validation set: -2.2677 -> -2.2658
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2914923291492329, 'ARI': 0.14990184145760527, 'NMI': 0.39523697622150256, 'ACC Top-5': 0.6668568530493216, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 4), (4, 5), (5, 15), (6, 6), (7, 11), (8, 18), (9, 10), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 13)]}
+Checkpoint ...
+[33mEpoch 41/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [40][  0/123]	Total Loss -1.3754e+01 (-1.3754e+01)	Consistency Loss 1.0862e+00 (1.0862e+00)	Entropy 2.9679e+00 (2.9679e+00)
+Epoch: [40][ 25/123]	Total Loss -1.3540e+01 (-1.3683e+01)	Consistency Loss 1.3269e+00 (1.1828e+00)	Entropy 2.9735e+00 (2.9732e+00)
+Epoch: [40][ 50/123]	Total Loss -1.3681e+01 (-1.3675e+01)	Consistency Loss 1.1951e+00 (1.1906e+00)	Entropy 2.9752e+00 (2.9730e+00)
+Epoch: [40][ 75/123]	Total Loss -1.3708e+01 (-1.3684e+01)	Consistency Loss 1.1787e+00 (1.1807e+00)	Entropy 2.9773e+00 (2.9729e+00)
+Epoch: [40][100/123]	Total Loss -1.3664e+01 (-1.3684e+01)	Consistency Loss 1.1744e+00 (1.1832e+00)	Entropy 2.9676e+00 (2.9734e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9847888946533203, 'consistency': 0.7263861894607544, 'total_loss': -2.258402705192566}], 'lowest_loss_head': 0, 'lowest_loss': -2.258402705192566}
+No new lowest loss on validation set: -2.2677 -> -2.2584
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2905413972359579, 'ARI': 0.15152765238078403, 'NMI': 0.3954580837394158, 'ACC Top-5': 0.6468872828705464, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 5), (4, 4), (5, 15), (6, 3), (7, 11), (8, 18), (9, 10), (10, 2), (11, 6), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 13)]}
+Checkpoint ...
+[33mEpoch 42/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [41][  0/123]	Total Loss -1.3470e+01 (-1.3470e+01)	Consistency Loss 1.3491e+00 (1.3491e+00)	Entropy 2.9638e+00 (2.9638e+00)
+Epoch: [41][ 25/123]	Total Loss -1.3771e+01 (-1.3702e+01)	Consistency Loss 1.1398e+00 (1.1705e+00)	Entropy 2.9822e+00 (2.9744e+00)
+Epoch: [41][ 50/123]	Total Loss -1.3739e+01 (-1.3707e+01)	Consistency Loss 1.1396e+00 (1.1715e+00)	Entropy 2.9758e+00 (2.9758e+00)
+Epoch: [41][ 75/123]	Total Loss -1.3552e+01 (-1.3694e+01)	Consistency Loss 1.2502e+00 (1.1824e+00)	Entropy 2.9604e+00 (2.9753e+00)
+Epoch: [41][100/123]	Total Loss -1.3655e+01 (-1.3684e+01)	Consistency Loss 1.2665e+00 (1.1905e+00)	Entropy 2.9842e+00 (2.9749e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9863600730895996, 'consistency': 0.7203479409217834, 'total_loss': -2.266012132167816}], 'lowest_loss_head': 0, 'lowest_loss': -2.266012132167816}
+No new lowest loss on validation set: -2.2677 -> -2.2660
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.29510587041967795, 'ARI': 0.14865961536861602, 'NMI': 0.39106846500350734, 'ACC Top-5': 0.5852034994294408, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 10), (5, 1), (6, 6), (7, 17), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 14), (15, 9), (16, 12), (17, 5), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 43/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [42][  0/123]	Total Loss -1.3762e+01 (-1.3762e+01)	Consistency Loss 1.1074e+00 (1.1074e+00)	Entropy 2.9740e+00 (2.9740e+00)
+Epoch: [42][ 25/123]	Total Loss -1.3532e+01 (-1.3680e+01)	Consistency Loss 1.3550e+00 (1.1861e+00)	Entropy 2.9774e+00 (2.9733e+00)
+Epoch: [42][ 50/123]	Total Loss -1.3627e+01 (-1.3674e+01)	Consistency Loss 1.2612e+00 (1.1938e+00)	Entropy 2.9777e+00 (2.9735e+00)
+Epoch: [42][ 75/123]	Total Loss -1.3637e+01 (-1.3682e+01)	Consistency Loss 1.2983e+00 (1.1880e+00)	Entropy 2.9870e+00 (2.9739e+00)
+Epoch: [42][100/123]	Total Loss -1.3698e+01 (-1.3670e+01)	Consistency Loss 1.2319e+00 (1.2008e+00)	Entropy 2.9860e+00 (2.9741e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.985917091369629, 'consistency': 0.7217010259628296, 'total_loss': -2.2642160654067993}], 'lowest_loss_head': 0, 'lowest_loss': -2.2642160654067993}
+No new lowest loss on validation set: -2.2677 -> -2.2642
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2925066565233929, 'ARI': 0.15124425080076756, 'NMI': 0.3898438056019637, 'ACC Top-5': 0.6336376315455813, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 5), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 44/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [43][  0/123]	Total Loss -1.3749e+01 (-1.3749e+01)	Consistency Loss 1.1571e+00 (1.1571e+00)	Entropy 2.9812e+00 (2.9812e+00)
+Epoch: [43][ 25/123]	Total Loss -1.3673e+01 (-1.3660e+01)	Consistency Loss 1.2033e+00 (1.2038e+00)	Entropy 2.9753e+00 (2.9727e+00)
+Epoch: [43][ 50/123]	Total Loss -1.3678e+01 (-1.3666e+01)	Consistency Loss 1.1892e+00 (1.1990e+00)	Entropy 2.9734e+00 (2.9729e+00)
+Epoch: [43][ 75/123]	Total Loss -1.3708e+01 (-1.3677e+01)	Consistency Loss 1.1454e+00 (1.1878e+00)	Entropy 2.9706e+00 (2.9729e+00)
+Epoch: [43][100/123]	Total Loss -1.3894e+01 (-1.3677e+01)	Consistency Loss 9.5322e-01 (1.1862e+00)	Entropy 2.9695e+00 (2.9727e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.991633653640747, 'consistency': 0.7206481695175171, 'total_loss': -2.27098548412323}], 'lowest_loss_head': 0, 'lowest_loss': -2.27098548412323}
+New lowest loss on validation set: -2.2677 -> -2.2710
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.28851274248763786, 'ARI': 0.14837878791187709, 'NMI': 0.39422580952663405, 'ACC Top-5': 0.6259033853176112, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 5), (4, 4), (5, 15), (6, 6), (7, 14), (8, 18), (9, 10), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 13), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 45/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [44][  0/123]	Total Loss -1.3699e+01 (-1.3699e+01)	Consistency Loss 1.1998e+00 (1.1998e+00)	Entropy 2.9797e+00 (2.9797e+00)
+Epoch: [44][ 25/123]	Total Loss -1.3629e+01 (-1.3660e+01)	Consistency Loss 1.2236e+00 (1.2030e+00)	Entropy 2.9704e+00 (2.9725e+00)
+Epoch: [44][ 50/123]	Total Loss -1.3611e+01 (-1.3666e+01)	Consistency Loss 1.2629e+00 (1.2025e+00)	Entropy 2.9747e+00 (2.9736e+00)
+Epoch: [44][ 75/123]	Total Loss -1.3693e+01 (-1.3677e+01)	Consistency Loss 1.2091e+00 (1.1932e+00)	Entropy 2.9805e+00 (2.9740e+00)
+Epoch: [44][100/123]	Total Loss -1.3622e+01 (-1.3678e+01)	Consistency Loss 1.2806e+00 (1.1938e+00)	Entropy 2.9805e+00 (2.9743e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.985757827758789, 'consistency': 0.7119510769844055, 'total_loss': -2.2738067507743835}], 'lowest_loss_head': 0, 'lowest_loss': -2.2738067507743835}
+New lowest loss on validation set: -2.2710 -> -2.2738
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2922530746798529, 'ARI': 0.14909131364113404, 'NMI': 0.3935881151720552, 'ACC Top-5': 0.5668822112336757, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 6), (7, 17), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 14), (15, 9), (16, 12), (17, 10), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 46/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [45][  0/123]	Total Loss -1.3672e+01 (-1.3672e+01)	Consistency Loss 1.2076e+00 (1.2076e+00)	Entropy 2.9760e+00 (2.9760e+00)
+Epoch: [45][ 25/123]	Total Loss -1.3603e+01 (-1.3704e+01)	Consistency Loss 1.2482e+00 (1.1675e+00)	Entropy 2.9703e+00 (2.9743e+00)
+Epoch: [45][ 50/123]	Total Loss -1.3652e+01 (-1.3698e+01)	Consistency Loss 1.1915e+00 (1.1681e+00)	Entropy 2.9686e+00 (2.9732e+00)
+Epoch: [45][ 75/123]	Total Loss -1.3764e+01 (-1.3698e+01)	Consistency Loss 1.0739e+00 (1.1677e+00)	Entropy 2.9675e+00 (2.9731e+00)
+Epoch: [45][100/123]	Total Loss -1.3522e+01 (-1.3682e+01)	Consistency Loss 1.3607e+00 (1.1822e+00)	Entropy 2.9766e+00 (2.9728e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.989103078842163, 'consistency': 0.7181611061096191, 'total_loss': -2.270941972732544}], 'lowest_loss_head': 0, 'lowest_loss': -2.270941972732544}
+No new lowest loss on validation set: -2.2738 -> -2.2709
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.28401166476480283, 'ARI': 0.14543616950001112, 'NMI': 0.39104402954508793, 'ACC Top-5': 0.6364270318245213, 'hungarian_match': [(0, 7), (1, 0), (2, 1), (3, 5), (4, 4), (5, 15), (6, 3), (7, 11), (8, 18), (9, 10), (10, 2), (11, 6), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 13)]}
+Checkpoint ...
+[33mEpoch 47/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [46][  0/123]	Total Loss -1.3628e+01 (-1.3628e+01)	Consistency Loss 1.2773e+00 (1.2773e+00)	Entropy 2.9811e+00 (2.9811e+00)
+Epoch: [46][ 25/123]	Total Loss -1.3501e+01 (-1.3660e+01)	Consistency Loss 1.2757e+00 (1.2024e+00)	Entropy 2.9553e+00 (2.9724e+00)
+Epoch: [46][ 50/123]	Total Loss -1.3854e+01 (-1.3682e+01)	Consistency Loss 1.0400e+00 (1.1817e+00)	Entropy 2.9788e+00 (2.9727e+00)
+Epoch: [46][ 75/123]	Total Loss -1.3668e+01 (-1.3671e+01)	Consistency Loss 1.2066e+00 (1.1920e+00)	Entropy 2.9749e+00 (2.9727e+00)
+Epoch: [46][100/123]	Total Loss -1.3663e+01 (-1.3674e+01)	Consistency Loss 1.2371e+00 (1.1905e+00)	Entropy 2.9799e+00 (2.9730e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.986452102661133, 'consistency': 0.7119555473327637, 'total_loss': -2.274496555328369}], 'lowest_loss_head': 0, 'lowest_loss': -2.274496555328369}
+New lowest loss on validation set: -2.2738 -> -2.2745
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2918727019145429, 'ARI': 0.15121534208032966, 'NMI': 0.3968534980429221, 'ACC Top-5': 0.6254596170914163, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 48/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [47][  0/123]	Total Loss -1.3770e+01 (-1.3770e+01)	Consistency Loss 1.0791e+00 (1.0791e+00)	Entropy 2.9698e+00 (2.9698e+00)
+Epoch: [47][ 25/123]	Total Loss -1.3572e+01 (-1.3723e+01)	Consistency Loss 1.2910e+00 (1.1435e+00)	Entropy 2.9726e+00 (2.9734e+00)
+Epoch: [47][ 50/123]	Total Loss -1.3684e+01 (-1.3695e+01)	Consistency Loss 1.1777e+00 (1.1677e+00)	Entropy 2.9724e+00 (2.9725e+00)
+Epoch: [47][ 75/123]	Total Loss -1.3423e+01 (-1.3693e+01)	Consistency Loss 1.4095e+00 (1.1727e+00)	Entropy 2.9665e+00 (2.9731e+00)
+Epoch: [47][100/123]	Total Loss -1.3742e+01 (-1.3689e+01)	Consistency Loss 1.1459e+00 (1.1755e+00)	Entropy 2.9776e+00 (2.9729e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9867448806762695, 'consistency': 0.7187405824661255, 'total_loss': -2.268004298210144}], 'lowest_loss_head': 0, 'lowest_loss': -2.268004298210144}
+No new lowest loss on validation set: -2.2745 -> -2.2680
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.2892100925573729, 'ARI': 0.14565689913394853, 'NMI': 0.39014920927788005, 'ACC Top-5': 0.5613668061366807, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 6), (7, 17), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 14), (15, 9), (16, 12), (17, 10), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 49/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [48][  0/123]	Total Loss -1.3699e+01 (-1.3699e+01)	Consistency Loss 1.2212e+00 (1.2212e+00)	Entropy 2.9839e+00 (2.9839e+00)
+Epoch: [48][ 25/123]	Total Loss -1.3757e+01 (-1.3658e+01)	Consistency Loss 1.1390e+00 (1.2037e+00)	Entropy 2.9792e+00 (2.9723e+00)
+Epoch: [48][ 50/123]	Total Loss -1.3699e+01 (-1.3668e+01)	Consistency Loss 1.2101e+00 (1.1975e+00)	Entropy 2.9817e+00 (2.9730e+00)
+Epoch: [48][ 75/123]	Total Loss -1.3533e+01 (-1.3677e+01)	Consistency Loss 1.3623e+00 (1.1927e+00)	Entropy 2.9790e+00 (2.9739e+00)
+Epoch: [48][100/123]	Total Loss -1.3692e+01 (-1.3675e+01)	Consistency Loss 1.1520e+00 (1.1901e+00)	Entropy 2.9689e+00 (2.9731e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9855639934539795, 'consistency': 0.7178822159767151, 'total_loss': -2.2676817774772644}], 'lowest_loss_head': 0, 'lowest_loss': -2.2676817774772644}
+No new lowest loss on validation set: -2.2745 -> -2.2677
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.28794218333967286, 'ARI': 0.1428571790449959, 'NMI': 0.3899128972959372, 'ACC Top-5': 0.5787371624191708, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 4), (4, 1), (5, 15), (6, 6), (7, 17), (8, 18), (9, 10), (10, 2), (11, 3), (12, 8), (13, 19), (14, 14), (15, 9), (16, 12), (17, 5), (18, 16), (19, 11)]}
+Checkpoint ...
+[33mEpoch 50/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [49][  0/123]	Total Loss -1.3670e+01 (-1.3670e+01)	Consistency Loss 1.2209e+00 (1.2209e+00)	Entropy 2.9782e+00 (2.9782e+00)
+Epoch: [49][ 25/123]	Total Loss -1.3569e+01 (-1.3698e+01)	Consistency Loss 1.2783e+00 (1.1818e+00)	Entropy 2.9695e+00 (2.9760e+00)
+Epoch: [49][ 50/123]	Total Loss -1.3747e+01 (-1.3705e+01)	Consistency Loss 1.1576e+00 (1.1712e+00)	Entropy 2.9809e+00 (2.9753e+00)
+Epoch: [49][ 75/123]	Total Loss -1.3626e+01 (-1.3703e+01)	Consistency Loss 1.2493e+00 (1.1743e+00)	Entropy 2.9750e+00 (2.9754e+00)
+Epoch: [49][100/123]	Total Loss -1.3601e+01 (-1.3701e+01)	Consistency Loss 1.2566e+00 (1.1739e+00)	Entropy 2.9715e+00 (2.9749e+00)
+Make prediction on validation set ...
+Evaluate based on SCAN loss ...
+{'scan': [{'entropy': 2.9865803718566895, 'consistency': 0.7134456038475037, 'total_loss': -2.273134768009186}], 'lowest_loss_head': 0, 'lowest_loss': -2.273134768009186}
+No new lowest loss on validation set: -2.2745 -> -2.2731
+Lowest loss head is 0
+Evaluate with hungarian matching algorithm ...
+{'ACC': 0.28540636490427285, 'ARI': 0.14167074886026268, 'NMI': 0.3881936291775864, 'ACC Top-5': 0.6063775833650311, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 6), (7, 14), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 10), (18, 16), (19, 11)]}
+Checkpoint ...
+[34mEvaluate best model based on SCAN metric at the end[0m
+torch.Size([15774])
+torch.Size([15774])
+{'ACC': 0.2918727019145429, 'ARI': 0.15121534208032966, 'NMI': 0.3968534980429221, 'ACC Top-5': 0.6254596170914163, 'hungarian_match': [(0, 7), (1, 0), (2, 13), (3, 5), (4, 4), (5, 1), (6, 6), (7, 10), (8, 18), (9, 15), (10, 2), (11, 3), (12, 8), (13, 19), (14, 17), (15, 9), (16, 12), (17, 14), (18, 16), (19, 11)]}
