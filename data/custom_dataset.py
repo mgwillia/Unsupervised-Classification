@@ -166,7 +166,7 @@ class SCANCDataset(Dataset):
 
         random_index = random.choice(range(len(self.medoid_indices)))
         random_medoid_index = self.medoid_indices[random_index]
-        random_medoid_image = self.dataset.__getitem__(random_medoid_index)
+        random_medoid = self.dataset.__getitem__(random_medoid_index)
 
         anchor['image'] = self.anchor_transform(anchor['image'])
         neighbor['image'] = self.neighbor_transform(neighbor['image'])
@@ -175,7 +175,7 @@ class SCANCDataset(Dataset):
         output['neighbor'] = neighbor['image']
         output['possible_neighbors'] = torch.from_numpy(self.neighbor_indices[index])
         output['target'] = anchor['target']
-        output['random_medoid_image'] = random_medoid_image
+        output['random_medoid_image'] = random_medoid['image']
         output['random_medoid_label'] = random_index
         
         return output

@@ -47,7 +47,7 @@ optimizer_kwargs:
    lr: 0.0001
    weight_decay: 0.0001
 epochs: 50
-batch_size: 128
+batch_size: 128 #TODO: probably change to 64 if memroy doesn't work
 num_workers: 8
 
 # Scheduler
