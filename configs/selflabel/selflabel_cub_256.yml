@@ -17,13 +17,14 @@ backbone: resnet50
 num_heads: 1
 
 # Dataset
-train_db_name: cub
-val_db_name: cub
+train_db_name: cub-256
+val_db_name: cub-256
 num_classes: 200
 
 # Transformations
-augmentation_strategy: ours 
+augmentation_strategy: cub 
 augmentation_kwargs:
+   resize: 256
    crop_size: 224
    normalize:
       mean: [0.485, 0.456, 0.406]
@@ -35,6 +36,7 @@ augmentation_kwargs:
      random: True
 
 transformation_kwargs:
+   resize: 256
    crop_size: 224
    normalize:
       mean: [0.485, 0.456, 0.406]

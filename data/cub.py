@@ -21,7 +21,11 @@ class CUB(Dataset):
         self.transform = transform
         self.train = train
         self.imgNames = []
-        self.classNames = []
+        self.classes = []
+
+        with open(root + 'classes.txt', 'r') as classesFile:
+            for line in classesFile.readline():
+                self.classes.append(line.strip().split(' ')[1].split('.')[1])
 
         isTrainList = []
         with open(root + 'train_test_split.txt', 'r') as splitFile:
