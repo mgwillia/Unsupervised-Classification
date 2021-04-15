@@ -23,7 +23,11 @@ def get_criterion(p):
 
     elif p['criterion'] == 'scanf':
         from losses.losses import SCANFLoss
-        criterion = SCANFLoss()#**p['criterion_kwargs'])
+        criterion = SCANFLoss(**p['criterion_kwargs'])
+
+    elif p['criterion'] == 'scanc':
+        from losses.losses import SCANCLoss
+        criterion = SCANCLoss(**p['criterion_kwargs'])
 
     elif p['criterion'] == 'confidence-cross-entropy':
         from losses.losses import ConfidenceBasedCE
