@@ -53,8 +53,6 @@ class NeighborsDataset(Dataset):
         else:
             self.anchor_transform = transform
             self.neighbor_transform = transform
-
-        print('anchor transform', self.anchor_transform)
        
         dataset.transform = None
         self.dataset = dataset
