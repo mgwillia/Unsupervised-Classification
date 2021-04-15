@@ -310,6 +310,7 @@ def get_train_transformations(p):
 
 
 def get_val_transformations(p):
+    print(p)
     if p['augmentation_strategy'] == 'cub':
         transforms.Compose([
             transforms.Resize((p['transformation_kwargs']['resize'],p['transformation_kwargs']['resize'])),
