@@ -171,12 +171,20 @@ class SCANCDataset(Dataset):
         anchor['image'] = self.anchor_transform(anchor['image'])
         neighbor['image'] = self.neighbor_transform(neighbor['image'])
 
+
         output['anchor'] = anchor['image']
         output['neighbor'] = neighbor['image']
         output['possible_neighbors'] = torch.from_numpy(self.neighbor_indices[index])
         output['target'] = anchor['target']
         output['random_medoid_image'] = random_medoid['image']
         output['random_medoid_label'] = random_index
+
+        print(type(output['anchor']))
+        print(type(output['neighbor']))
+        print(type(output['possible_neighbors']))
+        print(type(output['target']))
+        print(type(output['random_medoid_image']))
+        print(type(output['random_medoid_label']))
         
         return output
 
