@@ -11,4 +11,4 @@
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python scanc.py --config_env configs/env.yml --config_exp configs/scan/scanc_cub.yml --mode train"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python scanc.py --config_env configs/env.yml --config_exp configs/scanc/scanc_cub.yml --mode train"
