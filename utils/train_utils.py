@@ -167,6 +167,70 @@ def scanc_train(train_loader, model, criterion, optimizer, epoch, update_cluster
     total_losses = AverageMeter('Total Loss', ':.4e')
     consistency_losses = AverageMeter('Consistency Loss', ':.4e')
     entropy_losses = AverageMeter('Entropy', ':.4e')
+    medoid_losses = AverageMeter('Medoid Loss', ':.4e')
+    progress = ProgressMeter(len(train_loader),
+        [total_losses, consistency_losses, entropy_losses, medoid_losses],
+        prefix="Epoch: [{}]".format(epoch))
+
+    if update_cluster_head_only:
+        model.eval() # No need to update BN
+    else:
+        model.train() # Update BN
+
+    for i, batch in enumerate(train_loader):
+        # Forward pass
+        anchors = batch['anchor'].cuda(non_blocking=True)
+        neighbors = batch['neighbor'].cuda(non_blocking=True)
+        medoids = batch['random_medoid_image'].cuda(non_blocking=True)
+        medoid_labels = batch['random_medoid_label'].cuda(non_blocking=True)
+       
+        if update_cluster_head_only: # Only calculate gradient for backprop of linear layer
+            with torch.no_grad():
+                anchors_features = model(anchors, forward_pass='backbone')
+                neighbors_features = model(neighbors, forward_pass='backbone')
+                medoids_features = model(medoids, forward_pass='backbone')
+            anchors_output = model(anchors_features, forward_pass='head')
+            neighbors_output = model(neighbors_features, forward_pass='head')
+            medoids_output = model(medoids_features, forward_pass='head')
+
+        else: # Calculate gradient for backprop of complete network
+            anchors_output = model(anchors)
+            neighbors_output = model(neighbors)
+            medoids_output = model(medoids)
+
+        # Loss for every head
+        total_loss, consistency_loss, entropy_loss, medoid_loss = [], [], [], []
+        for anchors_output_subhead, neighbors_output_subhead, medoids_output_subhead in zip(anchors_output, neighbors_output, medoids_output):
+            total_loss_, consistency_loss_, entropy_loss_, medoid_loss_ = criterion(anchors_output_subhead, neighbors_output_subhead, medoids_output_subhead, medoid_labels)
+            total_loss.append(total_loss_)
+            consistency_loss.append(consistency_loss_)
+            entropy_loss.append(entropy_loss_)
+            medoid_loss.append(medoid_loss_)
+
+        # Register the mean loss and backprop the total loss to cover all subheads
+        total_losses.update(np.mean([v.item() for v in total_loss]))
+        consistency_losses.update(np.mean([v.item() for v in consistency_loss]))
+        entropy_losses.update(np.mean([v.item() for v in entropy_loss]))
+        medoid_losses.update(np.mean([v.item() for v in medoid_loss]))
+
+        total_loss = torch.sum(torch.stack(total_loss, dim=0))
+
+        optimizer.zero_grad()
+        total_loss.backward()
+        optimizer.step()
+
+        if i % 25 == 0:
+            progress.display(i)
+
+
+
+def old_scanc_train(train_loader, model, criterion, optimizer, epoch, update_cluster_head_only=False):
+    """ 
+    Train w/ SCAN-Loss
+    """
+    total_losses = AverageMeter('Total Loss', ':.4e')
+    consistency_losses = AverageMeter('Consistency Loss', ':.4e')
+    entropy_losses = AverageMeter('Entropy', ':.4e')
     progress = ProgressMeter(len(train_loader),
         [total_losses, consistency_losses, entropy_losses],
         prefix="Epoch: [{}]".format(epoch))

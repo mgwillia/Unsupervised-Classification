@@ -164,8 +164,49 @@ class SCANFLoss(nn.Module):
 
 
 class SCANCLoss(nn.Module):
-    def __init__(self, entropy_weight = 2.0):
+    def __init__(self, entropy_weight = 2.0, medoid_weight = 0.1):
         super(SCANCLoss, self).__init__()
+        self.softmax = nn.Softmax(dim = 1)
+        self.bce = nn.BCELoss()
+        self.entropy_weight = entropy_weight # Default = 2.0
+        self.medoid_weight = medoid_weight
+
+
+    def forward(self, anchors, neighbors, medoids, medoid_labels):
+        """
+        input:
+            - anchors: logits for anchor images w/ shape [b, num_classes]
+            - neighbors: logits for neighbor images w/ shape [b, num_classes]
+
+        output:
+            - Loss
+        """
+
+        # Softmax
+        b, n = anchors.size()
+        anchors_prob = self.softmax(anchors)
+        neighbors_prob = self.softmax(neighbors)
+       
+        # Similarity in output space
+        similarity = torch.bmm(anchors_prob.view(b, 1, n), neighbors_prob.view(b, n, 1)).squeeze()
+        ones = torch.ones_like(similarity)
+        consistency_loss = self.bce(similarity, ones)
+
+        # Medoid loss
+        medoid_loss = F.cross_entropy(medoids, medoid_labels) * self.medoid_weight
+        
+        #Entropy loss
+        entropy_loss = entropy(torch.mean(anchors_prob, 0), input_as_probabilities = True)
+
+        # Total loss
+        total_loss = consistency_loss - self.entropy_weight * entropy_loss + medoid_loss
+        
+        return total_loss, consistency_loss, entropy_loss, medoid_loss
+
+
+class OldSCANCLoss(nn.Module):
+    def __init__(self, entropy_weight = 2.0):
+        super(OldSCANCLoss, self).__init__()
         self.softmax = nn.Softmax(dim = 1)
         self.bce = nn.BCELoss()
         self.entropy_weight = entropy_weight # Default = 2.0

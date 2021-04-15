@@ -5,6 +5,7 @@ Licensed under the CC BY-NC 4.0 license (https://creativecommons.org/licenses/by
 import numpy as np
 import torch
 from torch.utils.data import Dataset
+import random
 
 """ 
     AugmentedDataset
@@ -133,6 +134,53 @@ class SCANFDataset(Dataset):
         return output
 
 class SCANCDataset(Dataset):
+    def __init__(self, dataset, medoid_indices, neighbor_indices, num_neighbors=None):
+        super(SCANCDataset, self).__init__()
+        transform = dataset.transform
+        
+        if isinstance(transform, dict):
+            self.anchor_transform = transform['standard']
+            self.neighbor_transform = transform['augment']
+        else:
+            self.anchor_transform = transform
+            self.neighbor_transform = transform
+       
+        dataset.transform = None
+        self.dataset = dataset
+        self.medoid_indices = medoid_indices
+        self.neighbor_indices = neighbor_indices
+        if num_neighbors is not None:
+            self.neighbor_indices = self.neighbor_indices[:, :num_neighbors+1]
+
+        assert(self.neighbor_indices.shape[0] == len(self.dataset))
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, index):
+        output = {}
+        anchor = self.dataset.__getitem__(index)
+        
+        neighbor_index = np.random.choice(self.neighbor_indices[index], 1)[0]
+        neighbor = self.dataset.__getitem__(neighbor_index)
+
+        random_index = random.choice(range(len(self.medoid_indices)))
+        random_medoid_index = self.medoid_indices[random_index]
+        random_medoid_image = self.dataset.__getitem__(random_medoid_index)
+
+        anchor['image'] = self.anchor_transform(anchor['image'])
+        neighbor['image'] = self.neighbor_transform(neighbor['image'])
+
+        output['anchor'] = anchor['image']
+        output['neighbor'] = neighbor['image']
+        output['possible_neighbors'] = torch.from_numpy(self.neighbor_indices[index])
+        output['target'] = anchor['target']
+        output['random_medoid_image'] = random_medoid_image
+        output['random_medoid_label'] = random_index
+        
+        return output
+
+class OldSCANCDataset(Dataset):
     def __init__(self, dataset, centroid_indices, neighbor_indices, num_neighbors=None):
         super(SCANCDataset, self).__init__()
         transform = dataset.transform

@@ -5,6 +5,7 @@ setup: scan
 criterion: scanc
 criterion_kwargs:
    entropy_weight: 5.0
+   medoid_weight: 1.0
 
 # Weight update
 update_cluster_head_only: False # Update full network in SCAN

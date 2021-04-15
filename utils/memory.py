@@ -48,7 +48,7 @@ class MemoryBank(object):
     def mine_cluster_centroids(self, num_clusters):
         features = self.features.cpu().numpy()
         similarities = squareform(pdist(features))  
-        kmedoids = KMedoids(n_clusters=num_clusters, metric='precomputed', method='pam', init='k-medoids++').fit(similarities)
+        kmedoids = KMedoids(n_clusters=num_clusters, metric='precomputed', init='k-medoids++').fit(similarities)
         centroid_indices = kmedoids.medoid_indices_
         targets = self.targets.cpu().numpy()
         represented_targets = []
