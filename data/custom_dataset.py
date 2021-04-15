@@ -131,3 +131,61 @@ class SCANFDataset(Dataset):
         output['target'] = anchor['target']
         
         return output
+
+class SCANCDataset(Dataset):
+    def __init__(self, dataset, centroid_indices, neighbor_indices, num_neighbors=None):
+        super(SCANCDataset, self).__init__()
+        transform = dataset.transform
+        
+        if isinstance(transform, dict):
+            self.anchor_transform = transform['standard']
+            self.neighbor_transform = transform['augment']
+        else:
+            self.anchor_transform = transform
+            self.neighbor_transform = transform
+       
+        dataset.transform = None
+        self.dataset = dataset
+        self.centroid_indices = centroid_indices
+        self.neighbor_indices = neighbor_indices
+        if num_neighbors is not None:
+            self.neighbor_indices = self.neighbor_indices[:, :num_neighbors+1]
+
+        self.is_centroid = []
+        self.centroid_labels = []
+        counter = 0
+        for i in range(len(self.dataset)):
+            if i in centroid_indices:
+                self.is_centroid.append(True)
+                self.centroid_labels.append(counter)
+                counter += 1
+            else:
+                self.is_centroid.append(False)
+                self.centroid_labels.append(counter)
+
+        self.is_centroid = torch.tensor(self.is_centroid)
+        self.centroid_labels = torch.tensor(self.centroid_labels)
+
+        assert(self.neighbor_indices.shape[0] == len(self.dataset))
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, index):
+        output = {}
+        anchor = self.dataset.__getitem__(index)
+        
+        neighbor_index = np.random.choice(self.neighbor_indices[index], 1)[0]
+        neighbor = self.dataset.__getitem__(neighbor_index)
+
+        anchor['image'] = self.anchor_transform(anchor['image'])
+        neighbor['image'] = self.neighbor_transform(neighbor['image'])
+
+        output['anchor'] = anchor['image']
+        output['neighbor'] = neighbor['image']
+        output['possible_neighbors'] = torch.from_numpy(self.neighbor_indices[index])
+        output['target'] = anchor['target']
+        output['is_centroid'] = self.is_centroid[index]
+        output['centroid_label'] = self.centroid_labels[index]
+        
+        return output

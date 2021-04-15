@@ -163,6 +163,44 @@ class SCANFLoss(nn.Module):
         return total_loss, consistency_loss, stranger_loss, entropy_loss
 
 
+class SCANCLoss(nn.Module):
+    def __init__(self, entropy_weight = 2.0):
+        super(SCANCLoss, self).__init__()
+        self.softmax = nn.Softmax(dim = 1)
+        self.bce = nn.BCELoss()
+        self.entropy_weight = entropy_weight # Default = 2.0
+
+    def forward(self, anchors, neighbors, is_centroid, centroid_labels):
+        """
+        input:
+            - anchors: logits for anchor images w/ shape [b, num_classes]
+            - neighbors: logits for neighbor images w/ shape [b, num_classes]
+
+        output:
+            - Loss
+        """
+        # Softmax
+        b, n = anchors.size()
+        anchors_prob = self.softmax(anchors)
+        positives_prob = self.softmax(neighbors)
+
+        #Overwrite positives_probs for centroids
+        positives_prob[torch.nonzero(is_centroid).reshape(-1)] = torch.eye(200)[centroid_labels[torch.nonzero(is_centroid).reshape(-1)]]
+       
+        # Similarity in output space
+        similarity = torch.bmm(anchors_prob.view(b, 1, n), positives_prob.view(b, n, 1)).squeeze()
+        ones = torch.ones_like(similarity)
+        consistency_loss = self.bce(similarity, ones)
+        
+        #Entropy loss
+        entropy_loss = entropy(torch.mean(anchors_prob, 0), input_as_probabilities = True)
+
+        # Total loss
+        total_loss = consistency_loss - self.entropy_weight * entropy_loss
+        
+        return total_loss, consistency_loss, entropy_loss
+
+
 class SimCLRLoss(nn.Module):
     # Based on the implementation of SupContrast
     def __init__(self, temperature):

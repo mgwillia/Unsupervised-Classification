@@ -139,6 +139,9 @@ def main():
     indices, acc = memory_bank_base.mine_farthest_neighbors(topk)
     print('Accuracy of top-%d farthest strangers on train set is %.2f' %(topk, 100*acc))
     np.save(p['topk_strangers_train_path'], indices)
+    indices, num_targets_represented = memory_bank_base.mine_cluster_centroids(p['num_classes'])
+    print('Number of classes represented by centroids is %d' %(num_targets_represented))
+    np.save(p['centroid_indices_train_path'], indices)
 
    
     # Mine the topk nearest neighbors at the very end (Val)

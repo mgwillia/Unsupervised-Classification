@@ -3,6 +3,7 @@ Authors: Wouter Van Gansbeke, Simon Vandenhende
 Licensed under the CC BY-NC 4.0 license (https://creativecommons.org/licenses/by-nc/4.0/)
 """
 from scipy.spatial.distance import pdist, squareform
+from sklearn.cluster import KMeans
 import numpy as np
 import torch
 
@@ -43,6 +44,22 @@ class MemoryBank(object):
         sample_pred = torch.argmax(correlation, dim=1)
         class_pred = torch.index_select(self.targets, 0, sample_pred)
         return class_pred
+
+    def mine_cluster_centroids(self, num_clusters):
+        features = self.features.cpu().numpy()
+        kmeans = KMeans(n_clusters=num_clusters, init='k-means++', max_iter=1000).fit(features)
+        centroid_coords = kmeans.cluster_centers_
+        centroid_indices = []
+        targets = self.targets.cpu().numpy()
+        represented_targets = []
+        for i in range(num_clusters):
+            index = np.where(np.all(features==centroid_coords[i],axis=1))[0][0]
+            centroid_indices.append(index)
+            represented_targets.append(targets[index])
+        
+        num_targets_represented = len(list(set(represented_targets)))
+
+        return centroid_indices, num_targets_represented
 
     def mine_nearest_neighbors(self, topk, calculate_accuracy=True):
         # mine the topk nearest neighbors for every sample

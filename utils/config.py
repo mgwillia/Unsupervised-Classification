@@ -33,6 +33,7 @@ def create_config(config_file_env, config_file_exp):
     cfg['topk_neighbors_val_path'] = os.path.join(pretext_dir, 'topk-val-neighbors.npy')
     cfg['topk_strangers_train_path'] = os.path.join(pretext_dir, 'topk-train-strangers.npy')
     cfg['topk_strangers_val_path'] = os.path.join(pretext_dir, 'topk-val-strangers.npy')
+    cfg['centroid_indices_train_path'] = os.path.join(pretext_dir, 'centroid-train-indices.npy')
 
     # If we perform clustering or self-labeling step we need additional paths.
     # We also include a run identifier to support multiple runs w/ same hyperparams.
@@ -40,10 +41,12 @@ def create_config(config_file_env, config_file_exp):
         base_dir = os.path.join(root_dir, cfg['train_db_name'])
         scan_dir = os.path.join(base_dir, 'scan')
         scanf_dir = os.path.join(base_dir, 'scanf')
+        scanc_dir = os.path.join(base_dir, 'scanc')
         selflabel_dir = os.path.join(base_dir, 'selflabel') 
         mkdir_if_missing(base_dir)
         mkdir_if_missing(scan_dir)
         mkdir_if_missing(scanf_dir)
+        mkdir_if_missing(scanc_dir)
         mkdir_if_missing(selflabel_dir)
         cfg['scan_dir'] = scan_dir
         cfg['scan_checkpoint'] = os.path.join(scan_dir, 'checkpoint.pth.tar')
@@ -51,6 +54,9 @@ def create_config(config_file_env, config_file_exp):
         cfg['scanf_dir'] = scanf_dir
         cfg['scanf_checkpoint'] = os.path.join(scanf_dir, 'checkpoint.pth.tar')
         cfg['scanf_model'] = os.path.join(scanf_dir, 'model.pth.tar')
+        cfg['scanc_dir'] = scanc_dir
+        cfg['scanc_checkpoint'] = os.path.join(scanc_dir, 'checkpoint.pth.tar')
+        cfg['scanc_model'] = os.path.join(scanc_dir, 'model.pth.tar')
         cfg['selflabel_dir'] = selflabel_dir
         cfg['selflabel_checkpoint'] = os.path.join(selflabel_dir, 'checkpoint.pth.tar')
         cfg['selflabel_model'] = os.path.join(selflabel_dir, 'model.pth.tar')
