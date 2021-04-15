@@ -25,6 +25,8 @@ class CUB(Dataset):
 
         with open(root + 'classes.txt', 'r') as classesFile:
             for line in classesFile.readline():
+                print(line.strip())
+                print(line.strip().split(' ')[1])
                 self.classes.append(line.strip().split(' ')[1].split('.')[1])
 
         isTrainList = []
