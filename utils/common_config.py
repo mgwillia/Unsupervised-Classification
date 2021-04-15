@@ -141,7 +141,7 @@ def get_model(p, pretrain_path=None):
 
 
 def get_train_dataset(p, transform, to_augmented_dataset=False,
-                        to_neighbors_dataset=False, to_neighbors_strangers_dataset=False, split=None):
+                        to_neighbors_dataset=False, to_neighbors_strangers_dataset=False, to_neighbors_anchors_dataset=False, split=None):
     # Base dataset
     if p['train_db_name'] == 'cifar-10':
         from data.cifar import CIFAR10
@@ -190,6 +190,12 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
         neighbor_indices = np.load(p['topk_neighbors_train_path'])
         stranger_indices = np.load(p['topk_strangers_train_path'])
         dataset = SCANFDataset(dataset, neighbor_indices, stranger_indices, p['num_neighbors'], p['num_strangers'])
+
+    if to_neighbors_anchors_dataset:
+        from data.custom_dataset import SCANCDataset
+        neighbor_indices = np.load(p['topk_neighbors_train_path'])
+        centroid_indices = np.load(p['centroid_indices_train_path'])
+        dataset = SCANCDataset(dataset, centroid_indices, neighbor_indices, p['num_neighbors'])
     
     return dataset
 
