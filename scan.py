@@ -96,36 +96,37 @@ def main():
             print('Train ...')
             scan_train(train_dataloader, model, criterion, optimizer, epoch, p['update_cluster_head_only'])
 
-            # Evaluate 
-            print('Make prediction on validation set ...')
-            predictions = get_predictions(p, val_dataloader, model)
+            if (epoch +  1) % 5 == 0:
+                # Evaluate 
+                print('Make prediction on validation set ...')
+                predictions = get_predictions(p, val_dataloader, model)
 
-            print('Evaluate based on SCAN loss ...')
-            scan_stats = scan_evaluate(predictions)
-            print(scan_stats)
-            lowest_loss_head = scan_stats['lowest_loss_head']
-            lowest_loss = scan_stats['lowest_loss']
-        
-            if lowest_loss < best_loss:
-                print('New lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
-                print('Lowest loss head is %d' %(lowest_loss_head))
-                best_loss = lowest_loss
-                best_loss_head = lowest_loss_head
-                torch.save({'model': model.module.state_dict(), 'head': best_loss_head}, p['scan_model'])
+                print('Evaluate based on SCAN loss ...')
+                scan_stats = scan_evaluate(predictions)
+                print(scan_stats)
+                lowest_loss_head = scan_stats['lowest_loss_head']
+                lowest_loss = scan_stats['lowest_loss']
+            
+                if lowest_loss < best_loss:
+                    print('New lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
+                    print('Lowest loss head is %d' %(lowest_loss_head))
+                    best_loss = lowest_loss
+                    best_loss_head = lowest_loss_head
+                    torch.save({'model': model.module.state_dict(), 'head': best_loss_head}, p['scan_model'])
 
-            else:
-                print('No new lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
-                print('Lowest loss head is %d' %(best_loss_head))
+                else:
+                    print('No new lowest loss on validation set: %.4f -> %.4f' %(best_loss, lowest_loss))
+                    print('Lowest loss head is %d' %(best_loss_head))
 
-            print('Evaluate with hungarian matching algorithm ...')
-            clustering_stats = hungarian_evaluate(lowest_loss_head, predictions, compute_confusion_matrix=False)
-            print(clustering_stats)     
+                print('Evaluate with hungarian matching algorithm ...')
+                clustering_stats = hungarian_evaluate(lowest_loss_head, predictions, compute_confusion_matrix=False)
+                print(clustering_stats)     
 
-            # Checkpoint
-            print('Checkpoint ...')
-            torch.save({'optimizer': optimizer.state_dict(), 'model': model.state_dict(), 
-                        'epoch': epoch + 1, 'best_loss': best_loss, 'best_loss_head': best_loss_head},
-                        p['scan_checkpoint'])
+                # Checkpoint
+                print('Checkpoint ...')
+                torch.save({'optimizer': optimizer.state_dict(), 'model': model.state_dict(), 
+                            'epoch': epoch + 1, 'best_loss': best_loss, 'best_loss_head': best_loss_head},
+                            p['scan_checkpoint'])
     
     # Evaluate and save the final model
     print(colored('Evaluate best model based on SCAN metric at the end', 'blue'))

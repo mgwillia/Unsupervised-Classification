@@ -1,0 +1,1021 @@
+vulcan04.umiacs.umd.edu
+[31m{'setup': 'simclr', 'backbone': 'resnet50', 'model_kwargs': {'head': 'mlp', 'features_dim': 128}, 'train_db_name': 'pascal-pretrained-224-40', 'val_db_name': 'pascal-pretrained-22440', 'num_classes': 40, 'criterion': 'simclr', 'criterion_kwargs': {'temperature': 0.1}, 'epochs': 50, 'optimizer': 'sgd', 'optimizer_kwargs': {'nesterov': False, 'weight_decay': 0.001, 'momentum': 0.9, 'lr': 0.001}, 'scheduler': 'cosine', 'scheduler_kwargs': {'lr_decay_rate': 0.1}, 'batch_size': 64, 'num_workers': 8, 'augmentation_strategy': 'simclr', 'augmentation_kwargs': {'random_resized_crop': {'size': 224, 'scale': [0.2, 1.0]}, 'color_jitter_random_apply': {'p': 0.8}, 'color_jitter': {'brightness': 0.4, 'contrast': 0.4, 'saturation': 0.4, 'hue': 0.1}, 'random_grayscale': {'p': 0.2}, 'normalize': {'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225]}}, 'transformation_kwargs': {'crop_size': 224, 'normalize': {'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225]}}, 'pretext_dir': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext', 'pretext_checkpoint': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext/checkpoint.pth.tar', 'pretext_model': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext/model.pth.tar', 'topk_neighbors_train_path': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext/topk-train-neighbors.npy', 'topk_neighbors_val_path': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext/topk-val-neighbors.npy'}[0m
+[34mRetrieve model[0m
+{'setup': 'simclr', 'backbone': 'resnet50', 'model_kwargs': {'head': 'mlp', 'features_dim': 128}, 'train_db_name': 'pascal-pretrained-224-40', 'val_db_name': 'pascal-pretrained-22440', 'num_classes': 40, 'criterion': 'simclr', 'criterion_kwargs': {'temperature': 0.1}, 'epochs': 50, 'optimizer': 'sgd', 'optimizer_kwargs': {'nesterov': False, 'weight_decay': 0.001, 'momentum': 0.9, 'lr': 0.001}, 'scheduler': 'cosine', 'scheduler_kwargs': {'lr_decay_rate': 0.1}, 'batch_size': 64, 'num_workers': 8, 'augmentation_strategy': 'simclr', 'augmentation_kwargs': {'random_resized_crop': {'size': 224, 'scale': [0.2, 1.0]}, 'color_jitter_random_apply': {'p': 0.8}, 'color_jitter': {'brightness': 0.4, 'contrast': 0.4, 'saturation': 0.4, 'hue': 0.1}, 'random_grayscale': {'p': 0.2}, 'normalize': {'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225]}}, 'transformation_kwargs': {'crop_size': 224, 'normalize': {'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225]}}, 'pretext_dir': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext', 'pretext_checkpoint': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext/checkpoint.pth.tar', 'pretext_model': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext/model.pth.tar', 'topk_neighbors_train_path': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext/topk-train-neighbors.npy', 'topk_neighbors_val_path': '/cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext/topk-val-neighbors.npy'}
+loading pretrained
+Model is ContrastiveModel
+Model parameters: 30.02M
+ContrastiveModel(
+  (backbone): ResNet(
+    (conv1): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+    (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu): ReLU(inplace=True)
+    (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+    (layer1): Sequential(
+      (0): Bottleneck(
+        (downsample): Sequential(
+          (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (conv1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer2): Sequential(
+      (0): Bottleneck(
+        (downsample): Sequential(
+          (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer3): Sequential(
+      (0): Bottleneck(
+        (downsample): Sequential(
+          (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (conv1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (4): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (5): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer4): Sequential(
+      (0): Bottleneck(
+        (downsample): Sequential(
+          (0): Conv2d(1024, 2048, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (conv1): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (avgpool): AdaptiveAvgPool2d(output_size=(1, 1))
+    (fc): Linear(in_features=2048, out_features=1000, bias=True)
+  )
+  (contrastive_head): Sequential(
+    (0): Linear(in_features=2048, out_features=2048, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=2048, out_features=128, bias=True)
+  )
+)
+[34mSet CuDNN benchmark[0m
+[34mRetrieve dataset[0m
+Train transforms: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.2, 1.0), ratio=(0.75, 1.3333), interpolation=PIL.Image.BILINEAR)
+    RandomHorizontalFlip(p=0.5)
+    RandomApply(
+    p=0.8
+    ColorJitter(brightness=[0.6, 1.4], contrast=[0.6, 1.4], saturation=[0.6, 1.4], hue=[-0.1, 0.1])
+)
+    RandomGrayscale(p=0.2)
+    ToTensor()
+    Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+)
+Validation transforms: Compose(
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+)
+Dataset contains 15774/15774 train/val samples
+[34mBuild MemoryBank[0m
+[34mRetrieve criterion[0m
+Criterion is SimCLRLoss
+[34mRetrieve optimizer[0m
+SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.001
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0.001
+)
+[34mNo checkpoint file at /cfarhomes/mgwillia/scan-adaptation/Unsupervised-Classification/tutorial/pascal-pretrained-224-40/pretext/checkpoint.pth.tar[0m
+[34mStarting main loop[0m
+[33mEpoch 0/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00100
+Train ...
+Epoch: [0][  0/246]	Loss 2.6206e+00 (2.6206e+00)
+Epoch: [0][ 25/246]	Loss 9.4804e-01 (1.2385e+00)
+Epoch: [0][ 50/246]	Loss 6.3869e-01 (1.0202e+00)
+Epoch: [0][ 75/246]	Loss 9.2636e-01 (9.0434e-01)
+Epoch: [0][100/246]	Loss 7.3522e-01 (8.3336e-01)
+Epoch: [0][125/246]	Loss 5.7225e-01 (7.7996e-01)
+Epoch: [0][150/246]	Loss 5.0451e-01 (7.4467e-01)
+Epoch: [0][175/246]	Loss 4.6765e-01 (7.1575e-01)
+Epoch: [0][200/246]	Loss 6.5590e-01 (6.8969e-01)
+Epoch: [0][225/246]	Loss 5.7309e-01 (6.6988e-01)
+Fill memory bank for kNN...
+Fill Memory Bank [0/247]
+Fill Memory Bank [100/247]
+Fill Memory Bank [200/247]
+Evaluate ...
+Result of kNN evaluation is 94.41
+Checkpoint ...
+[33mEpoch 1/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00100
+Train ...
+Epoch: [1][  0/246]	Loss 5.2623e-01 (5.2623e-01)
+Epoch: [1][ 25/246]	Loss 3.6590e-01 (4.7213e-01)
+Epoch: [1][ 50/246]	Loss 3.9191e-01 (4.6174e-01)
+Epoch: [1][ 75/246]	Loss 4.2286e-01 (4.5434e-01)
+Epoch: [1][100/246]	Loss 3.7634e-01 (4.4536e-01)
+Epoch: [1][125/246]	Loss 3.8996e-01 (4.3869e-01)
+Epoch: [1][150/246]	Loss 3.7108e-01 (4.3265e-01)
+Epoch: [1][175/246]	Loss 6.0735e-01 (4.3071e-01)
+Epoch: [1][200/246]	Loss 5.1697e-01 (4.2581e-01)
+Epoch: [1][225/246]	Loss 4.5942e-01 (4.2461e-01)
+Checkpoint ...
+[33mEpoch 2/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00100
+Train ...
+Epoch: [2][  0/246]	Loss 3.4641e-01 (3.4641e-01)
+Epoch: [2][ 25/246]	Loss 3.1544e-01 (3.9679e-01)
+Epoch: [2][ 50/246]	Loss 3.2670e-01 (4.0034e-01)
+Epoch: [2][ 75/246]	Loss 3.0988e-01 (3.9315e-01)
+Epoch: [2][100/246]	Loss 3.1798e-01 (3.9274e-01)
+Epoch: [2][125/246]	Loss 4.1755e-01 (3.8519e-01)
+Epoch: [2][150/246]	Loss 3.8481e-01 (3.8307e-01)
+Epoch: [2][175/246]	Loss 3.6771e-01 (3.7858e-01)
+Epoch: [2][200/246]	Loss 2.8039e-01 (3.7323e-01)
+Epoch: [2][225/246]	Loss 2.4185e-01 (3.6937e-01)
+Checkpoint ...
+[33mEpoch 3/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00099
+Train ...
+Epoch: [3][  0/246]	Loss 3.6632e-01 (3.6632e-01)
+Epoch: [3][ 25/246]	Loss 3.6426e-01 (3.3948e-01)
+Epoch: [3][ 50/246]	Loss 3.2089e-01 (3.5053e-01)
+Epoch: [3][ 75/246]	Loss 2.4916e-01 (3.4290e-01)
+Epoch: [3][100/246]	Loss 2.9880e-01 (3.3725e-01)
+Epoch: [3][125/246]	Loss 3.0741e-01 (3.3451e-01)
+Epoch: [3][150/246]	Loss 2.6433e-01 (3.3486e-01)
+Epoch: [3][175/246]	Loss 3.8934e-01 (3.3196e-01)
+Epoch: [3][200/246]	Loss 2.9825e-01 (3.2869e-01)
+Epoch: [3][225/246]	Loss 4.5423e-01 (3.3027e-01)
+Checkpoint ...
+[33mEpoch 4/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00098
+Train ...
+Epoch: [4][  0/246]	Loss 3.1755e-01 (3.1755e-01)
+Epoch: [4][ 25/246]	Loss 3.6867e-01 (2.8766e-01)
+Epoch: [4][ 50/246]	Loss 2.7175e-01 (2.9484e-01)
+Epoch: [4][ 75/246]	Loss 4.1763e-01 (2.9584e-01)
+Epoch: [4][100/246]	Loss 2.4234e-01 (2.9601e-01)
+Epoch: [4][125/246]	Loss 2.7403e-01 (2.9646e-01)
+Epoch: [4][150/246]	Loss 3.0057e-01 (2.9802e-01)
+Epoch: [4][175/246]	Loss 3.1844e-01 (2.9698e-01)
+Epoch: [4][200/246]	Loss 3.2378e-01 (2.9696e-01)
+Epoch: [4][225/246]	Loss 3.9010e-01 (2.9741e-01)
+Checkpoint ...
+[33mEpoch 5/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00098
+Train ...
+Epoch: [5][  0/246]	Loss 2.7055e-01 (2.7055e-01)
+Epoch: [5][ 25/246]	Loss 1.6578e-01 (2.9113e-01)
+Epoch: [5][ 50/246]	Loss 3.4592e-01 (2.8991e-01)
+Epoch: [5][ 75/246]	Loss 3.7316e-01 (2.9413e-01)
+Epoch: [5][100/246]	Loss 3.5888e-01 (2.9344e-01)
+Epoch: [5][125/246]	Loss 1.6492e-01 (2.9154e-01)
+Epoch: [5][150/246]	Loss 2.6428e-01 (2.8927e-01)
+Epoch: [5][175/246]	Loss 1.8509e-01 (2.8685e-01)
+Epoch: [5][200/246]	Loss 1.9814e-01 (2.8613e-01)
+Epoch: [5][225/246]	Loss 3.4053e-01 (2.8467e-01)
+Checkpoint ...
+[33mEpoch 6/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00096
+Train ...
+Epoch: [6][  0/246]	Loss 2.2344e-01 (2.2344e-01)
+Epoch: [6][ 25/246]	Loss 2.5654e-01 (2.5207e-01)
+Epoch: [6][ 50/246]	Loss 3.1854e-01 (2.6355e-01)
+Epoch: [6][ 75/246]	Loss 3.9812e-01 (2.6685e-01)
+Epoch: [6][100/246]	Loss 2.6764e-01 (2.5999e-01)
+Epoch: [6][125/246]	Loss 2.1576e-01 (2.5932e-01)
+Epoch: [6][150/246]	Loss 3.1465e-01 (2.6010e-01)
+Epoch: [6][175/246]	Loss 3.3216e-01 (2.6048e-01)
+Epoch: [6][200/246]	Loss 2.2950e-01 (2.6088e-01)
+Epoch: [6][225/246]	Loss 2.0091e-01 (2.5977e-01)
+Checkpoint ...
+[33mEpoch 7/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00095
+Train ...
+Epoch: [7][  0/246]	Loss 2.3543e-01 (2.3543e-01)
+Epoch: [7][ 25/246]	Loss 2.0794e-01 (2.7001e-01)
+Epoch: [7][ 50/246]	Loss 2.1409e-01 (2.6845e-01)
+Epoch: [7][ 75/246]	Loss 2.0565e-01 (2.6391e-01)
+Epoch: [7][100/246]	Loss 2.2173e-01 (2.6202e-01)
+Epoch: [7][125/246]	Loss 3.2793e-01 (2.6136e-01)
+Epoch: [7][150/246]	Loss 1.9926e-01 (2.6079e-01)
+Epoch: [7][175/246]	Loss 2.7131e-01 (2.5955e-01)
+Epoch: [7][200/246]	Loss 1.8987e-01 (2.5927e-01)
+Epoch: [7][225/246]	Loss 1.6760e-01 (2.5755e-01)
+Checkpoint ...
+[33mEpoch 8/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00094
+Train ...
+Epoch: [8][  0/246]	Loss 1.9412e-01 (1.9412e-01)
+Epoch: [8][ 25/246]	Loss 3.3315e-01 (2.4037e-01)
+Epoch: [8][ 50/246]	Loss 1.6659e-01 (2.4117e-01)
+Epoch: [8][ 75/246]	Loss 3.3690e-01 (2.4378e-01)
+Epoch: [8][100/246]	Loss 2.1491e-01 (2.4372e-01)
+Epoch: [8][125/246]	Loss 1.7033e-01 (2.4278e-01)
+Epoch: [8][150/246]	Loss 2.5646e-01 (2.4441e-01)
+Epoch: [8][175/246]	Loss 2.3202e-01 (2.4647e-01)
+Epoch: [8][200/246]	Loss 1.8665e-01 (2.4308e-01)
+Epoch: [8][225/246]	Loss 3.3327e-01 (2.4454e-01)
+Checkpoint ...
+[33mEpoch 9/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00092
+Train ...
+Epoch: [9][  0/246]	Loss 2.7847e-01 (2.7847e-01)
+Epoch: [9][ 25/246]	Loss 2.5882e-01 (2.2842e-01)
+Epoch: [9][ 50/246]	Loss 2.0762e-01 (2.3785e-01)
+Epoch: [9][ 75/246]	Loss 2.3975e-01 (2.3480e-01)
+Epoch: [9][100/246]	Loss 1.5816e-01 (2.3575e-01)
+Epoch: [9][125/246]	Loss 2.8917e-01 (2.3891e-01)
+Epoch: [9][150/246]	Loss 3.3340e-01 (2.3711e-01)
+Epoch: [9][175/246]	Loss 2.6424e-01 (2.3606e-01)
+Epoch: [9][200/246]	Loss 2.6721e-01 (2.3506e-01)
+Epoch: [9][225/246]	Loss 2.4934e-01 (2.3339e-01)
+Checkpoint ...
+[33mEpoch 10/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00090
+Train ...
+Epoch: [10][  0/246]	Loss 2.5185e-01 (2.5185e-01)
+Epoch: [10][ 25/246]	Loss 1.9248e-01 (2.1854e-01)
+Epoch: [10][ 50/246]	Loss 2.3693e-01 (2.2696e-01)
+Epoch: [10][ 75/246]	Loss 2.2147e-01 (2.2765e-01)
+Epoch: [10][100/246]	Loss 2.7510e-01 (2.2528e-01)
+Epoch: [10][125/246]	Loss 2.6012e-01 (2.2267e-01)
+Epoch: [10][150/246]	Loss 2.8001e-01 (2.2514e-01)
+Epoch: [10][175/246]	Loss 3.0415e-01 (2.2503e-01)
+Epoch: [10][200/246]	Loss 1.7210e-01 (2.2735e-01)
+Epoch: [10][225/246]	Loss 2.7826e-01 (2.2638e-01)
+Fill memory bank for kNN...
+Fill Memory Bank [0/247]
+Fill Memory Bank [100/247]
+Fill Memory Bank [200/247]
+Evaluate ...
+Result of kNN evaluation is 96.90
+Checkpoint ...
+[33mEpoch 11/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00089
+Train ...
+Epoch: [11][  0/246]	Loss 1.7903e-01 (1.7903e-01)
+Epoch: [11][ 25/246]	Loss 1.6397e-01 (2.3165e-01)
+Epoch: [11][ 50/246]	Loss 2.4987e-01 (2.2795e-01)
+Epoch: [11][ 75/246]	Loss 2.2209e-01 (2.2840e-01)
+Epoch: [11][100/246]	Loss 2.7237e-01 (2.3049e-01)
+Epoch: [11][125/246]	Loss 2.7828e-01 (2.3396e-01)
+Epoch: [11][150/246]	Loss 1.9473e-01 (2.3227e-01)
+Epoch: [11][175/246]	Loss 3.1493e-01 (2.3368e-01)
+Epoch: [11][200/246]	Loss 2.3375e-01 (2.3212e-01)
+Epoch: [11][225/246]	Loss 2.6142e-01 (2.2897e-01)
+Checkpoint ...
+[33mEpoch 12/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00086
+Train ...
+Epoch: [12][  0/246]	Loss 1.6965e-01 (1.6965e-01)
+Epoch: [12][ 25/246]	Loss 2.5278e-01 (2.1013e-01)
+Epoch: [12][ 50/246]	Loss 2.0437e-01 (2.0191e-01)
+Epoch: [12][ 75/246]	Loss 1.4656e-01 (2.0609e-01)
+Epoch: [12][100/246]	Loss 2.1793e-01 (2.0673e-01)
+Epoch: [12][125/246]	Loss 2.0371e-01 (2.0672e-01)
+Epoch: [12][150/246]	Loss 2.7686e-01 (2.0590e-01)
+Epoch: [12][175/246]	Loss 1.5635e-01 (2.0779e-01)
+Epoch: [12][200/246]	Loss 2.0709e-01 (2.1049e-01)
+Epoch: [12][225/246]	Loss 2.5318e-01 (2.1395e-01)
+Checkpoint ...
+[33mEpoch 13/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00084
+Train ...
+Epoch: [13][  0/246]	Loss 3.4519e-01 (3.4519e-01)
+Epoch: [13][ 25/246]	Loss 2.0044e-01 (2.2132e-01)
+Epoch: [13][ 50/246]	Loss 3.0056e-01 (2.0941e-01)
+Epoch: [13][ 75/246]	Loss 2.7622e-01 (2.0996e-01)
+Epoch: [13][100/246]	Loss 2.4146e-01 (2.1002e-01)
+Epoch: [13][125/246]	Loss 1.6240e-01 (2.1012e-01)
+Epoch: [13][150/246]	Loss 1.9390e-01 (2.0873e-01)
+Epoch: [13][175/246]	Loss 1.3345e-01 (2.0813e-01)
+Epoch: [13][200/246]	Loss 2.0179e-01 (2.1231e-01)
+Epoch: [13][225/246]	Loss 2.1396e-01 (2.1191e-01)
+Checkpoint ...
+[33mEpoch 14/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00082
+Train ...
+Epoch: [14][  0/246]	Loss 1.7690e-01 (1.7690e-01)
+Epoch: [14][ 25/246]	Loss 2.4151e-01 (2.2126e-01)
+Epoch: [14][ 50/246]	Loss 1.9499e-01 (2.1399e-01)
+Epoch: [14][ 75/246]	Loss 1.1918e-01 (2.1117e-01)
+Epoch: [14][100/246]	Loss 2.3648e-01 (2.0889e-01)
+Epoch: [14][125/246]	Loss 1.4885e-01 (2.0469e-01)
+Epoch: [14][150/246]	Loss 2.4919e-01 (2.0994e-01)
+Epoch: [14][175/246]	Loss 1.6234e-01 (2.0965e-01)
+Epoch: [14][200/246]	Loss 1.8270e-01 (2.0901e-01)
+Epoch: [14][225/246]	Loss 2.0426e-01 (2.0900e-01)
+Checkpoint ...
+[33mEpoch 15/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00079
+Train ...
+Epoch: [15][  0/246]	Loss 1.3686e-01 (1.3686e-01)
+Epoch: [15][ 25/246]	Loss 1.9961e-01 (1.9112e-01)
+Epoch: [15][ 50/246]	Loss 2.1654e-01 (1.9956e-01)
+Epoch: [15][ 75/246]	Loss 1.5245e-01 (1.9727e-01)
+Epoch: [15][100/246]	Loss 1.5326e-01 (1.9656e-01)
+Epoch: [15][125/246]	Loss 2.6843e-01 (1.9807e-01)
+Epoch: [15][150/246]	Loss 1.6713e-01 (2.0105e-01)
+Epoch: [15][175/246]	Loss 1.2095e-01 (2.0214e-01)
+Epoch: [15][200/246]	Loss 2.1246e-01 (2.0435e-01)
+Epoch: [15][225/246]	Loss 2.6338e-01 (2.0461e-01)
+Checkpoint ...
+[33mEpoch 16/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00077
+Train ...
+Epoch: [16][  0/246]	Loss 1.4116e-01 (1.4116e-01)
+Epoch: [16][ 25/246]	Loss 2.2224e-01 (1.8570e-01)
+Epoch: [16][ 50/246]	Loss 1.5831e-01 (1.8960e-01)
+Epoch: [16][ 75/246]	Loss 1.7974e-01 (1.9613e-01)
+Epoch: [16][100/246]	Loss 1.6590e-01 (1.9835e-01)
+Epoch: [16][125/246]	Loss 1.4058e-01 (2.0088e-01)
+Epoch: [16][150/246]	Loss 1.7012e-01 (2.0150e-01)
+Epoch: [16][175/246]	Loss 2.2609e-01 (1.9990e-01)
+Epoch: [16][200/246]	Loss 1.3699e-01 (1.9836e-01)
+Epoch: [16][225/246]	Loss 2.4581e-01 (2.0006e-01)
+Checkpoint ...
+[33mEpoch 17/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00074
+Train ...
+Epoch: [17][  0/246]	Loss 2.1219e-01 (2.1219e-01)
+Epoch: [17][ 25/246]	Loss 2.4081e-01 (2.0265e-01)
+Epoch: [17][ 50/246]	Loss 1.3737e-01 (2.0041e-01)
+Epoch: [17][ 75/246]	Loss 3.3568e-01 (1.9547e-01)
+Epoch: [17][100/246]	Loss 1.8577e-01 (1.9424e-01)
+Epoch: [17][125/246]	Loss 1.6587e-01 (1.9160e-01)
+Epoch: [17][150/246]	Loss 2.3524e-01 (1.9123e-01)
+Epoch: [17][175/246]	Loss 1.2208e-01 (1.9432e-01)
+Epoch: [17][200/246]	Loss 2.4996e-01 (1.9397e-01)
+Epoch: [17][225/246]	Loss 2.3810e-01 (1.9722e-01)
+Checkpoint ...
+[33mEpoch 18/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00071
+Train ...
+Epoch: [18][  0/246]	Loss 1.1196e-01 (1.1196e-01)
+Epoch: [18][ 25/246]	Loss 1.7035e-01 (1.9403e-01)
+Epoch: [18][ 50/246]	Loss 2.1274e-01 (1.9373e-01)
+Epoch: [18][ 75/246]	Loss 1.5820e-01 (1.9296e-01)
+Epoch: [18][100/246]	Loss 1.6267e-01 (1.9251e-01)
+Epoch: [18][125/246]	Loss 2.8477e-01 (1.9426e-01)
+Epoch: [18][150/246]	Loss 1.3663e-01 (1.9377e-01)
+Epoch: [18][175/246]	Loss 1.5077e-01 (1.9406e-01)
+Epoch: [18][200/246]	Loss 2.2233e-01 (1.9555e-01)
+Epoch: [18][225/246]	Loss 2.8050e-01 (1.9598e-01)
+Checkpoint ...
+[33mEpoch 19/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00068
+Train ...
+Epoch: [19][  0/246]	Loss 2.4691e-01 (2.4691e-01)
+Epoch: [19][ 25/246]	Loss 1.8467e-01 (1.7506e-01)
+Epoch: [19][ 50/246]	Loss 2.1955e-01 (1.8513e-01)
+Epoch: [19][ 75/246]	Loss 1.5668e-01 (1.8221e-01)
+Epoch: [19][100/246]	Loss 1.3971e-01 (1.8584e-01)
+Epoch: [19][125/246]	Loss 2.6547e-01 (1.8493e-01)
+Epoch: [19][150/246]	Loss 1.5928e-01 (1.8617e-01)
+Epoch: [19][175/246]	Loss 2.4158e-01 (1.8771e-01)
+Epoch: [19][200/246]	Loss 1.8770e-01 (1.8913e-01)
+Epoch: [19][225/246]	Loss 1.8464e-01 (1.8964e-01)
+Checkpoint ...
+[33mEpoch 20/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00065
+Train ...
+Epoch: [20][  0/246]	Loss 1.4531e-01 (1.4531e-01)
+Epoch: [20][ 25/246]	Loss 1.5991e-01 (1.8232e-01)
+Epoch: [20][ 50/246]	Loss 1.4437e-01 (1.8029e-01)
+Epoch: [20][ 75/246]	Loss 2.0911e-01 (1.8569e-01)
+Epoch: [20][100/246]	Loss 1.2672e-01 (1.8496e-01)
+Epoch: [20][125/246]	Loss 1.9718e-01 (1.8714e-01)
+Epoch: [20][150/246]	Loss 1.3878e-01 (1.8829e-01)
+Epoch: [20][175/246]	Loss 2.8842e-01 (1.8929e-01)
+Epoch: [20][200/246]	Loss 3.2115e-01 (1.9204e-01)
+Epoch: [20][225/246]	Loss 1.8605e-01 (1.9223e-01)
+Fill memory bank for kNN...
+Fill Memory Bank [0/247]
+Fill Memory Bank [100/247]
+Fill Memory Bank [200/247]
+Evaluate ...
+Result of kNN evaluation is 96.74
+Checkpoint ...
+[33mEpoch 21/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00062
+Train ...
+Epoch: [21][  0/246]	Loss 3.0247e-01 (3.0247e-01)
+Epoch: [21][ 25/246]	Loss 2.5301e-01 (1.9635e-01)
+Epoch: [21][ 50/246]	Loss 1.5165e-01 (1.9332e-01)
+Epoch: [21][ 75/246]	Loss 2.2605e-01 (1.8871e-01)
+Epoch: [21][100/246]	Loss 1.6950e-01 (1.8477e-01)
+Epoch: [21][125/246]	Loss 1.2468e-01 (1.8864e-01)
+Epoch: [21][150/246]	Loss 2.0484e-01 (1.8689e-01)
+Epoch: [21][175/246]	Loss 1.3597e-01 (1.8414e-01)
+Epoch: [21][200/246]	Loss 2.3110e-01 (1.8316e-01)
+Epoch: [21][225/246]	Loss 1.4674e-01 (1.8316e-01)
+Checkpoint ...
+[33mEpoch 22/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00059
+Train ...
+Epoch: [22][  0/246]	Loss 1.8630e-01 (1.8630e-01)
+Epoch: [22][ 25/246]	Loss 2.3630e-01 (1.6757e-01)
+Epoch: [22][ 50/246]	Loss 2.4145e-01 (1.7318e-01)
+Epoch: [22][ 75/246]	Loss 2.3467e-01 (1.7904e-01)
+Epoch: [22][100/246]	Loss 1.4525e-01 (1.8167e-01)
+Epoch: [22][125/246]	Loss 2.2619e-01 (1.8535e-01)
+Epoch: [22][150/246]	Loss 2.4387e-01 (1.8571e-01)
+Epoch: [22][175/246]	Loss 2.0034e-01 (1.8544e-01)
+Epoch: [22][200/246]	Loss 1.7843e-01 (1.8785e-01)
+Epoch: [22][225/246]	Loss 1.5278e-01 (1.8688e-01)
+Checkpoint ...
+[33mEpoch 23/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00056
+Train ...
+Epoch: [23][  0/246]	Loss 2.1922e-01 (2.1922e-01)
+Epoch: [23][ 25/246]	Loss 1.8261e-01 (2.0375e-01)
+Epoch: [23][ 50/246]	Loss 1.9210e-01 (1.9502e-01)
+Epoch: [23][ 75/246]	Loss 2.5665e-01 (1.9034e-01)
+Epoch: [23][100/246]	Loss 1.5199e-01 (1.8589e-01)
+Epoch: [23][125/246]	Loss 2.4125e-01 (1.8633e-01)
+Epoch: [23][150/246]	Loss 1.7499e-01 (1.8685e-01)
+Epoch: [23][175/246]	Loss 2.1643e-01 (1.8755e-01)
+Epoch: [23][200/246]	Loss 2.0952e-01 (1.8632e-01)
+Epoch: [23][225/246]	Loss 1.9746e-01 (1.8507e-01)
+Checkpoint ...
+[33mEpoch 24/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00053
+Train ...
+Epoch: [24][  0/246]	Loss 2.2148e-01 (2.2148e-01)
+Epoch: [24][ 25/246]	Loss 2.1699e-01 (1.7603e-01)
+Epoch: [24][ 50/246]	Loss 2.4981e-01 (1.7839e-01)
+Epoch: [24][ 75/246]	Loss 1.3549e-01 (1.7527e-01)
+Epoch: [24][100/246]	Loss 1.8606e-01 (1.7837e-01)
+Epoch: [24][125/246]	Loss 2.0705e-01 (1.7858e-01)
+Epoch: [24][150/246]	Loss 1.0006e-01 (1.7959e-01)
+Epoch: [24][175/246]	Loss 1.9527e-01 (1.8070e-01)
+Epoch: [24][200/246]	Loss 2.5291e-01 (1.8089e-01)
+Epoch: [24][225/246]	Loss 2.1539e-01 (1.8161e-01)
+Checkpoint ...
+[33mEpoch 25/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00050
+Train ...
+Epoch: [25][  0/246]	Loss 1.8475e-01 (1.8475e-01)
+Epoch: [25][ 25/246]	Loss 1.0966e-01 (1.8891e-01)
+Epoch: [25][ 50/246]	Loss 2.2610e-01 (1.8133e-01)
+Epoch: [25][ 75/246]	Loss 1.7739e-01 (1.8275e-01)
+Epoch: [25][100/246]	Loss 2.0048e-01 (1.8128e-01)
+Epoch: [25][125/246]	Loss 1.3927e-01 (1.7992e-01)
+Epoch: [25][150/246]	Loss 1.2166e-01 (1.7688e-01)
+Epoch: [25][175/246]	Loss 2.1723e-01 (1.7749e-01)
+Epoch: [25][200/246]	Loss 1.3368e-01 (1.7817e-01)
+Epoch: [25][225/246]	Loss 1.1382e-01 (1.7654e-01)
+Checkpoint ...
+[33mEpoch 26/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00047
+Train ...
+Epoch: [26][  0/246]	Loss 1.3510e-01 (1.3510e-01)
+Epoch: [26][ 25/246]	Loss 1.3611e-01 (1.6417e-01)
+Epoch: [26][ 50/246]	Loss 1.7738e-01 (1.6600e-01)
+Epoch: [26][ 75/246]	Loss 2.5723e-01 (1.6651e-01)
+Epoch: [26][100/246]	Loss 1.6412e-01 (1.7070e-01)
+Epoch: [26][125/246]	Loss 1.5096e-01 (1.6846e-01)
+Epoch: [26][150/246]	Loss 1.6613e-01 (1.6877e-01)
+Epoch: [26][175/246]	Loss 1.7433e-01 (1.6881e-01)
+Epoch: [26][200/246]	Loss 1.3308e-01 (1.6849e-01)
+Epoch: [26][225/246]	Loss 2.5552e-01 (1.6850e-01)
+Checkpoint ...
+[33mEpoch 27/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00044
+Train ...
+Epoch: [27][  0/246]	Loss 1.8679e-01 (1.8679e-01)
+Epoch: [27][ 25/246]	Loss 2.4829e-01 (1.8446e-01)
+Epoch: [27][ 50/246]	Loss 1.4003e-01 (1.7783e-01)
+Epoch: [27][ 75/246]	Loss 1.4154e-01 (1.7360e-01)
+Epoch: [27][100/246]	Loss 1.3015e-01 (1.7359e-01)
+Epoch: [27][125/246]	Loss 1.3761e-01 (1.7283e-01)
+Epoch: [27][150/246]	Loss 1.6667e-01 (1.7184e-01)
+Epoch: [27][175/246]	Loss 1.4904e-01 (1.7221e-01)
+Epoch: [27][200/246]	Loss 1.1666e-01 (1.7171e-01)
+Epoch: [27][225/246]	Loss 1.8077e-01 (1.7050e-01)
+Checkpoint ...
+[33mEpoch 28/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00041
+Train ...
+Epoch: [28][  0/246]	Loss 2.7591e-01 (2.7591e-01)
+Epoch: [28][ 25/246]	Loss 1.9182e-01 (1.7942e-01)
+Epoch: [28][ 50/246]	Loss 1.4802e-01 (1.7734e-01)
+Epoch: [28][ 75/246]	Loss 1.6856e-01 (1.7351e-01)
+Epoch: [28][100/246]	Loss 1.8739e-01 (1.7317e-01)
+Epoch: [28][125/246]	Loss 1.2595e-01 (1.7760e-01)
+Epoch: [28][150/246]	Loss 1.4242e-01 (1.7445e-01)
+Epoch: [28][175/246]	Loss 1.6231e-01 (1.7401e-01)
+Epoch: [28][200/246]	Loss 1.6689e-01 (1.7410e-01)
+Epoch: [28][225/246]	Loss 1.5879e-01 (1.7314e-01)
+Checkpoint ...
+[33mEpoch 29/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00038
+Train ...
+Epoch: [29][  0/246]	Loss 1.9598e-01 (1.9598e-01)
+Epoch: [29][ 25/246]	Loss 2.1664e-01 (1.8678e-01)
+Epoch: [29][ 50/246]	Loss 1.7223e-01 (1.8017e-01)
+Epoch: [29][ 75/246]	Loss 2.0945e-01 (1.8104e-01)
+Epoch: [29][100/246]	Loss 1.3839e-01 (1.7972e-01)
+Epoch: [29][125/246]	Loss 1.5841e-01 (1.7619e-01)
+Epoch: [29][150/246]	Loss 1.5290e-01 (1.7329e-01)
+Epoch: [29][175/246]	Loss 1.6492e-01 (1.7373e-01)
+Epoch: [29][200/246]	Loss 1.1701e-01 (1.7374e-01)
+Epoch: [29][225/246]	Loss 1.8583e-01 (1.7554e-01)
+Checkpoint ...
+[33mEpoch 30/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00035
+Train ...
+Epoch: [30][  0/246]	Loss 1.1569e-01 (1.1569e-01)
+Epoch: [30][ 25/246]	Loss 1.7009e-01 (1.7779e-01)
+Epoch: [30][ 50/246]	Loss 2.9161e-01 (1.7316e-01)
+Epoch: [30][ 75/246]	Loss 1.3849e-01 (1.6990e-01)
+Epoch: [30][100/246]	Loss 1.0836e-01 (1.7214e-01)
+Epoch: [30][125/246]	Loss 1.7562e-01 (1.7258e-01)
+Epoch: [30][150/246]	Loss 1.4616e-01 (1.6943e-01)
+Epoch: [30][175/246]	Loss 1.2350e-01 (1.6929e-01)
+Epoch: [30][200/246]	Loss 1.6508e-01 (1.6824e-01)
+Epoch: [30][225/246]	Loss 2.1015e-01 (1.6788e-01)
+Fill memory bank for kNN...
+Fill Memory Bank [0/247]
+Fill Memory Bank [100/247]
+Fill Memory Bank [200/247]
+Evaluate ...
+Result of kNN evaluation is 97.31
+Checkpoint ...
+[33mEpoch 31/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00032
+Train ...
+Epoch: [31][  0/246]	Loss 1.6042e-01 (1.6042e-01)
+Epoch: [31][ 25/246]	Loss 1.9835e-01 (1.6679e-01)
+Epoch: [31][ 50/246]	Loss 2.5156e-01 (1.7480e-01)
+Epoch: [31][ 75/246]	Loss 1.5917e-01 (1.7198e-01)
+Epoch: [31][100/246]	Loss 1.3568e-01 (1.7494e-01)
+Epoch: [31][125/246]	Loss 2.3078e-01 (1.7403e-01)
+Epoch: [31][150/246]	Loss 2.1639e-01 (1.7156e-01)
+Epoch: [31][175/246]	Loss 2.6575e-01 (1.7215e-01)
+Epoch: [31][200/246]	Loss 1.9648e-01 (1.7183e-01)
+Epoch: [31][225/246]	Loss 2.5137e-01 (1.7162e-01)
+Checkpoint ...
+[33mEpoch 32/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00029
+Train ...
+Epoch: [32][  0/246]	Loss 1.4147e-01 (1.4147e-01)
+Epoch: [32][ 25/246]	Loss 2.0195e-01 (1.7963e-01)
+Epoch: [32][ 50/246]	Loss 1.6263e-01 (1.7930e-01)
+Epoch: [32][ 75/246]	Loss 1.5320e-01 (1.7654e-01)
+Epoch: [32][100/246]	Loss 2.2386e-01 (1.7338e-01)
+Epoch: [32][125/246]	Loss 1.9016e-01 (1.7276e-01)
+Epoch: [32][150/246]	Loss 1.1422e-01 (1.7267e-01)
+Epoch: [32][175/246]	Loss 1.1849e-01 (1.7338e-01)
+Epoch: [32][200/246]	Loss 1.2566e-01 (1.7282e-01)
+Epoch: [32][225/246]	Loss 2.1003e-01 (1.7238e-01)
+Checkpoint ...
+[33mEpoch 33/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00026
+Train ...
+Epoch: [33][  0/246]	Loss 1.5597e-01 (1.5597e-01)
+Epoch: [33][ 25/246]	Loss 2.4028e-01 (1.6624e-01)
+Epoch: [33][ 50/246]	Loss 1.9648e-01 (1.6317e-01)
+Epoch: [33][ 75/246]	Loss 1.3352e-01 (1.6233e-01)
+Epoch: [33][100/246]	Loss 1.5014e-01 (1.6236e-01)
+Epoch: [33][125/246]	Loss 3.3386e-01 (1.6353e-01)
+Epoch: [33][150/246]	Loss 1.9139e-01 (1.6334e-01)
+Epoch: [33][175/246]	Loss 1.9236e-01 (1.6426e-01)
+Epoch: [33][200/246]	Loss 9.7510e-02 (1.6499e-01)
+Epoch: [33][225/246]	Loss 1.6256e-01 (1.6465e-01)
+Checkpoint ...
+[33mEpoch 34/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00023
+Train ...
+Epoch: [34][  0/246]	Loss 2.0399e-01 (2.0399e-01)
+Epoch: [34][ 25/246]	Loss 1.7197e-01 (1.5997e-01)
+Epoch: [34][ 50/246]	Loss 1.4972e-01 (1.5610e-01)
+Epoch: [34][ 75/246]	Loss 1.7853e-01 (1.5702e-01)
+Epoch: [34][100/246]	Loss 1.1391e-01 (1.5780e-01)
+Epoch: [34][125/246]	Loss 1.4837e-01 (1.5849e-01)
+Epoch: [34][150/246]	Loss 1.3968e-01 (1.6174e-01)
+Epoch: [34][175/246]	Loss 2.4174e-01 (1.6506e-01)
+Epoch: [34][200/246]	Loss 2.1167e-01 (1.6637e-01)
+Epoch: [34][225/246]	Loss 1.2659e-01 (1.6596e-01)
+Checkpoint ...
+[33mEpoch 35/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00021
+Train ...
+Epoch: [35][  0/246]	Loss 1.1848e-01 (1.1848e-01)
+Epoch: [35][ 25/246]	Loss 2.2832e-01 (1.6937e-01)
+Epoch: [35][ 50/246]	Loss 2.3799e-01 (1.7283e-01)
+Epoch: [35][ 75/246]	Loss 1.4315e-01 (1.7146e-01)
+Epoch: [35][100/246]	Loss 1.6914e-01 (1.7312e-01)
+Epoch: [35][125/246]	Loss 2.5289e-01 (1.7379e-01)
+Epoch: [35][150/246]	Loss 1.6358e-01 (1.7376e-01)
+Epoch: [35][175/246]	Loss 1.8358e-01 (1.7304e-01)
+Epoch: [35][200/246]	Loss 1.5985e-01 (1.7223e-01)
+Epoch: [35][225/246]	Loss 2.3587e-01 (1.7334e-01)
+Checkpoint ...
+[33mEpoch 36/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00018
+Train ...
+Epoch: [36][  0/246]	Loss 2.3895e-01 (2.3895e-01)
+Epoch: [36][ 25/246]	Loss 2.2257e-01 (1.7491e-01)
+Epoch: [36][ 50/246]	Loss 1.9348e-01 (1.6573e-01)
+Epoch: [36][ 75/246]	Loss 1.8793e-01 (1.6510e-01)
+Epoch: [36][100/246]	Loss 2.0088e-01 (1.6574e-01)
+Epoch: [36][125/246]	Loss 1.6838e-01 (1.6480e-01)
+Epoch: [36][150/246]	Loss 1.0575e-01 (1.6438e-01)
+Epoch: [36][175/246]	Loss 2.1386e-01 (1.6299e-01)
+Epoch: [36][200/246]	Loss 2.5347e-01 (1.6366e-01)
+Epoch: [36][225/246]	Loss 1.5297e-01 (1.6283e-01)
+Checkpoint ...
+[33mEpoch 37/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00016
+Train ...
+Epoch: [37][  0/246]	Loss 1.7653e-01 (1.7653e-01)
+Epoch: [37][ 25/246]	Loss 1.9330e-01 (1.6974e-01)
+Epoch: [37][ 50/246]	Loss 1.6230e-01 (1.6979e-01)
+Epoch: [37][ 75/246]	Loss 2.1288e-01 (1.6860e-01)
+Epoch: [37][100/246]	Loss 1.6082e-01 (1.6958e-01)
+Epoch: [37][125/246]	Loss 1.1768e-01 (1.6706e-01)
+Epoch: [37][150/246]	Loss 1.4377e-01 (1.6783e-01)
+Epoch: [37][175/246]	Loss 1.4290e-01 (1.6930e-01)
+Epoch: [37][200/246]	Loss 1.6364e-01 (1.7036e-01)
+Epoch: [37][225/246]	Loss 1.7693e-01 (1.6867e-01)
+Checkpoint ...
+[33mEpoch 38/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00014
+Train ...
+Epoch: [38][  0/246]	Loss 1.2930e-01 (1.2930e-01)
+Epoch: [38][ 25/246]	Loss 2.2390e-01 (1.5854e-01)
+Epoch: [38][ 50/246]	Loss 1.3754e-01 (1.6279e-01)
+Epoch: [38][ 75/246]	Loss 1.4628e-01 (1.6131e-01)
+Epoch: [38][100/246]	Loss 1.7709e-01 (1.5911e-01)
+Epoch: [38][125/246]	Loss 1.3483e-01 (1.6125e-01)
+Epoch: [38][150/246]	Loss 1.1349e-01 (1.6165e-01)
+Epoch: [38][175/246]	Loss 2.3395e-01 (1.6116e-01)
+Epoch: [38][200/246]	Loss 1.2136e-01 (1.6299e-01)
+Epoch: [38][225/246]	Loss 1.2014e-01 (1.6224e-01)
+Checkpoint ...
+[33mEpoch 39/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00012
+Train ...
+Epoch: [39][  0/246]	Loss 1.3265e-01 (1.3265e-01)
+Epoch: [39][ 25/246]	Loss 1.8932e-01 (1.6782e-01)
+Epoch: [39][ 50/246]	Loss 1.1518e-01 (1.6139e-01)
+Epoch: [39][ 75/246]	Loss 1.8897e-01 (1.6061e-01)
+Epoch: [39][100/246]	Loss 2.3900e-01 (1.6144e-01)
+Epoch: [39][125/246]	Loss 1.4594e-01 (1.5977e-01)
+Epoch: [39][150/246]	Loss 1.6097e-01 (1.5916e-01)
+Epoch: [39][175/246]	Loss 1.5751e-01 (1.5933e-01)
+Epoch: [39][200/246]	Loss 1.5005e-01 (1.5992e-01)
+Epoch: [39][225/246]	Loss 1.3993e-01 (1.6063e-01)
+Checkpoint ...
+[33mEpoch 40/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00010
+Train ...
+Epoch: [40][  0/246]	Loss 1.4352e-01 (1.4352e-01)
+Epoch: [40][ 25/246]	Loss 1.3751e-01 (1.5914e-01)
+Epoch: [40][ 50/246]	Loss 2.4859e-01 (1.5524e-01)
+Epoch: [40][ 75/246]	Loss 1.3094e-01 (1.5595e-01)
+Epoch: [40][100/246]	Loss 2.0700e-01 (1.5977e-01)
+Epoch: [40][125/246]	Loss 1.5358e-01 (1.5888e-01)
+Epoch: [40][150/246]	Loss 1.5986e-01 (1.5674e-01)
+Epoch: [40][175/246]	Loss 1.1279e-01 (1.5587e-01)
+Epoch: [40][200/246]	Loss 1.6731e-01 (1.5720e-01)
+Epoch: [40][225/246]	Loss 1.1836e-01 (1.5754e-01)
+Fill memory bank for kNN...
+Fill Memory Bank [0/247]
+Fill Memory Bank [100/247]
+Fill Memory Bank [200/247]
+Evaluate ...
+Result of kNN evaluation is 97.45
+Checkpoint ...
+[33mEpoch 41/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00008
+Train ...
+Epoch: [41][  0/246]	Loss 2.0492e-01 (2.0492e-01)
+Epoch: [41][ 25/246]	Loss 1.1759e-01 (1.6011e-01)
+Epoch: [41][ 50/246]	Loss 1.3475e-01 (1.6592e-01)
+Epoch: [41][ 75/246]	Loss 2.4318e-01 (1.6800e-01)
+Epoch: [41][100/246]	Loss 1.7986e-01 (1.6693e-01)
+Epoch: [41][125/246]	Loss 1.5518e-01 (1.6520e-01)
+Epoch: [41][150/246]	Loss 2.0681e-01 (1.6440e-01)
+Epoch: [41][175/246]	Loss 1.6143e-01 (1.6410e-01)
+Epoch: [41][200/246]	Loss 1.7048e-01 (1.6520e-01)
+Epoch: [41][225/246]	Loss 1.7058e-01 (1.6603e-01)
+Checkpoint ...
+[33mEpoch 42/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00006
+Train ...
+Epoch: [42][  0/246]	Loss 1.0543e-01 (1.0543e-01)
+Epoch: [42][ 25/246]	Loss 1.5678e-01 (1.6347e-01)
+Epoch: [42][ 50/246]	Loss 2.5617e-01 (1.6904e-01)
+Epoch: [42][ 75/246]	Loss 1.6089e-01 (1.6576e-01)
+Epoch: [42][100/246]	Loss 2.2229e-01 (1.6825e-01)
+Epoch: [42][125/246]	Loss 1.5438e-01 (1.6486e-01)
+Epoch: [42][150/246]	Loss 2.2261e-01 (1.6594e-01)
+Epoch: [42][175/246]	Loss 2.7689e-01 (1.6468e-01)
+Epoch: [42][200/246]	Loss 1.9379e-01 (1.6402e-01)
+Epoch: [42][225/246]	Loss 1.8730e-01 (1.6418e-01)
+Checkpoint ...
+[33mEpoch 43/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00005
+Train ...
+Epoch: [43][  0/246]	Loss 1.9381e-01 (1.9381e-01)
+Epoch: [43][ 25/246]	Loss 2.1992e-01 (1.8528e-01)
+Epoch: [43][ 50/246]	Loss 1.9838e-01 (1.7631e-01)
+Epoch: [43][ 75/246]	Loss 1.6971e-01 (1.7089e-01)
+Epoch: [43][100/246]	Loss 1.4073e-01 (1.6722e-01)
+Epoch: [43][125/246]	Loss 2.1612e-01 (1.6636e-01)
+Epoch: [43][150/246]	Loss 1.3756e-01 (1.6711e-01)
+Epoch: [43][175/246]	Loss 2.1855e-01 (1.6503e-01)
+Epoch: [43][200/246]	Loss 1.4592e-01 (1.6501e-01)
+Epoch: [43][225/246]	Loss 1.8754e-01 (1.6454e-01)
+Checkpoint ...
+[33mEpoch 44/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00004
+Train ...
+Epoch: [44][  0/246]	Loss 1.4922e-01 (1.4922e-01)
+Epoch: [44][ 25/246]	Loss 1.6387e-01 (1.5577e-01)
+Epoch: [44][ 50/246]	Loss 1.5894e-01 (1.6018e-01)
+Epoch: [44][ 75/246]	Loss 2.6370e-01 (1.6124e-01)
+Epoch: [44][100/246]	Loss 2.4840e-01 (1.6331e-01)
+Epoch: [44][125/246]	Loss 1.4759e-01 (1.6416e-01)
+Epoch: [44][150/246]	Loss 1.1585e-01 (1.6293e-01)
+Epoch: [44][175/246]	Loss 2.2759e-01 (1.6327e-01)
+Epoch: [44][200/246]	Loss 2.4447e-01 (1.6504e-01)
+Epoch: [44][225/246]	Loss 1.8559e-01 (1.6405e-01)
+Checkpoint ...
+[33mEpoch 45/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00003
+Train ...
+Epoch: [45][  0/246]	Loss 1.2547e-01 (1.2547e-01)
+Epoch: [45][ 25/246]	Loss 2.3524e-01 (1.6251e-01)
+Epoch: [45][ 50/246]	Loss 1.6187e-01 (1.6378e-01)
+Epoch: [45][ 75/246]	Loss 1.7594e-01 (1.6450e-01)
+Epoch: [45][100/246]	Loss 1.1913e-01 (1.6499e-01)
+Epoch: [45][125/246]	Loss 1.7491e-01 (1.6841e-01)
+Epoch: [45][150/246]	Loss 1.0155e-01 (1.6467e-01)
+Epoch: [45][175/246]	Loss 1.5920e-01 (1.6442e-01)
+Epoch: [45][200/246]	Loss 1.9825e-01 (1.6352e-01)
+Epoch: [45][225/246]	Loss 1.8653e-01 (1.6291e-01)
+Checkpoint ...
+[33mEpoch 46/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00002
+Train ...
+Epoch: [46][  0/246]	Loss 1.6521e-01 (1.6521e-01)
+Epoch: [46][ 25/246]	Loss 1.0623e-01 (1.5101e-01)
+Epoch: [46][ 50/246]	Loss 1.9354e-01 (1.5546e-01)
+Epoch: [46][ 75/246]	Loss 2.1488e-01 (1.5852e-01)
+Epoch: [46][100/246]	Loss 1.1923e-01 (1.5814e-01)
+Epoch: [46][125/246]	Loss 1.5379e-01 (1.5893e-01)
+Epoch: [46][150/246]	Loss 1.0139e-01 (1.6040e-01)
+Epoch: [46][175/246]	Loss 2.0576e-01 (1.5980e-01)
+Epoch: [46][200/246]	Loss 1.8034e-01 (1.6046e-01)
+Epoch: [46][225/246]	Loss 1.3053e-01 (1.5959e-01)
+Checkpoint ...
+[33mEpoch 47/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00001
+Train ...
+Epoch: [47][  0/246]	Loss 1.7185e-01 (1.7185e-01)
+Epoch: [47][ 25/246]	Loss 1.7775e-01 (1.7590e-01)
+Epoch: [47][ 50/246]	Loss 1.1497e-01 (1.7158e-01)
+Epoch: [47][ 75/246]	Loss 1.3275e-01 (1.6557e-01)
+Epoch: [47][100/246]	Loss 1.4555e-01 (1.6730e-01)
+Epoch: [47][125/246]	Loss 1.6566e-01 (1.6718e-01)
+Epoch: [47][150/246]	Loss 1.3367e-01 (1.6522e-01)
+Epoch: [47][175/246]	Loss 1.8651e-01 (1.6763e-01)
+Epoch: [47][200/246]	Loss 1.9344e-01 (1.6796e-01)
+Epoch: [47][225/246]	Loss 1.7982e-01 (1.6715e-01)
+Checkpoint ...
+[33mEpoch 48/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00000
+Train ...
+Epoch: [48][  0/246]	Loss 1.1585e-01 (1.1585e-01)
+Epoch: [48][ 25/246]	Loss 1.2350e-01 (1.6489e-01)
+Epoch: [48][ 50/246]	Loss 1.2772e-01 (1.6749e-01)
+Epoch: [48][ 75/246]	Loss 2.0386e-01 (1.6830e-01)
+Epoch: [48][100/246]	Loss 1.0267e-01 (1.6707e-01)
+Epoch: [48][125/246]	Loss 1.9415e-01 (1.6780e-01)
+Epoch: [48][150/246]	Loss 1.6468e-01 (1.6446e-01)
+Epoch: [48][175/246]	Loss 1.6304e-01 (1.6253e-01)
+Epoch: [48][200/246]	Loss 1.9634e-01 (1.6361e-01)
+Epoch: [48][225/246]	Loss 1.6824e-01 (1.6585e-01)
+Checkpoint ...
+[33mEpoch 49/50[0m
+[33m---------------[0m
+Adjusted learning rate to 0.00000
+Train ...
+Epoch: [49][  0/246]	Loss 1.4151e-01 (1.4151e-01)
+Epoch: [49][ 25/246]	Loss 9.7877e-02 (1.5769e-01)
+Epoch: [49][ 50/246]	Loss 1.8985e-01 (1.5766e-01)
+Epoch: [49][ 75/246]	Loss 1.7717e-01 (1.5904e-01)
+Epoch: [49][100/246]	Loss 2.0498e-01 (1.6095e-01)
+Epoch: [49][125/246]	Loss 1.5027e-01 (1.6146e-01)
+Epoch: [49][150/246]	Loss 1.1881e-01 (1.6146e-01)
+Epoch: [49][175/246]	Loss 1.3612e-01 (1.6113e-01)
+Epoch: [49][200/246]	Loss 1.7728e-01 (1.6077e-01)
+Epoch: [49][225/246]	Loss 1.3435e-01 (1.6037e-01)
+Fill memory bank for kNN...
+Fill Memory Bank [0/247]
+Fill Memory Bank [100/247]
+Fill Memory Bank [200/247]
+Evaluate ...
+Result of kNN evaluation is 97.62
+Checkpoint ...
+[34mFill memory bank for mining the nearest neighbors (train) ...[0m
+Fill Memory Bank [0/247]
+Fill Memory Bank [100/247]
+Fill Memory Bank [200/247]
+Mine the nearest neighbors (Top-20)
+Accuracy of top-20 nearest neighbors on train set is 56.47
+[34mFill memory bank for mining the nearest neighbors (val) ...[0m
+Fill Memory Bank [0/247]
+Fill Memory Bank [100/247]
+Fill Memory Bank [200/247]
+Mine the nearest neighbors (Top-5)
+Accuracy of top-5 nearest neighbors on val set is 61.35
