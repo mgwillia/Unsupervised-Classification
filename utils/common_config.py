@@ -165,7 +165,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
 
     elif 'cub' in p['train_db_name']:
         from data.cub import CUB
-        dataset = CUB(train=False, transform=transform)
+        dataset = CUB(train=True, transform=transform)
 
     elif p['train_db_name'] == 'imagenet':
         from data.imagenet import ImageNet
