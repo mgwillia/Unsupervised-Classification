@@ -5,7 +5,7 @@ setup: selflabel
 use_ema: False
 
 # Threshold
-confidence_threshold: 0.8
+confidence_threshold: 0.4
 
 # Criterion
 criterion: confidence-cross-entropy
