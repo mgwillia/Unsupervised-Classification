@@ -40,7 +40,7 @@ class ConfidenceBasedCE(nn.Module):
         # Retrieve target and mask based on weakly augmentated anchors
         weak_anchors_prob = self.softmax(anchors_weak) 
         max_prob, target = torch.max(weak_anchors_prob, dim = 1)
-        print(max_prob)
+        #print(max_prob)
         mask = max_prob > self.threshold 
         b, c = weak_anchors_prob.size()
         target_masked = torch.masked_select(target, mask.squeeze())
