@@ -25,7 +25,7 @@ class MyPath(object):
 
         elif database == 'pascal-voc':
             #return '/fs/vulcan-datasets/pascal_voc/'
-            return '/vulcanscratch/mgwillia/pascal-voc-modified'
+            return '/cfarhomes/mgwillia/pascal-voc-modified'
         
         elif database == 'cub':
             return '/fs/vulcan-datasets/CUB/CUB_200_2011/'
