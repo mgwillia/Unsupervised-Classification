@@ -29,4 +29,4 @@ dataDict = {
     'labels': torch.Tensor(labels)
 }
 
-torch.save(dataDict, 'pascalBndBoxFeatures')
+torch.save(dataDict, 'pascalBndBoxFeatures.pth.tar')
