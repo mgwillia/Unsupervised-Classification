@@ -11,7 +11,7 @@ transform = transforms.Compose([
 dataset = PASCALVOC(transform=transform)
 dataloader = DataLoader(dataset, num_workers=16,
             batch_size=128, pin_memory=True, drop_last=False, shuffle=False)
-model = resnet50x1().cuda()
+model = resnet50x1()['backbone'].cuda()
 
 labels = []
 features = []
