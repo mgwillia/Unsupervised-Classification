@@ -11,8 +11,8 @@ model_kwargs:
    features_dim: 128
 
 # Dataset
-train_db_name: cifar-10
-val_db_name: cifar-10
+train_db_name: cifar-10-d
+val_db_name: cifar-10-d
 num_classes: 10
 
 # Loss
