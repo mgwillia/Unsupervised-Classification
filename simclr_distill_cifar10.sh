@@ -6,8 +6,8 @@
 #SBATCH --time=36:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
 #SBATCH --qos=high                                           # set QOS, this will determine what resources can be requested
 #SBATCH --mem=64G
-#SBATCH --gres=gpu:4
-#SBATCH --cpus-per-task=8
+#SBATCH --gres=gpu:p6000:1
+#SBATCH --cpus-per-task=4
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
