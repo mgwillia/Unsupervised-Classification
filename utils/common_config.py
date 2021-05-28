@@ -17,6 +17,10 @@ def get_criterion(p):
         from losses.losses import SimCLRLoss
         criterion = SimCLRLoss(**p['criterion_kwargs'])
 
+    elif p['criterion'] == 'simclr-distill':
+        from losses.losses import SimCLRDistillLoss
+        criterion = SimCLRDistillLoss(**p['criterion_kwargs'])
+
     elif p['criterion'] == 'scan':
         from losses.losses import SCANLoss
         criterion = SCANLoss(**p['criterion_kwargs'])
@@ -94,7 +98,7 @@ def get_model(p, pretrain_path=None):
         raise ValueError('Invalid backbone {}'.format(p['backbone']))
 
     # Setup
-    if p['setup'] in ['simclr', 'moco']:
+    if p['setup'] in ['simclr', 'simclr-distill', 'moco']:
         from models.models import ContrastiveModel
         model = ContrastiveModel(backbone, **p['model_kwargs'])
 
@@ -142,6 +146,34 @@ def get_model(p, pretrain_path=None):
         pass
 
     return model
+
+
+def get_teacher(p):
+    # Get backbone
+    if p['backbone'] == 'resnet18':
+        if p['train_db_name'] in ['cifar-10', 'cifar-20']:
+            from models.resnet_cifar import resnet18
+            backbone = resnet18()
+
+        elif p['train_db_name'] == 'stl-10':
+            from models.resnet_stl import resnet18
+            backbone = resnet18()
+
+        elif p['train_db_name'] == 'pascal-pretrained':
+            from models.resnet_pascal import resnet18
+            backbone = resnet18()
+        
+        else:
+            raise NotImplementedError
+    else:
+        raise ValueError('Invalid backbone {}'.format(p['backbone']))
+
+    from models.models import ClusteringModel
+    if p['setup'] == 'selflabel':
+        assert(p['num_heads'] == 1)
+    teacher = ClusteringModel(backbone, p['num_classes'], p['num_heads'])
+
+    return teacher
 
 
 def get_train_dataset(p, transform, to_augmented_dataset=False,

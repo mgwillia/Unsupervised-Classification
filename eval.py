@@ -45,7 +45,7 @@ def main():
     print(colored('Load model weights ...', 'blue'))
     state_dict = torch.load(args.model, map_location='cpu')
 
-    if config['setup'] in ['simclr', 'moco', 'selflabel']:
+    if config['setup'] in ['simclr', 'simclr-distill', 'moco', 'selflabel']:
         model.load_state_dict(state_dict)
 
     elif config['setup'] == 'scan':
@@ -58,10 +58,10 @@ def main():
     model.cuda()
 
     # Perform evaluation
-    if config['setup'] in ['simclr', 'moco']:
+    if config['setup'] in ['simclr', 'simclr-distill', 'moco']:
         print(colored('Perform evaluation of the pretext task (setup={}).'.format(config['setup']), 'blue'))
         print('Create Memory Bank')
-        if config['setup'] == 'simclr': # Mine neighbors after MLP
+        if config['setup'] == 'simclr' or config['setup'] == 'simclr-distill': # Mine neighbors after MLP
             memory_bank = MemoryBank(len(dataset), config['model_kwargs']['features_dim'],
                                     config['num_classes'], config['criterion_kwargs']['temperature'])
 
