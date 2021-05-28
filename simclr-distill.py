@@ -38,6 +38,7 @@ def main():
     model = get_model(p)
     print('Model is {}'.format(model.__class__.__name__))
     print('Model parameters: {:.2f}M'.format(sum(p.numel() for p in model.parameters()) / 1e6))
+    model.cuda()
     print(model)
    
     # CUDNN
@@ -93,6 +94,7 @@ def main():
         start_epoch = 0
 
     teacher = get_teacher(p)
+    teacher.cuda()
     print(teacher)
     state_dict = torch.load(p['teacher_path'], map_location='cpu')
     if p['teacher'] == 'selflabel':
@@ -101,10 +103,6 @@ def main():
         teacher.load_state_dict(state_dict['model'])
     else:
         raise NotImplementedError
-        
-    # CUDA
-    model.cuda()
-    teacher.cuda()
     
     # Training
     print(colored('Starting main loop', 'blue'))
