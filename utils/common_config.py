@@ -169,8 +169,8 @@ def get_teacher(p):
         raise ValueError('Invalid backbone {}'.format(p['backbone']))
 
     from models.models import ClusteringModel
-    if p['setup'] == 'selflabel':
-        assert(p['num_heads'] == 1)
+    if p['teacher'] == 'selflabel':
+        p['num_heads'] == 1
     teacher = ClusteringModel(backbone, p['num_classes'], p['num_heads'])
 
     return teacher
