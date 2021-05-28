@@ -290,7 +290,7 @@ class SimCLRLoss(nn.Module):
 class SimCLRDistillLoss(nn.Module):
     # Based on the implementation of SupContrast
     def __init__(self, temperature, distill_alpha):
-        super(SimCLRLoss, self).__init__()
+        super(SimCLRDistillLoss, self).__init__()
         self.temperature = temperature
         self.distill_alpha = distill_alpha
 
