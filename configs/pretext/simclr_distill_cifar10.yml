@@ -19,7 +19,7 @@ num_classes: 10
 criterion: simclr-distill
 criterion_kwargs:
    temperature: 0.1
-   distill_alpha: 1.0
+   distill_alpha: 0.1
 
 # Hyperparameters
 epochs: 500

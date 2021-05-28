@@ -21,6 +21,9 @@ def get_criterion(p):
         from losses.losses import SimCLRDistillLoss
         criterion = SimCLRDistillLoss(**p['criterion_kwargs'])
 
+    elif p['criterion'] == 'linearprobe':
+        criterion = torch.nn.CrossEntropyLoss()
+
     elif p['criterion'] == 'scan':
         from losses.losses import SCANLoss
         criterion = SCANLoss(**p['criterion_kwargs'])
@@ -107,6 +110,10 @@ def get_model(p, pretrain_path=None):
         if p['setup'] == 'selflabel':
             assert(p['num_heads'] == 1)
         model = ClusteringModel(backbone, p['num_classes'], p['num_heads'])
+
+    elif p['setup'] == 'linearprobe':
+        from models.models import LinearModel
+        model = LinearModel(backbone, p['num_classes'])
 
     else:
         raise ValueError('Invalid setup {}'.format(p['setup']))

@@ -75,6 +75,36 @@ def simclr_distill_train(train_loader, model, teacher, criterion, optimizer, epo
             progress.display(i)
 
 
+def linearprobe_train(train_loader, model, criterion, optimizer, epoch):
+    """ 
+    Train w/ CrossEntropy-Loss
+    """
+    losses = AverageMeter('Loss', ':.4e')
+    progress = ProgressMeter(len(train_loader),
+        [losses],
+        prefix="Epoch: [{}]".format(epoch))
+
+    model.train() # Update BN
+    for i, batch in enumerate(train_loader):
+        # Forward pass
+        images = batch['image'].cuda(non_blocking=True)
+        targets = batch['target'].cuda(non_blocking=True)
+
+        outputs = model(images)
+
+        loss = criterion(outputs, targets)
+
+        # Register the mean loss and backprop the total loss to cover all subheads
+        losses.update(loss.item())
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if i % 25 == 0:
+            progress.display(i)
+
+
 def scan_train(train_loader, model, criterion, optimizer, epoch, update_cluster_head_only=False):
     """ 
     Train w/ SCAN-Loss

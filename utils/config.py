@@ -39,6 +39,7 @@ def create_config(config_file_env, config_file_exp):
     # We also include a run identifier to support multiple runs w/ same hyperparams.
     if cfg['setup'] in ['scan', 'selflabel']:
         base_dir = os.path.join(root_dir, cfg['train_db_name'])
+        linearprobe_dir = os.path.join(base_dir, 'linearprobe')
         scan_dir = os.path.join(base_dir, 'scan')
         scanf_dir = os.path.join(base_dir, 'scanf')
         scanc_dir = os.path.join(base_dir, 'scanc')
@@ -48,6 +49,9 @@ def create_config(config_file_env, config_file_exp):
         mkdir_if_missing(scanf_dir)
         mkdir_if_missing(scanc_dir)
         mkdir_if_missing(selflabel_dir)
+        cfg['linearprobe_dir'] = linearprobe_dir
+        cfg['linearprobe_checkpoint'] = os.path.join(linearprobe_dir, 'checkpoint.pth.tar')
+        cfg['linearprobe_model'] = os.path.join(linearprobe_dir, 'model.pth.tar')
         cfg['scan_dir'] = scan_dir
         cfg['scan_checkpoint'] = os.path.join(scan_dir, 'checkpoint.pth.tar')
         cfg['scan_model'] = os.path.join(scan_dir, 'model.pth.tar')

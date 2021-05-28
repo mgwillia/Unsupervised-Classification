@@ -60,3 +60,16 @@ class ClusteringModel(nn.Module):
             raise ValueError('Invalid forward pass {}'.format(forward_pass))        
 
         return out
+
+
+class LinearModel(nn.Module):
+    def __init__(self, backbone, nclasses):
+        super(LinearModel, self).__init__()
+        self.backbone = backbone['backbone']
+        self.backbone_dim = backbone['dim']
+        self.fc = nn.Linear(self.backbone_dim, nclasses)
+
+    def forward(self, x, forward_pass='default'):
+        features = self.backbone(x)
+        out = self.fc(features)
+        return out

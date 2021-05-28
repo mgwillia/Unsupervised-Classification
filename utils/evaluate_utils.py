@@ -97,6 +97,35 @@ def get_predictions(p, dataloader, model, return_features=False):
 
 
 @torch.no_grad()
+def linearprobe_evaluate(val_loader, model, criterion):
+
+    model.eval() # Update BN
+    losses = []
+    correct = 0
+    count = 0
+    for i, batch in enumerate(val_loader):
+        # Forward pass
+        images = batch['image'].cuda(non_blocking=True)
+        targets = batch['target'].cuda(non_blocking=True)
+
+        count += images.shape[0]
+
+        outputs = model(images)
+
+        loss = criterion(outputs, targets)
+        losses.append(loss.item())
+
+        _, predicted = torch.max(outputs.data, 1)
+
+        correct += (predicted == targets).float().sum()
+
+    averageLoss = np.mean(losses)
+    accuracy = correct / count
+
+    return {'accuracy': accuracy, 'loss': averageLoss}
+
+
+@torch.no_grad()
 def scan_evaluate(predictions):
     # Evaluate model based on SCAN loss.
     num_heads = len(predictions)
