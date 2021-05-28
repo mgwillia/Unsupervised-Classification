@@ -170,7 +170,7 @@ def get_teacher(p):
 
     from models.models import ClusteringModel
     if p['teacher'] == 'selflabel':
-        p['num_heads'] == 1
+        assert(p['num_heads'] == 1)
     teacher = ClusteringModel(backbone, p['num_classes'], p['num_heads'])
 
     return teacher

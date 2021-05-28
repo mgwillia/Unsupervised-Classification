@@ -1,6 +1,7 @@
 # Setup
 setup: simclr-distill
 teacher: selflabel
+num_heads: 1
 teacher_path: selflabel_cifar-10.pth.tar
 
 # Model
