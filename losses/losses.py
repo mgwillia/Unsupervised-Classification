@@ -324,8 +324,8 @@ class SimCLRDistillLoss(nn.Module):
         soft_dot_product = F.softmax(dot_product, dim=1)
         soft_cluster_similarities = F.softmax(cluster_similarities, dim=1)
 
-        print('dot_product shape:\t', soft_dot_product.shape, ';\tcluster_similarities shape:\t', soft_cluster_similarities.shape)
-        print('dot_product mean:\t', soft_dot_product.mean(), ';\tcluster_similarities mean:\t', soft_cluster_similarities.mean())
+        #print('dot_product shape:\t', soft_dot_product.shape, ';\tcluster_similarities shape:\t', soft_cluster_similarities.shape)
+        #print('dot_product mean:\t', soft_dot_product.mean(), ';\tcluster_similarities mean:\t', soft_cluster_similarities.mean())
 
         distill_loss = F.kl_div(soft_dot_product.log(), soft_cluster_similarities)
         
@@ -341,7 +341,6 @@ class SimCLRDistillLoss(nn.Module):
         exp_logits = torch.exp(logits) * logits_mask
         log_prob = logits - torch.log(exp_logits.sum(1, keepdim=True))
         
-        print()
         # Mean log-likelihood for positive
         loss = - ((mask * log_prob).sum(1) / mask.sum(1)).mean()
 
