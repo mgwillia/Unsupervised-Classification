@@ -39,7 +39,6 @@ def main():
     print('Model is {}'.format(model.__class__.__name__))
     print('Model parameters: {:.2f}M'.format(sum(p.numel() for p in model.parameters()) / 1e6))
     print(model)
-    model = model.cuda()
    
     # CUDNN
     print(colored('Set CuDNN benchmark', 'blue')) 
@@ -88,12 +87,10 @@ def main():
         checkpoint = torch.load(p['pretext_checkpoint'], map_location='cpu')
         optimizer.load_state_dict(checkpoint['optimizer'])
         model.load_state_dict(checkpoint['model'])
-        model.cuda()
         start_epoch = checkpoint['epoch']
     else:
         print(colored('No checkpoint file at {}'.format(p['pretext_checkpoint']), 'blue'))
         start_epoch = 0
-        model = model.cuda()
 
     teacher = get_teacher(p)
     print(teacher)
@@ -107,6 +104,7 @@ def main():
         
     # CUDA
     model.cuda()
+    teacher.cuda()
     
     # Training
     print(colored('Starting main loop', 'blue'))
