@@ -97,7 +97,7 @@ def main():
 
             if (epoch +  1) % 5 == 0:
                 print('Evaluate based on CE loss ...')
-                linearprobe_stats = linearprobe_evaluate(val_dataloader, model)
+                linearprobe_stats = linearprobe_evaluate(val_dataloader, model, criterion)
                 loss = linearprobe_stats['loss']
                 if loss < best_loss:
                     best_loss = loss
@@ -114,7 +114,7 @@ def main():
     print(colored('Evaluate best model', 'blue'))
     model_checkpoint = torch.load(p['linearprobe_model'], map_location='cpu')
     model.module.load_state_dict(model_checkpoint['model'])
-    linearprobe_stats = linearprobe_evaluate(val_dataloader, model)
+    linearprobe_stats = linearprobe_evaluate(val_dataloader, model, criterion)
     print(linearprobe_stats)
     print('Final Accuracy:', linearprobe_stats['accuracy'])
     
