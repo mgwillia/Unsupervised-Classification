@@ -45,9 +45,6 @@ def main():
     # Model
     print(colored('Get model', 'blue'))
     model = get_model(p, p['pretext_model'])
-    print(model)
-    model = torch.nn.DataParallel(model)
-    model = model.cuda()
 
     # Optimizer
     print(colored('Get optimizer', 'blue'))
@@ -63,6 +60,10 @@ def main():
     criterion = get_criterion(p) 
     criterion.cuda()
     print(criterion)
+    
+    print(model)
+    model = torch.nn.DataParallel(model)
+    model = model.cuda()
 
     if args.mode == 'train':
         # Checkpoint
