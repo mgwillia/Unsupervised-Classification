@@ -385,7 +385,8 @@ def get_optimizer(p, model, cluster_head_only=False):
                 else:
                     param.requires_grad = False 
         params = list(filter(lambda p: p.requires_grad, model.parameters()))
-        assert(len(params) == 2 * p['num_heads'])
+        if p['setupd'] != 'linearprobe':
+            assert(len(params) == 2 * p['num_heads'])
 
     else:
         params = model.parameters()
