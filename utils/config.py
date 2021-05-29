@@ -45,6 +45,7 @@ def create_config(config_file_env, config_file_exp):
         scanc_dir = os.path.join(base_dir, 'scanc')
         selflabel_dir = os.path.join(base_dir, 'selflabel') 
         mkdir_if_missing(base_dir)
+        mkdir_if_missing(linearprobe_dir)
         mkdir_if_missing(scan_dir)
         mkdir_if_missing(scanf_dir)
         mkdir_if_missing(scanc_dir)
