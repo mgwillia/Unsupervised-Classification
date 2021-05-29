@@ -37,7 +37,7 @@ def create_config(config_file_env, config_file_exp):
 
     # If we perform clustering or self-labeling step we need additional paths.
     # We also include a run identifier to support multiple runs w/ same hyperparams.
-    if cfg['setup'] in ['scan', 'selflabel']:
+    if cfg['setup'] in ['scan', 'selflabel', 'linearprobe']:
         base_dir = os.path.join(root_dir, cfg['train_db_name'])
         linearprobe_dir = os.path.join(base_dir, 'linearprobe')
         scan_dir = os.path.join(base_dir, 'scan')

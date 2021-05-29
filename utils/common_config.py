@@ -389,8 +389,9 @@ def get_optimizer(p, model, cluster_head_only=False):
             assert(len(params) == 2 * p['num_heads'])
         else:
             for param in model.parameters():
-                print(param)
-                param.requries_grad = False
+                param.requires_grad = False
+            for param in model.fc.parameters():
+                param.requires_grad = True
             params = list(filter(lambda p: p.requires_grad, model.parameters()))
 
     else:
