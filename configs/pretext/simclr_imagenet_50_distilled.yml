@@ -16,7 +16,7 @@ val_db_name: imagenet_50
 num_classes: 50
 
 # Loss
-criterion: simclr
+criterion: simclr-distill
 criterion_kwargs:
    temperature: 0.1 
 
