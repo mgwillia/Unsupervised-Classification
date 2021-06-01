@@ -56,7 +56,7 @@ def simclr_distill_train(train_loader, model, criterion, optimizer, epoch):
     for i, batch in enumerate(train_loader):
         images = batch['image']
         images_augmented = batch['image_augmented']
-        clusters = batch['cluster_pred'].cuda(non_blocking=True).view(b, -1)
+        clusters = batch['cluster_pred'].cuda(non_blocking=True).view(b, 1, -1).repeat(1, 2, 1)
         b, c, h, w = images.size()
         input_ = torch.cat([images.unsqueeze(1), images_augmented.unsqueeze(1)], dim=1)
         input_ = input_.view(-1, c, h, w) 
