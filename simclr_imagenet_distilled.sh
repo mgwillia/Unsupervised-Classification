@@ -3,9 +3,8 @@
 #SBATCH --job-name=simclr_imagenet_distilled                                # sets the job name
 #SBATCH --output=simclr_imagenet_distilled.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
 #SBATCH --error=simclr_imagenet_distilled.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
-#SBATCH --time=72:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
-#SBATCH --account=scavenger
-#SBATCH --partition=scavenger
+#SBATCH --time=36:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
+#SBATCH --qos=high
 #SBATCH --gres=gpu:p6000:4
 #SBATCH --mem=128G
 #SBATCH --cpus-per-task=16
