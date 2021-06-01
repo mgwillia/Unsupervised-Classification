@@ -1,7 +1,7 @@
 # Setup
 setup: simclr-distill
-teacher: selflabel
-num_heads: 1
+teacher: scan
+num_heads: 10
 teacher_path: imagenet_model.pth.tar
 
 # Model
