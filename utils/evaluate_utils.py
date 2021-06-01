@@ -37,6 +37,7 @@ def get_predictions(p, dataloader, model, return_features=False):
     model.eval()
     predictions = [[] for _ in range(p['num_heads'])]
     probs = [[] for _ in range(p['num_heads'])]
+    logits = [[] for _ in range(p['num_heads'])]
     targets = []
     if return_features:
         ft_dim = get_feature_dimensions_backbone(p)
@@ -70,6 +71,7 @@ def get_predictions(p, dataloader, model, return_features=False):
         for i, output_i in enumerate(output):
             predictions[i].append(torch.argmax(output_i, dim=1))
             probs[i].append(F.softmax(output_i, dim=1))
+            logits[i].append(output_i)
         targets.append(batch['target'])
         if include_neighbors:
             neighbors.append(batch['possible_neighbors'])
@@ -78,17 +80,18 @@ def get_predictions(p, dataloader, model, return_features=False):
 
     predictions = [torch.cat(pred_, dim = 0).cpu() for pred_ in predictions]
     probs = [torch.cat(prob_, dim=0).cpu() for prob_ in probs]
+    logits = [torch.cat(logit_, dim=0).cpu() for logit_ in logits]
     targets = torch.cat(targets, dim=0)
 
     if include_neighbors and not include_strangers:
         neighbors = torch.cat(neighbors, dim=0)
-        out = [{'predictions': pred_, 'probabilities': prob_, 'targets': targets, 'neighbors': neighbors} for pred_, prob_ in zip(predictions, probs)]
+        out = [{'predictions': pred_, 'probabilities': prob_, 'logits': logit_, 'targets': targets, 'neighbors': neighbors} for pred_, prob_, logit_ in zip(predictions, probs, logits)]
     elif include_neighbors and include_strangers:
         neighbors = torch.cat(neighbors, dim=0)
         strangers = torch.cat(strangers, dim=0)
-        out = [{'predictions': pred_, 'probabilities': prob_, 'targets': targets, 'neighbors': neighbors, 'strangers': strangers} for pred_, prob_ in zip(predictions, probs)]
+        out = [{'predictions': pred_, 'probabilities': prob_, 'logits': logit_, 'targets': targets, 'neighbors': neighbors, 'strangers': strangers} for pred_, prob_, logit_ in zip(predictions, probs, logits)]
     else:
-        out = [{'predictions': pred_, 'probabilities': prob_, 'targets': targets} for pred_, prob_ in zip(predictions, probs)]
+        out = [{'predictions': pred_, 'probabilities': prob_, 'logits': logit_, 'targets': targets} for pred_, prob_, logit_ in zip(predictions, probs, logits)]
 
     if return_features:
         return out, features.cpu()
