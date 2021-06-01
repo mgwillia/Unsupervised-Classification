@@ -4,7 +4,7 @@
 #SBATCH --output=linearprobe_cifar10_finetune.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
 #SBATCH --error=linearprobe_cifar10_finetune.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
 #SBATCH --time=36:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
-#SBATCH --qos=high                                           # set QOS, this will determine what resources can be requested
+#SBATCH --qos=medium                                           # set QOS, this will determine what resources can be requested
 #SBATCH --gres=gpu:2
 #SBATCH --mem=32G
 #SBATCH --cpus-per-task=8
