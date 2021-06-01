@@ -102,6 +102,7 @@ class TeachersDataset(Dataset):
         
         return output
 
+
 class SCANFDataset(Dataset):
     def __init__(self, dataset, neighbor_indices, stranger_indices, num_neighbors=None, num_strangers=None):
         super(SCANFDataset, self).__init__()
