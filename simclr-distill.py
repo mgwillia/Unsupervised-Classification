@@ -93,7 +93,7 @@ def main():
     elif p['finetune']:
         print(colored('Finetune from trained model {}'.format(p['finetune_model']), 'blue'))
         checkpoint = torch.load(p['finetune_model'], map_location='cpu')
-        model.load_state_dict(checkpoint)
+        model.module.load_state_dict(checkpoint)
         start_epoch = 0
     else:
         print(colored('No checkpoint file at {}'.format(p['pretext_checkpoint']), 'blue'))
