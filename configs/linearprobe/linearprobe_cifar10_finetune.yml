@@ -1,0 +1,43 @@
+# setup
+setup: linearprobe
+
+# Loss
+criterion: linearprobe
+
+update_cluster_head_only: True
+
+# Model
+backbone: resnet18
+
+# Dataset
+train_db_name: cifar-10-f
+val_db_name: cifar-10-f
+num_classes: 10
+
+# Transformations
+augmentation_strategy: standard 
+augmentation_kwargs:
+   random_resized_crop:
+      size: 32
+      scale: [0.5, 1.0]
+   normalize:
+      mean: [0.4914, 0.4822, 0.4465]
+      std: [0.2023, 0.1994, 0.2010]
+
+transformation_kwargs:
+   crop_size: 32
+   normalize:
+      mean: [0.4914, 0.4822, 0.4465]
+      std: [0.2023, 0.1994, 0.2010]
+
+# Hyperparameters
+optimizer: adam
+optimizer_kwargs:
+   lr: 0.001
+   weight_decay: 0.0001
+epochs: 50
+batch_size: 512
+num_workers: 4
+
+# Scheduler
+scheduler: constant
