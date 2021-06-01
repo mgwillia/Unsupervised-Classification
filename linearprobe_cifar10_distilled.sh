@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=distilled_linearprobe_cifar10                                 # sets the job name
+#SBATCH --job-name=linearprobe_c10_d                                 # sets the job name
 #SBATCH --output=distilled_linearprobe_cifar10.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
 #SBATCH --error=distilled_linearprobe_cifar10.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
 #SBATCH --time=36:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
