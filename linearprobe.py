@@ -46,11 +46,6 @@ def main():
     print(colored('Get model', 'blue'))
     model = get_model(p)
     print(model)
-    model = torch.nn.DataParallel(model)
-    model = model.cuda()
-    state = torch.load(p['pretext_model'], map_location='cpu')
-    missing = model.load_state_dict(state, strict=False)
-    print('missing components', missing)
 
     # Optimizer
     print(colored('Get optimizer', 'blue'))
@@ -66,6 +61,12 @@ def main():
     criterion = get_criterion(p) 
     criterion.cuda()
     print(criterion)
+    
+    model = torch.nn.DataParallel(model)
+    model = model.cuda()
+    state = torch.load(p['pretext_model'], map_location='cpu')
+    missing = model.load_state_dict(state, strict=False)
+    print('missing components', missing)
 
     if args.mode == 'train':
         # Checkpoint
