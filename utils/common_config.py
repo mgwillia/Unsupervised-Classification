@@ -130,10 +130,6 @@ def get_model(p, pretrain_path=None):
                 or set(missing[1]) == {
                 'contrastive_head.weight', 'contrastive_head.bias'})
 
-        elif p['setup'] == 'linearprobe':
-            missing = model.load_state_dict(state, strict=False)
-            print('missing components', missing)
-
         elif p['setup'] == 'selflabel': # Weights are supposed to be transfered from scan 
             # We only continue with the best head (pop all heads first, then copy back the best head)
             model_state = state['model']
