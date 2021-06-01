@@ -51,7 +51,7 @@ def main():
     print('Train transforms:', train_transforms)
     val_transforms = get_val_transformations(p)
     print('Validation transforms:', val_transforms)
-    train_dataset = get_train_dataset(p, train_transforms, to_augmented_dataset=True,
+    train_dataset = get_train_dataset(p, train_transforms, to_augmented_dataset=True, to_teachers_dataset=True,
                                         split='train+unlabeled') # Split is for stl-10
     val_dataset = get_val_dataset(p, val_transforms) 
     train_dataloader = get_train_dataloader(p, train_dataset)
@@ -93,6 +93,7 @@ def main():
         print(colored('No checkpoint file at {}'.format(p['pretext_checkpoint']), 'blue'))
         start_epoch = 0
 
+    """
     teacher = get_teacher(p)
     teacher.cuda()
     print(teacher)
@@ -103,6 +104,7 @@ def main():
         teacher.load_state_dict(state_dict['model'])
     else:
         raise NotImplementedError
+    """
     
     # Training
     print(colored('Starting main loop', 'blue'))
@@ -116,7 +118,8 @@ def main():
         
         # Train
         print('Train ...')
-        simclr_distill_train(train_dataloader, model, teacher, criterion, optimizer, epoch)
+        #simclr_distill_train(train_dataloader, model, teacher, criterion, optimizer, epoch)
+        simclr_distill_train(train_dataloader, model, criterion, optimizer, epoch)
 
         if epoch % 10 == 0 or epoch == p['epochs'] - 1:
             # Fill memory bank

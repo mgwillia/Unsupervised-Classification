@@ -295,7 +295,7 @@ class SimCLRDistillLoss(nn.Module):
         self.distill_alpha = distill_alpha
 
     
-    def forward(self, features, clusters):
+    def forward(self, features: torch.Tensor, clusters: torch.Tensor):
         """
         input:
             - features: hidden feature representation of shape [b, 2, dim]
@@ -312,17 +312,19 @@ class SimCLRDistillLoss(nn.Module):
         contrast_features = torch.cat(torch.unbind(features, dim=1), dim=0) #features but shape [bx2, dim]
         anchor = features[:,0]
 
-        cluster_features = torch.cat(torch.unbind(clusters, dim=1), dim=0)
-        cluster_anchors = clusters[:,0]
-        cluster_similarities = torch.matmul(cluster_anchors, cluster_features.T) / self.temperature
+        #cluster_features = torch.cat(torch.unbind(clusters, dim=1), dim=0)
+        #cluster_anchors = clusters[:,0]
+        #cluster_similarities = torch.matmul(cluster_anchors, cluster_features.T) / self.temperature
+        cluster_similarities = torch.matmul(clusters, clusters.T) / self.temperature
+        anchor_similarities = torch.matmul(anchor, anchor.T) / self.temperature
 
         # Dot product
         dot_product = torch.matmul(anchor, contrast_features.T) / self.temperature
 
-        soft_dot_product = F.log_softmax(dot_product, dim=1)
+        soft_anchor_similarities = F.log_softmax(anchor_similarities, dim=1)
         soft_cluster_similarities = F.softmax(cluster_similarities, dim=1)
 
-        distill_loss = F.kl_div(soft_dot_product, soft_cluster_similarities, reduction='batchmean')
+        distill_loss = F.kl_div(soft_anchor_similarities, soft_cluster_similarities, reduction='batchmean')
         
         # Log-sum trick for numerical stability
         logits_max, _ = torch.max(dot_product, dim=1, keepdim=True)
