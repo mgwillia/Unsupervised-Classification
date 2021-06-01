@@ -6,8 +6,8 @@ import argparse
 import torch
 import yaml
 from termcolor import colored
-from utils.common_config import get_val_dataset, get_val_transformations, get_val_dataloader,\
-                                get_model
+from utils.common_config import get_train_dataloader, get_val_dataset, get_val_transformations, get_val_dataloader,\
+                                get_model, get_train_dataset
 from utils.evaluate_utils import get_predictions, hungarian_evaluate
 from utils.memory import MemoryBank 
 from utils.utils import fill_memory_bank
@@ -31,8 +31,10 @@ def main():
     # Get dataset
     print(colored('Get validation dataset ...', 'blue'))
     transforms = get_val_transformations(config)
-    dataset = get_val_dataset(config, transforms)
-    dataloader = get_val_dataloader(config, dataset)
+    #dataset = get_val_dataset(config, transforms)
+    dataset = get_train_dataset(config, transforms)
+    #dataloader = get_val_dataloader(config, dataset)
+    dataloader = get_train_dataloader(config, dataset)
     print('Number of samples: {}'.format(len(dataset)))
 
     # Get model
