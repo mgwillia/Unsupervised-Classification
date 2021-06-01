@@ -4,8 +4,7 @@
 #SBATCH --output=eval_imagenet_50.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
 #SBATCH --error=eval_imagenet_50.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
 #SBATCH --time=36:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
-#SBATCH --account=scavenger
-#SBATCH --partition=scavenger
+#SBATCH --qos=high
 #SBATCH --gres=gpu:p6000:4
 #SBATCH --mem=128G
 #SBATCH --cpus-per-task=16
