@@ -14,7 +14,7 @@ from glob import glob
 
 class ImageNet(datasets.ImageFolder):
     def __init__(self, root=MyPath.db_root_dir('imagenet'), split='train', transform=None):
-        super(ImageNet, self).__init__(root=os.path.join(root, 'ILSVRC2012_img_%s' %(split)),
+        super(ImageNet, self).__init__(root=os.path.join(root, split),
                                          transform=None)
         self.transform = transform 
         self.split = split
@@ -50,7 +50,7 @@ class ImageNetSubset(data.Dataset):
                     transform=None):
         super(ImageNetSubset, self).__init__()
 
-        self.root = os.path.join(root, 'ILSVRC2012_img_%s' %(split))
+        self.root = os.path.join(root, split)
         self.transform = transform
         self.split = split
 
