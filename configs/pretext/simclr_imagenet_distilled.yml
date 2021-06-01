@@ -4,6 +4,8 @@ teacher: scan
 num_heads: 10
 teacher_path: imagenet_model.pth.tar
 
+finetune: False
+
 # Model
 backbone: resnet50
 model_kwargs:

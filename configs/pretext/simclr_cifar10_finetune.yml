@@ -2,11 +2,10 @@
 setup: simclr-distill
 teacher: selflabel
 num_heads: 1
-cluster_preds_path: cifar10_cluster_predictions.pth.tar
-#teacher_path: tutorial/cifar-10/selflabel/model.pth.tar
+teacher_path: tutorial/cifar-10/selflabel/model.pth.tar
 
-finetune: False
-finetune_model: none
+finetune: True
+finetune_model: tutorial/cifar-10/pretext/model.pth.tar
 
 # Model
 backbone: resnet18
@@ -15,8 +14,8 @@ model_kwargs:
    features_dim: 128
 
 # Dataset
-train_db_name: cifar-10-d
-val_db_name: cifar-10-d
+train_db_name: cifar-10-f
+val_db_name: cifar-10-f
 num_classes: 10
 
 # Loss
@@ -26,13 +25,13 @@ criterion_kwargs:
    distill_alpha: 1.0
 
 # Hyperparameters
-epochs: 500
+epochs: 50
 optimizer: sgd
 optimizer_kwargs:
    nesterov: False
    weight_decay: 0.0001 
    momentum: 0.9
-   lr: 0.4
+   lr: 0.004
 scheduler: cosine
 scheduler_kwargs:
    lr_decay_rate: 0.1

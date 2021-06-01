@@ -90,6 +90,11 @@ def main():
         optimizer.load_state_dict(checkpoint['optimizer'])
         model.load_state_dict(checkpoint['model'])
         start_epoch = checkpoint['epoch']
+    elif p['finetune']:
+        print(colored('Finetune from trained model {}'.format(p['finetune_model']), 'blue'))
+        checkpoint = torch.load(p['finetune_model'], map_location='cpu')
+        model.load_state_dict(checkpoint['model'])
+        start_epoch = 0
     else:
         print(colored('No checkpoint file at {}'.format(p['pretext_checkpoint']), 'blue'))
         start_epoch = 0
