@@ -95,7 +95,6 @@ def main():
         start_epoch = 0
 
     teacher = get_teacher(p)
-    teacher.cuda()
     print(teacher)
     state_dict = torch.load(p['teacher_path'], map_location='cpu')
     if p['teacher'] == 'selflabel':
@@ -104,6 +103,8 @@ def main():
         teacher.load_state_dict(state_dict['model'])
     else:
         raise NotImplementedError
+    teacher = torch.nn.DataParallel(teacher) # I added this to support ImageNet
+    teacher = teacher.cuda()
     
     # Training
     print(colored('Starting main loop', 'blue'))
