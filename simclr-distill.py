@@ -38,8 +38,9 @@ def main():
     model = get_model(p)
     print('Model is {}'.format(model.__class__.__name__))
     print('Model parameters: {:.2f}M'.format(sum(p.numel() for p in model.parameters()) / 1e6))
-    model.cuda()
     print(model)
+    model = torch.nn.DataParallel(model) # I added this to support ImageNet
+    model = model.cuda()
    
     # CUDNN
     print(colored('Set CuDNN benchmark', 'blue')) 
