@@ -23,6 +23,8 @@ train_db_name: cifar-10
 val_db_name: cifar-10
 num_classes: 10
 
+augmentation_strategy: none
+
 transformation_kwargs:
    crop_size: 32
    normalize:
