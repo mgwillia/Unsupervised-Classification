@@ -60,7 +60,7 @@ def get_feature_dimensions_backbone(p):
 def get_model(p, pretrain_path=None):
     # Get backbone
     if p['backbone'] == 'resnet18':
-        if p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-20']:
+        if p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-10-f', 'cifar-20']:
             from models.resnet_cifar import resnet18
             backbone = resnet18()
 
@@ -162,7 +162,7 @@ def get_model(p, pretrain_path=None):
 def get_teacher(p):
     # Get backbone
     if p['backbone'] == 'resnet18':
-        if p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-20']:
+        if p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-10-f', 'cifar-20']:
             from models.resnet_cifar import resnet18
             backbone = resnet18()
 
@@ -194,7 +194,7 @@ def get_teacher(p):
 def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_dataset=False,
                         to_neighbors_dataset=False, to_neighbors_strangers_dataset=False, to_neighbors_anchors_dataset=False, split=None):
     # Base dataset
-    if p['train_db_name'] in ['cifar-10', 'cifar-10-d']:
+    if p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-10-f']:
         from data.cifar import CIFAR10
         dataset = CIFAR10(train=True, transform=transform, download=False)
 
@@ -258,7 +258,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
 
 def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_strangers_dataset=False, to_teachers_dataset=False):
     # Base dataset
-    if p['val_db_name'] in ['cifar-10', 'cifar-10-d']:
+    if p['val_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-10-f']:
         from data.cifar import CIFAR10
         dataset = CIFAR10(train=False, transform=transform, download=True)
     
