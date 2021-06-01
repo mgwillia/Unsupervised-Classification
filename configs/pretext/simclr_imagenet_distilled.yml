@@ -31,7 +31,7 @@ optimizer_kwargs:
 scheduler: cosine
 scheduler_kwargs:
    lr_decay_rate: 0.1
-batch_size: 512 
+batch_size: 324 
 num_workers: 16
 
 # Transformations
