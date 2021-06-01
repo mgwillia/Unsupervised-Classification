@@ -2,7 +2,8 @@
 setup: simclr-distill
 teacher: selflabel
 num_heads: 1
-teacher_path: tutorial/cifar-10/selflabel/model.pth.tar
+cluster_preds_path: cifar10_cluster_predictions.pth.tar
+#teacher_path: tutorial/cifar-10/selflabel/model.pth.tar
 
 # Model
 backbone: resnet18
