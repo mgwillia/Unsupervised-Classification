@@ -78,8 +78,8 @@ def get_model(p, pretrain_path=None):
     elif p['backbone'] == 'resnet50':
         print(p)
         if 'imagenet' in p['train_db_name']:
-            from models.resnet import resnet50
-            backbone = resnet50()  
+            from models.resnet_wider import resnet50x1
+            backbone = resnet50x1()
 
         elif 'pascal-pretrained' in p['train_db_name'] or p['train_db_name'] == 'pascal-large-batches' or p['train_db_name'] == 'pascal-retrain':
             from models.resnet_wider import resnet50x1
@@ -176,6 +176,10 @@ def get_teacher(p):
         
         else:
             raise NotImplementedError
+    elif p['backbone'] == 'resnet50':
+        if 'imagenet' in p['train_db_name']:
+            from models.resnet_wider import resnet50x1
+            backbone = resnet50x1()
     else:
         raise ValueError('Invalid backbone {}'.format(p['backbone']))
 
@@ -210,7 +214,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
         from data.cub import CUB
         dataset = CUB(train=True, transform=transform)
 
-    elif p['train_db_name'] == 'imagenet':
+    elif p['train_db_name'] in ['imagenet', 'imagenet-d']:
         from data.imagenet import ImageNet
         dataset = ImageNet(split='train', transform=transform)
 
@@ -269,7 +273,7 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
         from data.cub import CUB
         dataset = CUB(train=False, transform=transform)
     
-    elif p['val_db_name'] == 'imagenet':
+    elif p['val_db_name'] in ['imagenet', 'imagenet-d']:
         from data.imagenet import ImageNet
         dataset = ImageNet(split='val', transform=transform)
     
