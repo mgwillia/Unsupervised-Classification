@@ -4,10 +4,10 @@
 #SBATCH --output=distilled_linearprobe_cifar10.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
 #SBATCH --error=distilled_linearprobe_cifar10.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
 #SBATCH --time=36:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
-#SBATCH --qos=high                                           # set QOS, this will determine what resources can be requested
-#SBATCH --gres=gpu:4
-#SBATCH --mem=64G
-#SBATCH --cpus-per-task=16
+#SBATCH --qos=medium                                           # set QOS, this will determine what resources can be requested
+#SBATCH --gres=gpu:2
+#SBATCH --mem=32G
+#SBATCH --cpus-per-task=8
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
