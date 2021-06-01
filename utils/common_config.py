@@ -220,7 +220,8 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
 
     elif p['train_db_name'] in ['imagenet_50', 'imagenet_50-d', 'imagenet_100', 'imagenet_200']:
         from data.imagenet import ImageNetSubset
-        subset_file = './data/imagenet_subsets/%s.txt' %(p['train_db_name'])
+
+        subset_file = './data/imagenet_subsets/%s.txt' %(p['train_db_name'].replace('-d', ''))
         dataset = ImageNetSubset(subset_file=subset_file, split='train', transform=transform)
 
     else:
