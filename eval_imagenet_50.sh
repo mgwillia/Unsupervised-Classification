@@ -12,4 +12,4 @@
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python eval.py --config_env configs/env.yml --config_exp configs/selflabel/selflabel_imagenet_50.yml"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python eval.py --config_exp configs/selflabel/selflabel_imagenet_50.yml"
