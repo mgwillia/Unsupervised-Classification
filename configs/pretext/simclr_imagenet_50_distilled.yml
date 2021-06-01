@@ -3,6 +3,7 @@ setup: simclr-distill
 teacher: selflabel
 num_heads: 1
 teacher_path: selflabel_imagenet_50.pth.tar
+cluster_preds_path: imagenet_50_cluster_predictions.pth.tar
 
 # Model
 backbone: resnet50

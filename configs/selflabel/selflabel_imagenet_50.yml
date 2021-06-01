@@ -1,6 +1,8 @@
 # setup
 setup: selflabel
 
+cluster_preds_path: imagenet_50_cluster_predictions.pth.tar
+
 # Threshold
 confidence_threshold: 0.99
 

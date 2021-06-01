@@ -250,7 +250,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
 
     if to_teachers_dataset:
         from data.custom_dataset import TeachersDataset
-        dataset = TeachersDataset(dataset)
+        dataset = TeachersDataset(dataset, p['cluster_preds_path'])
     
     return dataset
 
@@ -303,7 +303,7 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
 
     if to_teachers_dataset:
         from data.custom_dataset import TeachersDataset
-        dataset = TeachersDataset(dataset)
+        dataset = TeachersDataset(dataset, p['cluster_preds_path'])
 
     return dataset
 
