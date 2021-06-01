@@ -44,7 +44,7 @@ def main():
     
     # Model
     print(colored('Get model', 'blue'))
-    model = get_model(p, p['pretext_model'])
+    model = get_model(p)
     print(model)
     model = torch.nn.DataParallel(model)
     model = model.cuda()
