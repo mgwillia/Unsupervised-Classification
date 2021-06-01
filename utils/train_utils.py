@@ -40,7 +40,7 @@ def simclr_train(train_loader, model, criterion, optimizer, epoch):
             progress.display(i)
 
 
-def simclr_distill_train(train_loader, model, criterion, optimizer, epoch):
+def simclr_distill_train(train_loader, model, teacher, criterion, optimizer, epoch):
     """ 
     Train according to the scheme from SimCLR
     https://arxiv.org/abs/2002.05709
@@ -56,7 +56,7 @@ def simclr_distill_train(train_loader, model, criterion, optimizer, epoch):
     for i, batch in enumerate(train_loader):
         images = batch['image']
         images_augmented = batch['image_augmented']
-        clusters = batch['cluster_pred'].cuda(non_blocking=True)
+        #clusters = batch['cluster_pred'].cuda(non_blocking=True)
         b, c, h, w = images.size()
         input_ = torch.cat([images.unsqueeze(1), images_augmented.unsqueeze(1)], dim=1)
         input_ = input_.view(-1, c, h, w) 
@@ -64,8 +64,8 @@ def simclr_distill_train(train_loader, model, criterion, optimizer, epoch):
 
         output = model(input_).view(b, 2, -1)
         #print(teacher(input_))
-        #clusters = teacher(input_)[0].view(b, 2, -1)
-        clusters = clusters.view(b, 1, -1).repeat(1, 2, 1)
+        clusters = teacher(input_)[0].view(b, 2, -1)
+        #clusters = clusters.view(b, 1, -1).repeat(1, 2, 1)
         loss = criterion(output, clusters)
         losses.update(loss.item())
 
