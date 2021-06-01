@@ -191,7 +191,7 @@ def get_teacher(p):
     return teacher
 
 
-def get_train_dataset(p, transform, to_augmented_dataset=False,
+def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_dataset=False,
                         to_neighbors_dataset=False, to_neighbors_strangers_dataset=False, to_neighbors_anchors_dataset=False, split=None):
     # Base dataset
     if p['train_db_name'] in ['cifar-10', 'cifar-10-d']:
@@ -247,11 +247,15 @@ def get_train_dataset(p, transform, to_augmented_dataset=False,
         neighbor_indices = np.load(p['topk_neighbors_train_path'])
         centroid_indices = np.load(p['centroid_indices_train_path'])
         dataset = SCANCDataset(dataset, centroid_indices, neighbor_indices, p['num_neighbors'])
+
+    if to_teachers_dataset:
+        from data.custom_dataset import TeachersDataset
+        dataset = TeachersDataset(dataset)
     
     return dataset
 
 
-def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_strangers_dataset=False):
+def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_strangers_dataset=False, to_teachers_dataset=False):
     # Base dataset
     if p['val_db_name'] in ['cifar-10', 'cifar-10-d']:
         from data.cifar import CIFAR10
@@ -296,6 +300,10 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
         neighbor_indices = np.load(p['topk_neighbors_val_path'])
         stranger_indices = np.load(p['topk_strangers_val_path'])
         dataset = SCANFDataset(dataset, neighbor_indices, stranger_indices, 5, 5)
+
+    if to_teachers_dataset:
+        from data.custom_dataset import TeachersDataset
+        dataset = TeachersDataset(dataset)
 
     return dataset
 

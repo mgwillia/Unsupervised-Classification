@@ -319,13 +319,8 @@ class SimCLRDistillLoss(nn.Module):
         # Dot product
         dot_product = torch.matmul(anchor, contrast_features.T) / self.temperature
 
-        #normalized_dot_product = (dot_product - dot_product.min()) / (dot_product.max() - dot_product.min())
-        #normalized_cluster_similarities = (cluster_similarities - cluster_similarities.min()) / (cluster_similarities.max() - cluster_similarities.min())
         soft_dot_product = F.log_softmax(dot_product, dim=1)
         soft_cluster_similarities = F.softmax(cluster_similarities, dim=1)
-
-        #print('dot_product shape:\t', soft_dot_product.shape, ';\tcluster_similarities shape:\t', soft_cluster_similarities.shape)
-        #print('dot_product mean:\t', soft_dot_product.mean(), ';\tcluster_similarities mean:\t', soft_cluster_similarities.mean())
 
         distill_loss = F.kl_div(soft_dot_product, soft_cluster_similarities, reduction='batchmean')
         

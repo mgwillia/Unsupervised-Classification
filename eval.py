@@ -26,7 +26,6 @@ def main():
     print(colored('Read config file {} ...'.format(args.config_exp), 'blue'))
     with open(args.config_exp, 'r') as stream:
         config = yaml.safe_load(stream)
-    config['batch_size'] = 512 # To make sure we can evaluate on a single 1080ti
     print(config)
 
     # Get dataset
@@ -83,6 +82,7 @@ def main():
         print(colored('Perform evaluation of the clustering model (setup={}).'.format(config['setup']), 'blue'))
         head = state_dict['head'] if config['setup'] == 'scan' else 0
         predictions, features = get_predictions(config, dataloader, model, return_features=True)
+        torch.save(predictions[head]['predictions'], config['teacher_predictions_path'])
         clustering_stats = hungarian_evaluate(head, predictions, dataset.classes, 
                                                 compute_confusion_matrix=True)
         print(clustering_stats)

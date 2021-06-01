@@ -82,6 +82,26 @@ class NeighborsDataset(Dataset):
         
         return output
 
+
+""" 
+    TeachersDataset
+    Returns an image with its cluster prediction.
+"""
+class TeachersDataset(Dataset):
+    def __init__(self, dataset, cluster_preds_path):
+        super(TeachersDataset, self).__init__()
+        self.dataset = dataset
+        self.cluster_preds = torch.load(cluster_preds_path)
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, index):
+        output = self.dataset.__getitem__(index)
+        output['cluster_pred'] = self.cluster_preds[index]
+        
+        return output
+
 class SCANFDataset(Dataset):
     def __init__(self, dataset, neighbor_indices, stranger_indices, num_neighbors=None, num_strangers=None):
         super(SCANFDataset, self).__init__()
