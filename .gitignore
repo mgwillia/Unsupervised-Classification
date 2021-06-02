@@ -1,4 +1,6 @@
 .vscode/
 *.out.*
 *.pth.tar
+*.pth
+tutorial/
 __pycache__/
