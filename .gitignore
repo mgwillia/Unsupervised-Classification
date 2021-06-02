@@ -1,1 +1,4 @@
 .vscode/
+*.out.*
+*.pth.tar
+__pycache__/

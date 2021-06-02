@@ -36,7 +36,7 @@ scheduler: cosine
 scheduler_kwargs:
    lr_decay_rate: 0.1
 batch_size: 512 
-num_workers: 4
+num_workers: 2
 
 # Transformations
 augmentation_strategy: simclr 

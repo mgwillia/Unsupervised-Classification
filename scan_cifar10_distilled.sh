@@ -4,7 +4,8 @@
 #SBATCH --output=scan_cifar10_distilled.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
 #SBATCH --error=scan_cifar10_distilled.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
 #SBATCH --time=24:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
-#SBATCH --qos=medium                                           # set QOS, this will determine what resources can be requested
+#SBATCH --account=scavenger                                           # set QOS, this will determine what resources can be requested
+#SBATCH --partition=scavenger
 #SBATCH --gres=gpu:2
 #SBATCH --mem=64G
 #SBATCH --cpus-per-task=8

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=scanf_cifar10                                 # sets the job name
-#SBATCH --output=scanf_cifar10.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
-#SBATCH --error=scanf_cifar10.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
+#SBATCH --job-name=scanf_cifar10_repeat                                 # sets the job name
+#SBATCH --output=scanf_cifar10_repeat.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
+#SBATCH --error=scanf_cifar10_repeat.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
 #SBATCH --time=24:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
 #SBATCH --qos=medium                                           # set QOS, this will determine what resources can be requested
 #SBATCH --gres=gpu:2
