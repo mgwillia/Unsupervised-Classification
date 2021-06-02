@@ -33,7 +33,7 @@ transformation_kwargs:
 # Hyperparameters
 optimizer: adam
 optimizer_kwargs:
-   lr: 0.01
+   lr: 0.001
    weight_decay: 0.000001
 epochs: 100
 batch_size: 512
