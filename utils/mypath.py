@@ -18,7 +18,8 @@ class MyPath(object):
             return '/fs/vulcan-datasets/cifar-100-python'
 
         elif database == 'stl-10':
-            return '/vulcanscratch/mgwillia/stl10_binary'
+            #return '/vulcanscratch/mgwillia/stl10_binary'
+            return '/scratch0/mgwillia/stl10_binary'
         
         elif database in ['imagenet', 'imagenet_50', 'imagenet_100', 'imagenet_200']:
             return '/fs/vulcan-datasets/imagenet'
