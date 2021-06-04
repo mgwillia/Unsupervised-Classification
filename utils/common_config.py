@@ -196,11 +196,11 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
 
     elif p['train_db_name'] == 'cifar-20':
         from data.cifar import CIFAR20
-        dataset = CIFAR20(train=True, transform=transform, download=True)
+        dataset = CIFAR20(train=True, transform=transform, download=False)
 
     elif p['train_db_name'] == 'stl-10':
         from data.stl import STL10
-        dataset = STL10(split=split, transform=transform, download=True)
+        dataset = STL10(split=split, transform=transform, download=False)
 
     elif 'pascal-pretrained' in p['train_db_name'] or p['train_db_name'] == 'pascal-large-batches' or p['train_db_name'] == 'pascal-retrain':
         from data.pascal_voc import PASCALVOC
@@ -260,11 +260,11 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
     
     elif p['val_db_name'] == 'cifar-20':
         from data.cifar import CIFAR20
-        dataset = CIFAR20(train=False, transform=transform, download=True)
+        dataset = CIFAR20(train=False, transform=transform, download=False)
 
     elif p['val_db_name'] == 'stl-10':
         from data.stl import STL10
-        dataset = STL10(split='test', transform=transform, download=True)
+        dataset = STL10(split='test', transform=transform, download=False)
 
     elif 'pascal-pretrained' in p['train_db_name'] or p['train_db_name'] == 'pascal-large-batches' or p['train_db_name'] == 'pascal-retrain':
         from data.pascal_voc import PASCALVOC
