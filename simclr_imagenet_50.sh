@@ -7,7 +7,7 @@
 #SBATCH --qos=high                                           # set QOS, this will determine what resources can be requested
 #SBATCH --gres=gpu:p6000:4
 #SBATCH --mem=128G
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=8
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
