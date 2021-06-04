@@ -7,8 +7,8 @@
 #SBATCH --account=scavenger
 #SBATCH --partition=scavenger
 #SBATCH --mem=64G
-#SBATCH --gres=gpu:p6000:2
-#SBATCH --cpus-per-task=4
+#SBATCH --gres=gpu:4
+#SBATCH --cpus-per-task=16
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
@@ -16,7 +16,7 @@ srun "mkdir -p /scratch0/mgwillia;"
 srun "rsync -r /vulcanscratch/mgwillia/stl10_binary.tar.gz /scratch0/mgwillia/;"
 srun "tar zxf /scratch0/mgwillia/stl10_binary.tar.gz;"
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1 python simclr.py --config_env configs/env.yml --config_exp configs/pretext/simclr_stl10.yml"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python simclr.py --config_env configs/env.yml --config_exp configs/pretext/simclr_stl10.yml"
 
 srun "rm -r /scratch0/mgwillia/stl10_binary"
 srun "rm /scratch0/mgwillia/stl10_binary.tar.gz"
