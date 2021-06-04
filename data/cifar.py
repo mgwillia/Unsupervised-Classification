@@ -153,7 +153,7 @@ class CIFAR20(CIFAR10):
 
     This is a subclass of the `CIFAR10` Dataset.
     """
-    base_folder = 'cifar-100-python'
+    base_folder = ''
     url = "https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz"
     filename = "cifar-100-python.tar.gz"
     tgz_md5 = 'eb9058c3a382ffc7106e4002c42a8d85'
