@@ -133,6 +133,7 @@ class CIFAR10(Dataset):
         for fentry in (self.train_list + self.test_list):
             filename, md5 = fentry[0], fentry[1]
             fpath = os.path.join(root, self.base_folder, filename)
+            print(fpath)
             if not check_integrity(fpath, md5):
                 return False
         return True
