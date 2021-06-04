@@ -3,8 +3,9 @@
 #SBATCH --job-name=sclr_i50                                # sets the job name
 #SBATCH --output=simclr_imagenet_50.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
 #SBATCH --error=simclr_imagenet_50.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
-#SBATCH --time=36:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
-#SBATCH --qos=high                                           # set QOS, this will determine what resources can be requested
+#SBATCH --time=72:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
+#SBATCH --account=scavenger
+#SBATCH --partition=scavenger
 #SBATCH --gres=gpu:p6000:4
 #SBATCH --mem=128G
 #SBATCH --cpus-per-task=8
