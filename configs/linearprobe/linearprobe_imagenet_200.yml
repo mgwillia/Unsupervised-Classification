@@ -12,7 +12,7 @@ backbone: resnet50
 # Dataset
 train_db_name: imagenet_200
 val_db_name: imagenet_200
-num_classes: 50
+num_classes: 200
 
 # Transformations
 augmentation_strategy: standard 
