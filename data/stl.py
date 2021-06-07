@@ -54,7 +54,11 @@ class STL10(Dataset):
         self.split = verify_str_arg(split, "split", self.splits)
         self.folds = self._verify_folds(folds)
         if download:
+            print('Ack! Download set to true!')
             self.download()
+            raise RuntimeError(
+                'You are not supposed to download this.')
+
         elif not self._check_integrity():
             raise RuntimeError(
                 'Dataset not found or corrupted. '
