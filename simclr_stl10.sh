@@ -14,7 +14,7 @@ module load cuda/10.0.130                                    # run any commands 
 
 srun bash -c "mkdir -p /scratch0/mgwillia;"
 srun bash -c "rsync -r /vulcanscratch/mgwillia/stl10_binary.tar.gz /scratch0/mgwillia/;"
-srun bash -c "tar -zxf /scratch0/mgwillia/stl10_binary.tar.gz;"
+srun bash -c "tar -zxf /scratch0/mgwillia/stl10_binary.tar.gz /scratch0/mgwillia/;"
 srun bash -c "ls /scratch0/mgwillia/*;"
 srun bash -c "rsync -r /vulcanscratch/mgwillia/stl10_binary /scratch0/mgwillia/;"
 srun bash -c "ls /scratch0/mgwillia/*"
