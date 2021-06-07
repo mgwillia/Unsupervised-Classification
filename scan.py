@@ -46,7 +46,7 @@ def main():
     print(colored('Get model', 'blue'))
     model = get_model(p, p['pretext_model'])
     print(model)
-    model = torch.nn.DataParallel(model)
+    #model = torch.nn.DataParallel(model)
     model = model.cuda()
 
     # Optimizer

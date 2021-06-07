@@ -123,6 +123,7 @@ def get_model(p, pretrain_path=None):
         state = torch.load(pretrain_path, map_location='cpu')
         
         if p['setup'] == 'scan': # Weights are supposed to be transfered from contrastive training
+            model = torch.nn.DataParallel(model)
             missing = model.load_state_dict(state, strict=False)
             print(missing)
             assert(set(missing[1]) == {
