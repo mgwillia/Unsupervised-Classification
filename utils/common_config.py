@@ -127,10 +127,10 @@ def get_model(p, pretrain_path=None):
             missing = model.load_state_dict(state, strict=False)
             print(missing)
             assert(set(missing[1]) == {
-                'contrastive_head.0.weight', 'contrastive_head.0.bias', 
-                'contrastive_head.2.weight', 'contrastive_head.2.bias'}
+                'module.contrastive_head.0.weight', 'module.contrastive_head.0.bias', 
+                'module.contrastive_head.2.weight', 'module.contrastive_head.2.bias'}
                 or set(missing[1]) == {
-                'contrastive_head.weight', 'contrastive_head.bias'})
+                'module.contrastive_head.weight', 'module.contrastive_head.bias'})
 
         elif p['setup'] == 'selflabel': # Weights are supposed to be transfered from scan 
             # We only continue with the best head (pop all heads first, then copy back the best head)
