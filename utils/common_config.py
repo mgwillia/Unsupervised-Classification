@@ -60,11 +60,11 @@ def get_feature_dimensions_backbone(p):
 def get_model(p, pretrain_path=None):
     # Get backbone
     if p['backbone'] == 'resnet18':
-        if p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-10-f', 'cifar-20']:
+        if p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-10-f', 'cifar-20', 'cifar-20-d', 'cifar-20-f']:
             from models.resnet_cifar import resnet18
             backbone = resnet18()
 
-        elif p['train_db_name'] == 'stl-10':
+        elif p['train_db_name'] in ['stl-10', 'stl-10-d', 'stl-10-f']:
             from models.resnet_stl import resnet18
             backbone = resnet18()
 
@@ -160,11 +160,11 @@ def get_model(p, pretrain_path=None):
 def get_teacher(p):
     # Get backbone
     if p['backbone'] == 'resnet18':
-        if p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-10-f', 'cifar-20']:
+        if p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-10-f', 'cifar-20', 'cifar-20-d', 'cifar-20-f']:
             from models.resnet_cifar import resnet18
             backbone = resnet18()
 
-        elif p['train_db_name'] == 'stl-10':
+        elif p['train_db_name'] in ['stl-10', 'stl-10-d', 'stl-10-f']:
             from models.resnet_stl import resnet18
             backbone = resnet18()
 
@@ -196,11 +196,11 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
         from data.cifar import CIFAR10
         dataset = CIFAR10(train=True, transform=transform, download=False)
 
-    elif p['train_db_name'] == 'cifar-20':
+    elif p['train_db_name'] in ['cifar-20', 'cifar-20-d', 'cifar-20-f']:
         from data.cifar import CIFAR20
         dataset = CIFAR20(train=True, transform=transform, download=False)
 
-    elif p['train_db_name'] == 'stl-10':
+    elif p['train_db_name'] in ['stl-10', 'stl-10-d', 'stl-10-f']:
         from data.stl import STL10
         dataset = STL10(split=split, transform=transform, download=False)
 
@@ -260,11 +260,11 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
         from data.cifar import CIFAR10
         dataset = CIFAR10(train=False, transform=transform, download=True)
     
-    elif p['val_db_name'] == 'cifar-20':
+    elif p['val_db_name'] == ['cifar-20', 'cifar-20-d', 'cifar-20-f']:
         from data.cifar import CIFAR20
         dataset = CIFAR20(train=False, transform=transform, download=False)
 
-    elif p['val_db_name'] == 'stl-10':
+    elif p['val_db_name'] in ['stl-10', 'stl-10-d', 'stl-10-f']:
         from data.stl import STL10
         dataset = STL10(split='test', transform=transform, download=False)
 
