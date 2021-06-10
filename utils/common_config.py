@@ -260,7 +260,7 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
         from data.cifar import CIFAR10
         dataset = CIFAR10(train=False, transform=transform, download=True)
     
-    elif p['val_db_name'] == ['cifar-20', 'cifar-20-d', 'cifar-20-f']:
+    elif p['val_db_name'] in ['cifar-20', 'cifar-20-d', 'cifar-20-f']:
         from data.cifar import CIFAR20
         dataset = CIFAR20(train=False, transform=transform, download=False)
 
