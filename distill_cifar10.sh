@@ -12,4 +12,4 @@
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0 python simclr-distill.py --config_env configs/env.yml --config_exp configs/pretext/distill_cifar10.yml"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1 python simclr-distill.py --config_env configs/env.yml --config_exp configs/pretext/distill_cifar10.yml"
