@@ -18,7 +18,8 @@ num_classes: 10
 # Loss
 criterion: simclr-distill
 criterion_kwargs:
-   temperature: 0.1 
+   temperature: 0.1
+   distill_alpha: 1.0
 
 # Hyperparameters
 epochs: 500
