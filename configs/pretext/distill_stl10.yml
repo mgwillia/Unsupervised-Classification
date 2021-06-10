@@ -4,6 +4,9 @@ teacher: selflabel
 num_heads: 1
 teacher_path: tutorial/stl-10/selflabel/model.pth.tar
 
+finetune: False
+finetune_model: none
+
 # Model
 backbone: resnet18
 model_kwargs:
