@@ -63,6 +63,7 @@ class MemoryBank(object):
         # mine the topk nearest neighbors for every sample
         #import faiss
         features = self.features.cpu().numpy()
+        print(features.shape)
         #n, dim = features.shape[0], features.shape[1]
         #index = faiss.IndexFlatIP(dim)
         #index = faiss.index_cpu_to_all_gpus(index)
