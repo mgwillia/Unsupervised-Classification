@@ -19,7 +19,7 @@ srun bash -c "ls /scratch0/mgwillia/*"
 srun bash -c "rsync -r /vulcanscratch/mgwillia/stl10_binary /scratch0/mgwillia/;"
 srun bash -c "ls /scratch0/mgwillia/*"
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python selflabel.py --config_env configs/env.yml --config_exp configs/selflabel/selflabel_stl10.yml --mode train"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python selflabel.py --config_env configs/env.yml --config_exp configs/selflabel/selflabel_stl10.yml"
 
 srun bash -c "rm -r /scratch0/mgwillia/stl10_binary"
 srun bash -c "rm /scratch0/mgwillia/stl10_binary.tar.gz"
