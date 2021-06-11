@@ -3,7 +3,9 @@ Authors: Wouter Van Gansbeke, Simon Vandenhende
 Licensed under the CC BY-NC 4.0 license (https://creativecommons.org/licenses/by-nc/4.0/)
 """
 from scipy.spatial.distance import pdist, squareform
-from sklearn_extra.cluster import KMedoids
+from sklearn import cluster
+#from sklearn_extra.cluster import KMedoids
+from sklearn.cluster import KMeans
 import numpy as np
 import torch
 
@@ -47,10 +49,21 @@ class MemoryBank(object):
 
     def mine_cluster_centroids(self, num_clusters):
         features = self.features.cpu().numpy()
-        #similarities = squareform(pdist(features))  
-        #kmedoids = KMedoids(n_clusters=num_clusters, metric='precomputed', init='k-medoids++').fit(similarities)
-        kmedoids = KMedoids(n_clusters=num_clusters, metric='euclidean', init='k-medoids++').fit(features)
+
+        kmeans = KMeans(n_clusters=num_clusters, init='k-means++', n_init=1, algorithm='full').fit(features)
+        cluster_centers= kmeans.cluster_centers_
+        similarities = np.matmul(features, np.transpose(cluster_centers))
+        print('Similarites shape:', similarities.shape)
+        centroid_indices = []
+        for i in range(num_clusters):
+            centroid_indices.append(np.argmin(similarities[:,i]))
+
+        """
+        similarities = squareform(pdist(features))  
+        kmedoids = KMedoids(n_clusters=num_clusters, metric='precomputed', init='k-medoids++').fit(similarities)
         centroid_indices = kmedoids.medoid_indices_
+        """
+        
         targets = self.targets.cpu().numpy()
         represented_targets = []
         for index in centroid_indices:
