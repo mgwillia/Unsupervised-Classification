@@ -7,9 +7,9 @@
 #SBATCH --account=scavenger
 #SBATCH --partition=scavenger
 #SBATCH --mem=64G
-#SBATCH --gres=gpu:p6000:4
+#SBATCH --gres=gpu:8
 #SBATCH --cpus-per-task=8
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python scan.py --config_env configs/env.yml --config_exp configs/scan/scan_imagenet_200.yml --mode train"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python scan.py --config_env configs/env.yml --config_exp configs/scan/scan_imagenet_200.yml --mode train"

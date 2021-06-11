@@ -53,7 +53,7 @@ optimizer_kwargs:
    momentum: 0.9
 epochs: 100
 batch_size: 1024
-num_workers: 12
+num_workers: 8
 
 # Scheduler
 scheduler: constant
