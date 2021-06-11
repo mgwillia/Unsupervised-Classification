@@ -47,8 +47,9 @@ class MemoryBank(object):
 
     def mine_cluster_centroids(self, num_clusters):
         features = self.features.cpu().numpy()
-        similarities = squareform(pdist(features))  
-        kmedoids = KMedoids(n_clusters=num_clusters, metric='precomputed', init='k-medoids++').fit(similarities)
+        #similarities = squareform(pdist(features))  
+        #kmedoids = KMedoids(n_clusters=num_clusters, metric='precomputed', init='k-medoids++').fit(similarities)
+        kmedoids = KMedoids(n_clusters=num_clusters, metric='euclidean', init='k-medoids++').fit(features)
         centroid_indices = kmedoids.medoid_indices_
         targets = self.targets.cpu().numpy()
         represented_targets = []
@@ -60,22 +61,24 @@ class MemoryBank(object):
         return centroid_indices, num_targets_represented
 
     def mine_nearest_neighbors(self, topk, calculate_accuracy=True):
-        # mine the topk nearest neighbors for every sample
-        #import faiss
+        #features = self.features.cpu().numpy()
+        #print(features.shape)
+        #similarities = squareform(pdist(features))        
+        #indices = np.argpartition(similarities, topk)[:,:topk]
+
+        import faiss
         features = self.features.cpu().numpy()
-        print(features.shape)
-        #n, dim = features.shape[0], features.shape[1]
-        #index = faiss.IndexFlatIP(dim)
-        #index = faiss.index_cpu_to_all_gpus(index)
-        #index.add(features)
-        #distances, indices = index.search(features, topk+1) # Sample itself is included
-        similarities = squareform(pdist(features))        
-        indices = np.argpartition(similarities, topk)[:,:topk]
+        _, dim = features.shape[0], features.shape[1]
+        index = faiss.IndexFlatIP(dim)
+        index = faiss.index_cpu_to_all_gpus(index)
+        index.add(features)
+        _, indices = index.search(features, topk+1) # Sample itself is included
 
         # evaluate 
         if calculate_accuracy:
             targets = self.targets.cpu().numpy()
-            neighbor_targets = np.take(targets, indices[:,:], axis=0) # Exclude sample itself for eval
+            #neighbor_targets = np.take(targets, indices[:,:], axis=0) # Exclude sample itself for eval
+            neighbor_targets = np.take(targets, indices[:,1:], axis=0) # Exclude sample itself for eval
             anchor_targets = np.repeat(targets.reshape(-1,1), topk, axis=1)
             accuracy = np.mean(neighbor_targets == anchor_targets)
             return indices, accuracy
