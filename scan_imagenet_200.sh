@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=scn_i50                                # sets the job name
-#SBATCH --output=scn_i50.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
-#SBATCH --error=scn_i50.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
+#SBATCH --job-name=scn_i200                                # sets the job name
+#SBATCH --output=scn_i200.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
+#SBATCH --error=scn_i200.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
 #SBATCH --time=72:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
 #SBATCH --account=scavenger
 #SBATCH --partition=scavenger
