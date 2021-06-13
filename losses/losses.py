@@ -122,6 +122,51 @@ class SCANLoss(nn.Module):
         return total_loss, consistency_loss, entropy_loss
 
 
+class SCANKLLoss(nn.Module):
+    def __init__(self, entropy_weight = 0.0):
+        super(SCANKLLoss, self).__init__()
+        self.softmax = nn.Softmax(dim = 1)
+        self.bce = nn.BCELoss()
+        self.entropy_weight = entropy_weight # Default = 2.0
+
+    def forward(self, anchors, neighbors, anchor_embeddings, neighbor_embeddings):
+        """
+        input:
+            - anchors: logits for anchor images w/ shape [b, num_classes]
+            - neighbors: logits for neighbor images w/ shape [b, num_classes]
+            - anchor_embeddings: embeddings from SimCLR for anchor images w/ shape [b, feature_dim]
+            - neighbor_embeddings: embeddings from SimCLR for neighbor images w/ shape [b, feature_dim]
+
+        output:
+            - Loss
+        """
+        # Softmax
+        b, n = anchors.size()
+        anchors_prob = self.softmax(anchors)
+        positives_prob = self.softmax(neighbors)
+       
+        # Similarity in output space
+        probs_similarity = torch.bmm(anchors_prob.view(b, 1, n), positives_prob.view(b, n, 1)).squeeze()
+        ones = torch.ones_like(probs_similarity)
+        consistency_loss = self.bce(probs_similarity, ones)
+        
+        anchors_similarities = torch.bmm(anchors.view(b, 1, n), neighbors.view(b, n, 1)).squeeze()
+        embeddings_similarities = torch.bmm(anchor_embeddings.view(b, 1, n), neighbor_embeddings.view(b, n, 1)).squeeze()
+        
+        soft_anchor_similarities = F.log_softmax(anchors_similarities, dim=1)
+        soft_embeddings_similarities = self.softmax(embeddings_similarities)
+
+        kl_loss = F.kl_div(soft_anchor_similarities, soft_embeddings_similarities, reduction='batchmean')
+        
+        # Entropy loss
+        entropy_loss = entropy(torch.mean(anchors_prob, 0), input_as_probabilities = True)
+
+        # Total loss
+        total_loss = consistency_loss + kl_loss - self.entropy_weight * entropy_loss
+        
+        return total_loss, consistency_loss, kl_loss, entropy_loss
+
+
 class SCANFLoss(nn.Module):
     def __init__(self, entropy_weight = 2.0):
         super(SCANFLoss, self).__init__()

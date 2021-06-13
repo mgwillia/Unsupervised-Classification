@@ -43,12 +43,14 @@ def create_config(config_file_env, config_file_exp):
         scan_dir = os.path.join(base_dir, 'scan')
         scanf_dir = os.path.join(base_dir, 'scanf')
         scanc_dir = os.path.join(base_dir, 'scanc')
+        scankl_dir = os.path.join(base_dir, 'scankl')
         selflabel_dir = os.path.join(base_dir, 'selflabel') 
         mkdir_if_missing(base_dir)
         mkdir_if_missing(linearprobe_dir)
         mkdir_if_missing(scan_dir)
         mkdir_if_missing(scanf_dir)
         mkdir_if_missing(scanc_dir)
+        mkdir_if_missing(scankl_dir)
         mkdir_if_missing(selflabel_dir)
         cfg['linearprobe_dir'] = linearprobe_dir
         cfg['linearprobe_checkpoint'] = os.path.join(linearprobe_dir, 'checkpoint.pth.tar')
@@ -62,6 +64,9 @@ def create_config(config_file_env, config_file_exp):
         cfg['scanc_dir'] = scanc_dir
         cfg['scanc_checkpoint'] = os.path.join(scanc_dir, 'checkpoint.pth.tar')
         cfg['scanc_model'] = os.path.join(scanc_dir, 'model.pth.tar')
+        cfg['scankl_dir'] = scankl_dir
+        cfg['scankl_checkpoint'] = os.path.join(scankl_dir, 'checkpoint.pth.tar')
+        cfg['scankl_model'] = os.path.join(scankl_dir, 'model.pth.tar')
         cfg['selflabel_dir'] = selflabel_dir
         cfg['selflabel_checkpoint'] = os.path.join(selflabel_dir, 'checkpoint.pth.tar')
         cfg['selflabel_model'] = os.path.join(selflabel_dir, 'model.pth.tar')
