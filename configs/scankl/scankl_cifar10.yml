@@ -4,7 +4,7 @@ setup: scan
 # Loss
 criterion: scankl
 criterion_kwargs:
-   entropy_weight: 0.0
+   entropy_weight: 1.0
    kl_weight: 1.0
 
 # Weight update

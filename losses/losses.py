@@ -154,7 +154,7 @@ class SCANKLLoss(nn.Module):
         anchors_similarities = torch.matmul(anchors, neighbors.T)
         embeddings_similarities = torch.matmul(anchor_embeddings, neighbor_embeddings.T)
 
-        print(anchors_similarities.mean(), embeddings_similarities.mean())
+        #print(anchors_similarities.mean(), embeddings_similarities.mean())
         
         soft_anchor_similarities = F.log_softmax(anchors_similarities, dim=1)
         soft_embeddings_similarities = self.softmax(embeddings_similarities)
