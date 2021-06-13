@@ -1,10 +1,11 @@
 # setup
-setup: scankl
+setup: scan
 
 # Loss
 criterion: scankl
 criterion_kwargs:
    entropy_weight: 0.0
+   kl_weight: 1.0
 
 # Weight update
 update_cluster_head_only: False # Update full network in SCAN

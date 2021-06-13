@@ -36,6 +36,10 @@ def get_criterion(p):
         from losses.losses import SCANCLoss
         criterion = SCANCLoss(**p['criterion_kwargs'])
 
+    elif p['criterion'] == 'scankl':
+        from losses.losses import SCANKLLoss
+        criterion = SCANKLLoss(**p['criterion_kwargs'])
+
     elif p['criterion'] == 'confidence-cross-entropy':
         from losses.losses import ConfidenceBasedCE
         criterion = ConfidenceBasedCE(p['confidence_threshold'], p['criterion_kwargs']['apply_class_balancing'])

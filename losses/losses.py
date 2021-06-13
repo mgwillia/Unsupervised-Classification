@@ -123,11 +123,12 @@ class SCANLoss(nn.Module):
 
 
 class SCANKLLoss(nn.Module):
-    def __init__(self, entropy_weight = 0.0):
+    def __init__(self, entropy_weight = 0.0, kl_weight = 1.0):
         super(SCANKLLoss, self).__init__()
         self.softmax = nn.Softmax(dim = 1)
         self.bce = nn.BCELoss()
         self.entropy_weight = entropy_weight # Default = 2.0
+        self.kl_weight = kl_weight
 
     def forward(self, anchors, neighbors, anchor_embeddings, neighbor_embeddings):
         """
@@ -162,7 +163,7 @@ class SCANKLLoss(nn.Module):
         entropy_loss = entropy(torch.mean(anchors_prob, 0), input_as_probabilities = True)
 
         # Total loss
-        total_loss = consistency_loss + kl_loss - self.entropy_weight * entropy_loss
+        total_loss = consistency_loss + kl_loss * self.kl_weight - self.entropy_weight * entropy_loss
         
         return total_loss, consistency_loss, kl_loss, entropy_loss
 
