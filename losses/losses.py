@@ -165,7 +165,7 @@ class SCANKLLoss(nn.Module):
         entropy_loss = entropy(torch.mean(anchors_prob, 0), input_as_probabilities = True)
 
         # Total loss
-        total_loss = consistency_loss + kl_loss * self.kl_weight - self.entropy_weight * entropy_loss
+        total_loss = consistency_loss +  self.kl_weight * kl_loss - self.entropy_weight * entropy_loss
         
         return total_loss, consistency_loss, kl_loss, entropy_loss
 
