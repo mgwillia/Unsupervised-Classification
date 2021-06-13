@@ -151,8 +151,8 @@ class SCANKLLoss(nn.Module):
         ones = torch.ones_like(probs_similarity)
         consistency_loss = self.bce(probs_similarity, ones)
         
-        anchors_similarities = torch.bmm(anchors.view(b, 1, n), neighbors.view(b, n, 1)).squeeze()
-        embeddings_similarities = torch.bmm(anchor_embeddings.view(b, 1, n), neighbor_embeddings.view(b, n, 1)).squeeze()
+        anchors_similarities = torch.bmm(anchors.view(b, 1, -1), neighbors.view(b, -1, 1)).squeeze()
+        embeddings_similarities = torch.bmm(anchor_embeddings.view(b, 1, -1), neighbor_embeddings.view(b, -1, 1)).squeeze()
         
         soft_anchor_similarities = F.log_softmax(anchors_similarities, dim=1)
         soft_embeddings_similarities = self.softmax(embeddings_similarities)
