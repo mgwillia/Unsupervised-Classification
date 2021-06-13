@@ -172,7 +172,7 @@ def scankl_train(train_loader, model, criterion, optimizer, epoch, update_cluste
     kl_losses = AverageMeter('Entropy', ':.4e')
     entropy_losses = AverageMeter('Entropy', ':.4e')
     progress = ProgressMeter(len(train_loader),
-        [total_losses, consistency_losses, entropy_losses],
+        [total_losses, consistency_losses, kl_losses, entropy_losses],
         prefix="Epoch: [{}]".format(epoch))
 
     if update_cluster_head_only:
