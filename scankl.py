@@ -63,6 +63,8 @@ def main():
     criterion = get_criterion(p) 
     criterion.cuda()
     print(criterion)
+    print(criterion.entropy_weight)
+    print(criterion.kl_weight)
 
     if args.mode == 'train':
         # Checkpoint
