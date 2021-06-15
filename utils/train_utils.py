@@ -51,7 +51,7 @@ def simclr_distill_train(train_loader, model, teacher, criterion, optimizer, epo
         prefix="Epoch: [{}]".format(epoch))
 
     model.train()
-    #teacher.eval()
+    teacher.eval()
 
     for i, batch in enumerate(train_loader):
         images = batch['image']
@@ -64,7 +64,8 @@ def simclr_distill_train(train_loader, model, teacher, criterion, optimizer, epo
 
         output = model(input_).view(b, 2, -1)
         #print(teacher(input_))
-        clusters = teacher(input_)[0].view(b, 2, -1)
+        with torch.no_grad():
+            clusters = teacher(input_)[0].view(b, 2, -1)
         #clusters = clusters.view(b, 1, -1).repeat(1, 2, 1)
         loss = criterion(output, clusters)
         losses.update(loss.item())
