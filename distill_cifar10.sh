@@ -4,8 +4,8 @@
 #SBATCH --output=d_c10.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
 #SBATCH --error=d_c10.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
 #SBATCH --time=72:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
-#SBATCH --account=scavenger
 #SBATCH --partition=scavenger
+#SBATCH --account=scavenger
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:2
 #SBATCH --cpus-per-task=8
