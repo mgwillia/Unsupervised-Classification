@@ -6,7 +6,7 @@
 #SBATCH --time=72:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
 #SBATCH --partition=scavenger
 #SBATCH --account=scavenger
-#SBATCH --mem=20G
+#SBATCH --mem=64G
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=4
 
