@@ -8,8 +8,8 @@ model_kwargs:
    features_dim: 128
 
 # Dataset
-train_db_name: imagenet_50
-val_db_name: imagenet_50
+train_db_name: imagenet_50-0
+val_db_name: imagenet_50-0
 num_classes: 50
 
 # Loss
@@ -28,8 +28,8 @@ optimizer_kwargs:
 scheduler: cosine
 scheduler_kwargs:
    lr_decay_rate: 0.1
-batch_size: 448 
-num_workers: 4
+batch_size: 512 
+num_workers: 8
 
 # Transformations
 augmentation_strategy: simclr 

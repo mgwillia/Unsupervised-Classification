@@ -216,15 +216,16 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
         from data.cub import CUB
         dataset = CUB(train=True, transform=transform)
 
-    elif p['train_db_name'] in ['imagenet', 'imagenet-d', 'imagenet-f']:
-        from data.imagenet import ImageNet
-        dataset = ImageNet(split='train', transform=transform)
-
-    elif p['train_db_name'] in ['imagenet_50', 'imagenet_50-d', 'imagenet_50-f', 'imagenet_100', 'imagenet_200', 'imagenet_200-d']:
+    elif ['imagenet_'] in p['train_db_name']:
         from data.imagenet import ImageNetSubset
 
-        subset_file = './data/imagenet_subsets/%s.txt' %(p['train_db_name'].replace('-d', '').replace('-f', ''))
+        subset_name = p['train_db_name'].replace('-d', '').replace('-f', '').replace('-0', '').replace('-1', '').replace('-2', '')
+        subset_file = './data/imagenet_subsets/%s.txt' % (subset_name)
         dataset = ImageNetSubset(subset_file=subset_file, split='train', transform=transform)
+
+    elif ['imagenet'] in p['train_db_name']:
+        from data.imagenet import ImageNet
+        dataset = ImageNet(split='train', transform=transform)
 
     else:
         raise ValueError('Invalid train dataset {}'.format(p['train_db_name']))
@@ -280,14 +281,16 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
         from data.cub import CUB
         dataset = CUB(train=False, transform=transform)
     
-    elif p['val_db_name'] in ['imagenet', 'imagenet-d', 'imagenet-f']:
-        from data.imagenet import ImageNet
-        dataset = ImageNet(split='val', transform=transform)
-    
-    elif p['val_db_name'] in ['imagenet_50', 'imagenet_50-d', 'imagenet_50-f', 'imagenet_100', 'imagenet_200', 'imagenet_200-d']:
+    elif ['imagenet_'] in p['val_db_name']:
         from data.imagenet import ImageNetSubset
-        subset_file = './data/imagenet_subsets/%s.txt' %(p['val_db_name'].replace('-d', '').replace('-f', ''))
+
+        subset_name = p['val_db_name'].replace('-d', '').replace('-f', '').replace('-0', '').replace('-1', '').replace('-2', '')
+        subset_file = './data/imagenet_subsets/%s.txt' % (subset_name)
         dataset = ImageNetSubset(subset_file=subset_file, split='val', transform=transform)
+
+    elif ['imagenet'] in p['val_db_name']:
+        from data.imagenet import ImageNet
+        dataset = ImageNet(split='train', transform=transform)
     
     else:
         raise ValueError('Invalid validation dataset {}'.format(p['val_db_name']))

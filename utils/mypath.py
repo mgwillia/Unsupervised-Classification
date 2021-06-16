@@ -22,7 +22,7 @@ class MyPath(object):
             return '/scratch0/mgwillia/stl10_binary'
         
         elif database in ['imagenet', 'imagenet_50', 'imagenet_100', 'imagenet_200']:
-            return '/fs/vulcan-datasets/imagenet'
+            return '/scratch0/mgwillia/imagenet'
 
         elif database == 'pascal-voc':
             #return '/fs/vulcan-datasets/pascal_voc/'
