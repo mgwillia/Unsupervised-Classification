@@ -223,7 +223,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
     elif p['train_db_name'] in ['imagenet_50', 'imagenet_50-d', 'imagenet_50-f', 'imagenet_100', 'imagenet_200', 'imagenet_200-d']:
         from data.imagenet import ImageNetSubset
 
-        subset_file = './data/imagenet_subsets/%s.txt' %(p['train_db_name'].replace('-d', ''))
+        subset_file = './data/imagenet_subsets/%s.txt' %(p['train_db_name'].replace('-d', '').replace('-f', ''))
         dataset = ImageNetSubset(subset_file=subset_file, split='train', transform=transform)
 
     else:
@@ -286,7 +286,7 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
     
     elif p['val_db_name'] in ['imagenet_50', 'imagenet_50-d', 'imagenet_50-f', 'imagenet_100', 'imagenet_200', 'imagenet_200-d']:
         from data.imagenet import ImageNetSubset
-        subset_file = './data/imagenet_subsets/%s.txt' %(p['val_db_name'].replace('-d', ''))
+        subset_file = './data/imagenet_subsets/%s.txt' %(p['val_db_name'].replace('-d', '').replace('-f', ''))
         dataset = ImageNetSubset(subset_file=subset_file, split='val', transform=transform)
     
     else:
