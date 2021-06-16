@@ -108,6 +108,8 @@ def main():
         teacher.load_state_dict(state_dict['model'])
     else:
         raise NotImplementedError
+    for param in teacher.parameters():
+        param.requires_grad = False
     teacher = torch.nn.DataParallel(teacher) # I added this to support ImageNet
     teacher = teacher.cuda()
     
