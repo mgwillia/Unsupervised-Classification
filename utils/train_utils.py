@@ -53,6 +53,8 @@ def simclr_distill_train(train_loader, model, teacher, criterion, optimizer, epo
     model.train()
     teacher.eval()
 
+    torch.cuda.empty_cache()
+
     for i, batch in enumerate(train_loader):
         images = batch['image']
         images_augmented = batch['image_augmented']
@@ -76,6 +78,8 @@ def simclr_distill_train(train_loader, model, teacher, criterion, optimizer, epo
 
         if i % 25 == 0:
             progress.display(i)
+
+        torch.cuda.empty_cache()
 
 
 def linearprobe_train(train_loader, model, criterion, optimizer, epoch):
