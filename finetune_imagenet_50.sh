@@ -6,9 +6,9 @@
 #SBATCH --time=72:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
 #SBATCH --account=scavenger
 #SBATCH --partition=scavenger
-#SBATCH --mem=128G
+#SBATCH --mem=96G
 #SBATCH --gres=gpu:p6000:4
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=4
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
