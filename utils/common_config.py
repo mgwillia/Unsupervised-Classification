@@ -216,14 +216,14 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
         from data.cub import CUB
         dataset = CUB(train=True, transform=transform)
 
-    elif ['imagenet_'] in p['train_db_name']:
+    elif 'imagenet_' in p['train_db_name']:
         from data.imagenet import ImageNetSubset
 
         subset_name = p['train_db_name'].replace('-d', '').replace('-f', '').replace('-0', '').replace('-1', '').replace('-2', '')
         subset_file = './data/imagenet_subsets/%s.txt' % (subset_name)
         dataset = ImageNetSubset(subset_file=subset_file, split='train', transform=transform)
 
-    elif ['imagenet'] in p['train_db_name']:
+    elif 'imagenet' in p['train_db_name']:
         from data.imagenet import ImageNet
         dataset = ImageNet(split='train', transform=transform)
 
@@ -281,14 +281,14 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
         from data.cub import CUB
         dataset = CUB(train=False, transform=transform)
     
-    elif ['imagenet_'] in p['val_db_name']:
+    elif 'imagenet_' in p['val_db_name']:
         from data.imagenet import ImageNetSubset
 
         subset_name = p['val_db_name'].replace('-d', '').replace('-f', '').replace('-0', '').replace('-1', '').replace('-2', '')
         subset_file = './data/imagenet_subsets/%s.txt' % (subset_name)
         dataset = ImageNetSubset(subset_file=subset_file, split='val', transform=transform)
 
-    elif ['imagenet'] in p['val_db_name']:
+    elif 'imagenet' in p['val_db_name']:
         from data.imagenet import ImageNet
         dataset = ImageNet(split='train', transform=transform)
     
