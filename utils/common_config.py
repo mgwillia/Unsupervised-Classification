@@ -96,7 +96,7 @@ def get_model(p, pretrain_path=None):
             from models.resnet_wider import resnet50x1
             backbone = resnet50x1()
             print('loading pretrained')
-            backbone['backbone'].load_state_dict(torch.load('resnet50-1x.pth')['state_dict'])
+            backbone['backbone'].load_state_dict(torch.load('resnet50-1x.pth')['state_dict'], strict=False)
 
         else:
             raise NotImplementedError 
