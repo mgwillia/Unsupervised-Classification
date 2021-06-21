@@ -19,6 +19,7 @@ backbone: resnet50
 train_db_name: imagenet_200
 val_db_name: imagenet_200
 num_classes: 200
+num_branches: 20
 num_neighbors: 50 
 
 # Transformations
