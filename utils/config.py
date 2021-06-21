@@ -37,12 +37,13 @@ def create_config(config_file_env, config_file_exp):
 
     # If we perform clustering or self-labeling step we need additional paths.
     # We also include a run identifier to support multiple runs w/ same hyperparams.
-    if cfg['setup'] in ['scan', 'selflabel', 'linearprobe']:
+    if cfg['setup'] in ['scan', 'scanh', 'selflabel', 'linearprobe']:
         base_dir = os.path.join(root_dir, cfg['train_db_name'])
         linearprobe_dir = os.path.join(base_dir, 'linearprobe')
         scan_dir = os.path.join(base_dir, 'scan')
         scanf_dir = os.path.join(base_dir, 'scanf')
         scanc_dir = os.path.join(base_dir, 'scanc')
+        scanh_dir = os.path.join(base_dir, 'scanh')
         scankl_dir = os.path.join(base_dir, 'scankl')
         selflabel_dir = os.path.join(base_dir, 'selflabel') 
         mkdir_if_missing(base_dir)
@@ -50,6 +51,7 @@ def create_config(config_file_env, config_file_exp):
         mkdir_if_missing(scan_dir)
         mkdir_if_missing(scanf_dir)
         mkdir_if_missing(scanc_dir)
+        mkdir_if_missing(scanh_dir)
         mkdir_if_missing(scankl_dir)
         mkdir_if_missing(selflabel_dir)
         cfg['linearprobe_dir'] = linearprobe_dir
@@ -64,6 +66,9 @@ def create_config(config_file_env, config_file_exp):
         cfg['scanc_dir'] = scanc_dir
         cfg['scanc_checkpoint'] = os.path.join(scanc_dir, 'checkpoint.pth.tar')
         cfg['scanc_model'] = os.path.join(scanc_dir, 'model.pth.tar')
+        cfg['scanh_dir'] = scanh_dir
+        cfg['scanh_checkpoint'] = os.path.join(scanh_dir, 'checkpoint.pth.tar')
+        cfg['scanh_model'] = os.path.join(scanh_dir, 'model.pth.tar')
         cfg['scankl_dir'] = scankl_dir
         cfg['scankl_checkpoint'] = os.path.join(scankl_dir, 'checkpoint.pth.tar')
         cfg['scankl_model'] = os.path.join(scankl_dir, 'model.pth.tar')

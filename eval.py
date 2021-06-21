@@ -48,7 +48,7 @@ def main():
     if config['setup'] in ['simclr', 'simclr-distill', 'moco', 'selflabel']:
         model.load_state_dict(state_dict)
 
-    elif config['setup'] == 'scan':
+    elif config['setup'] in ['scan', 'scanh']:
         model.load_state_dict(state_dict['model'])
 
     else:
@@ -79,9 +79,9 @@ def main():
             print('Accuracy of top-{} nearest neighbors on validation set is {:.2f}'.format(topk, 100*acc))
 
 
-    elif config['setup'] in ['scan', 'selflabel']:
+    elif config['setup'] in ['scan', 'scanh', 'selflabel']:
         print(colored('Perform evaluation of the clustering model (setup={}).'.format(config['setup']), 'blue'))
-        head = state_dict['head'] if config['setup'] == 'scan' else 0
+        head = state_dict['head'] if config['setup'] in ['scan', 'scanh'] else 0
         predictions, features = get_predictions(config, dataloader, model, return_features=True)
         torch.save(predictions[head]['logits'], config['cluster_preds_path'])
         clustering_stats = hungarian_evaluate(head, predictions, dataset.classes, 

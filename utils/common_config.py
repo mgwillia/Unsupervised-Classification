@@ -36,6 +36,10 @@ def get_criterion(p):
         from losses.losses import SCANCLoss
         criterion = SCANCLoss(**p['criterion_kwargs'])
 
+    elif p['criterion'] == 'scanh':
+        from losses.losses import SCANHLoss
+        criterion = SCANHLoss(**p['criterion_kwargs'])
+
     elif p['criterion'] == 'scankl':
         from losses.losses import SCANKLLoss
         criterion = SCANKLLoss(**p['criterion_kwargs'])
@@ -115,6 +119,10 @@ def get_model(p, pretrain_path=None):
             assert(p['num_heads'] == 1)
         model = ClusteringModel(backbone, p['num_classes'], p['num_heads'])
 
+    elif p['setup'] == 'scanh':
+        from models.models import HierarchicalClusteringModel
+        model = HierarchicalClusteringModel(backbone, p['num_branches'], p['num_classes'])
+
     elif p['setup'] == 'linearprobe':
         from models.models import LinearModel
         model = LinearModel(backbone, p['num_classes'])
@@ -126,7 +134,7 @@ def get_model(p, pretrain_path=None):
     if pretrain_path is not None and os.path.exists(pretrain_path):
         state = torch.load(pretrain_path, map_location='cpu')
         
-        if p['setup'] == 'scan': # Weights are supposed to be transfered from contrastive training
+        if p['setup'] in ['scan', 'scanh']: # Weights are supposed to be transfered from contrastive training
             model = torch.nn.DataParallel(model)
             missing = model.load_state_dict(state, strict=False)
             print(missing)

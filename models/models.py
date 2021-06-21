@@ -69,14 +69,19 @@ class HierarchicalClusteringModel(nn.Module):
         self.backbone_dim = backbone['dim']
         assert(isinstance(self.nheads, int))
         assert(self.nheads > 0)
-        self.subcluster_head = nn.Linear(self.backbone_dim, nbranches)
-        self.cluster_head = nn.Linear(nbranches, nleaves)
+        self.cluster_head = nn.Linear(self.backbone_dim, nleaves)
+        self.branch_head = nn.Linear(nleaves, nbranches)
+        ## TODO: allow for multiple heads
 
-    def forward(self, x):
-        features = self.backbone(x)
-        subcluster_out = self.subcluster_head(features)
-        cluster_out = self.cluster_head(subcluster_out)
-        out = {'features': features, 'subcluster_output': subcluster_out, 'cluster_output': cluster_out}
+    def forward(self, x, forward_pass='default'):
+        if forward_pass == 'default':
+            features = self.backbone(x)
+            cluster_out = self.cluster_head(features)
+            branch_out = self.branch_head(cluster_out)
+            out = {'features': features, 'branch_output': branch_out, 'cluster_output': cluster_out}
+        elif forward_pass == 'cluster':
+            features = self.backbone(x)
+            out = self.cluster_head(features)
 
         return out
 

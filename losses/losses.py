@@ -212,6 +212,59 @@ class SCANFLoss(nn.Module):
         return total_loss, consistency_loss, stranger_loss, entropy_loss
 
 
+class SCANHLoss(nn.Module):
+    def __init__(self, branch_weight = 1.0, entropy_weight = 2.0, medoid_weight = 0.1):
+        super(SCANHLoss, self).__init__()
+        self.softmax = nn.Softmax(dim = 1)
+        self.bce = nn.BCELoss()
+        self.branch_weight = branch_weight
+        self.entropy_weight = entropy_weight # Default = 2.0
+        self.medoid_weight = medoid_weight
+
+
+    def forward(self, anchors, neighbors, medoids, medoid_labels):
+        """
+        input:
+            - anchors: logits for anchor images w/ shape [b, num_classes]
+            - neighbors: logits for neighbor images w/ shape [b, num_classes]
+
+        output:
+            - Loss
+        """
+        a_cluster_output = anchors['cluster_output']
+        a_branch_output = anchors['branch_output']
+
+        n_cluster_output = neighbors['cluster_output']
+        n_branch_output = neighbors['branch_output']
+
+        # Softmax
+        b, n = anchors.size()
+        a_clusters_prob = self.softmax(a_cluster_output)
+        n_clusters_prob = self.softmax(n_cluster_output)
+
+        a_branch_prob = self.softmax(a_branch_output)
+        n_branch_prob = self.softmax(n_branch_output)
+       
+        # Similarity in output space
+        cluster_similarity = torch.bmm(a_clusters_prob.view(b, 1, n), n_clusters_prob.view(b, n, 1)).squeeze()
+        branch_similarity = torch.bmm(a_branch_prob.view(b, 1, n), n_branch_prob.view(b, n, 1)).squeeze()
+        ones = torch.ones_like(cluster_similarity)
+        cluster_consistency_loss = self.bce(cluster_similarity, ones)
+        branch_consistency_loss = self.bce(branch_similarity, ones)
+
+        # Medoid loss
+        medoid_loss = F.cross_entropy(medoids, medoid_labels) * self.medoid_weight
+        
+        #Entropy loss
+        cluster_entropy_loss = entropy(torch.mean(a_clusters_prob, 0), input_as_probabilities = True)
+        branch_entropy_loss = entropy(torch.mean(a_branch_prob, 0), input_as_probabilities = True)
+
+        # Total loss
+        total_loss = (cluster_consistency_loss - self.entropy_weight * cluster_entropy_loss + medoid_loss) + self.branch_weight * (branch_consistency_loss - self.entropy_weight * branch_entropy_loss)
+
+        return total_loss, cluster_consistency_loss, branch_consistency_loss, cluster_entropy_loss, branch_entropy_loss, medoid_loss
+
+
 class SCANCLoss(nn.Module):
     def __init__(self, entropy_weight = 2.0, medoid_weight = 0.1):
         super(SCANCLoss, self).__init__()
