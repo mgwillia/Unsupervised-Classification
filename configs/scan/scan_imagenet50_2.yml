@@ -14,8 +14,8 @@ update_cluster_head_only: True # Train only linear layer during SCAN
 num_heads: 10 # Use multiple heads
 
 # Dataset
-train_db_name: imagenet_50
-val_db_name: imagenet_50
+train_db_name: imagenet_50-2
+val_db_name: imagenet_50-2
 num_classes: 50
 num_neighbors: 50 
 
