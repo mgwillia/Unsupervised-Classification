@@ -62,6 +62,25 @@ class ClusteringModel(nn.Module):
         return out
 
 
+class HierarchicalClusteringModel(nn.Module):
+    def __init__(self, backbone, nbranches, nleaves):
+        super(ClusteringModel, self).__init__()
+        self.backbone = backbone['backbone']
+        self.backbone_dim = backbone['dim']
+        assert(isinstance(self.nheads, int))
+        assert(self.nheads > 0)
+        self.subcluster_head = nn.Linear(self.backbone_dim, nbranches)
+        self.cluster_head = nn.Linear(nbranches, nleaves)
+
+    def forward(self, x):
+        features = self.backbone(x)
+        subcluster_out = self.subcluster_head(features)
+        cluster_out = self.cluster_head(subcluster_out)
+        out = {'features': features, 'subcluster_output': subcluster_out, 'cluster_output': cluster_out}
+
+        return out
+
+
 class LinearModel(nn.Module):
     def __init__(self, backbone, nclasses):
         super(LinearModel, self).__init__()
