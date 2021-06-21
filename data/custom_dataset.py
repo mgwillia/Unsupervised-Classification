@@ -173,6 +173,8 @@ class SCANCDataset(Dataset):
         if num_neighbors is not None:
             self.neighbor_indices = self.neighbor_indices[:, :num_neighbors+1]
 
+        print(self.neighbor_indices.shape)
+        print(len(self.dataset))
         assert(self.neighbor_indices.shape[0] == len(self.dataset))
 
     def __len__(self):
