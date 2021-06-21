@@ -229,6 +229,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
 
         subset_name = p['train_db_name'].replace('-d', '').replace('-f', '').replace('-0', '').replace('-1', '').replace('-2', '')
         subset_file = './data/imagenet_subsets/%s.txt' % (subset_name)
+        print(subset_file)
         dataset = ImageNetSubset(subset_file=subset_file, split='train', transform=transform)
         print(len(dataset))
 
