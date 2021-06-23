@@ -12,4 +12,4 @@
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python scanh.py --config_env configs/env.yml --config_exp configs/scanh/scanh_cub.yml --mode train"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python scanh.py --config_env configs/env.yml --config_exp configs/scanh/scanh_cub.yml --mode train"

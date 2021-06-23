@@ -64,7 +64,7 @@ class ClusteringModel(nn.Module):
 
 class HierarchicalClusteringModel(nn.Module):
     def __init__(self, backbone, nbranches, nleaves):
-        super(ClusteringModel, self).__init__()
+        super(HierarchicalClusteringModel, self).__init__()
         self.backbone = backbone['backbone']
         self.backbone_dim = backbone['dim']
         assert(isinstance(self.nheads, int))
