@@ -67,8 +67,8 @@ class HierarchicalClusteringModel(nn.Module):
         super(HierarchicalClusteringModel, self).__init__()
         self.backbone = backbone['backbone']
         self.backbone_dim = backbone['dim']
-        assert(isinstance(self.nheads, int))
-        assert(self.nheads > 0)
+        #assert(isinstance(self.nheads, int))
+        #assert(self.nheads > 0)
         self.cluster_head = nn.Linear(self.backbone_dim, nleaves)
         self.branch_head = nn.Linear(nleaves, nbranches)
         ## TODO: allow for multiple heads
