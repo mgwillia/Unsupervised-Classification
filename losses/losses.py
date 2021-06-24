@@ -238,7 +238,8 @@ class SCANHLoss(nn.Module):
         n_branch_output = neighbors['branch_output']
 
         # Softmax
-        b, n = anchors.size()
+        b, num_clusters = a_cluster_output.size()
+        _, num_branches = a_branch_output.size()
         a_clusters_prob = self.softmax(a_cluster_output)
         n_clusters_prob = self.softmax(n_cluster_output)
 
@@ -246,8 +247,8 @@ class SCANHLoss(nn.Module):
         n_branch_prob = self.softmax(n_branch_output)
        
         # Similarity in output space
-        cluster_similarity = torch.bmm(a_clusters_prob.view(b, 1, n), n_clusters_prob.view(b, n, 1)).squeeze()
-        branch_similarity = torch.bmm(a_branch_prob.view(b, 1, n), n_branch_prob.view(b, n, 1)).squeeze()
+        cluster_similarity = torch.bmm(a_clusters_prob.view(b, 1, num_clusters), n_clusters_prob.view(b, num_clusters, 1)).squeeze()
+        branch_similarity = torch.bmm(a_branch_prob.view(b, 1, num_branches), n_branch_prob.view(b, num_branches, 1)).squeeze()
         ones = torch.ones_like(cluster_similarity)
         cluster_consistency_loss = self.bce(cluster_similarity, ones)
         branch_consistency_loss = self.bce(branch_similarity, ones)
