@@ -79,6 +79,9 @@ class HierarchicalClusteringModel(nn.Module):
             cluster_out = self.cluster_head(features)
             branch_out = self.branch_head(cluster_out)
             out = {'features': features, 'branch_output': branch_out, 'cluster_output': cluster_out}
+        elif forward_pass == 'return_all':
+            features = self.backbone(x)
+            out = {'features': features, 'output': [self.cluster_head(features)]}
         elif forward_pass == 'cluster':
             features = self.backbone(x)
             out = self.cluster_head(features)
