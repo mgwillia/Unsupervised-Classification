@@ -136,7 +136,7 @@ def get_model(p, pretrain_path=None):
         
         if p['setup'] in ['scan', 'scanh']: # Weights are supposed to be transfered from contrastive training
             if 'cub' in p['train_db_name']:
-                missing = model.load_state_dict(state, strict=False)
+                missing = model.backbone.load_state_dict(state, strict=False)
                 model = torch.nn.DataParallel(model)
             else:
                 model = torch.nn.DataParallel(model)
