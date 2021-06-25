@@ -137,16 +137,18 @@ def get_model(p, pretrain_path=None):
         if p['setup'] in ['scan', 'scanh']: # Weights are supposed to be transfered from contrastive training
             if 'cub' in p['train_db_name']:
                 missing = model.backbone.load_state_dict(state, strict=False)
+                print(missing)
                 model = torch.nn.DataParallel(model)
             else:
                 model = torch.nn.DataParallel(model)
                 missing = model.load_state_dict(state, strict=False)
-            print(missing)
-            assert(set(missing[1]) == {
-                'module.contrastive_head.0.weight', 'module.contrastive_head.0.bias', 
-                'module.contrastive_head.2.weight', 'module.contrastive_head.2.bias'}
-                or set(missing[1]) == {
-                'module.contrastive_head.weight', 'module.contrastive_head.bias'})
+                print(missing)
+                assert(missing == '<All keys matched successfully>'
+                    or set(missing[1]) == {
+                    'module.contrastive_head.0.weight', 'module.contrastive_head.0.bias', 
+                    'module.contrastive_head.2.weight', 'module.contrastive_head.2.bias'}
+                    or set(missing[1]) == {
+                    'module.contrastive_head.weight', 'module.contrastive_head.bias'})
 
         elif p['setup'] == 'selflabel': # Weights are supposed to be transfered from scan 
             # We only continue with the best head (pop all heads first, then copy back the best head)
