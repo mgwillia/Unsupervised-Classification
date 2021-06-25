@@ -138,8 +138,8 @@ def main():
     cluster_predictions = predictions[model_checkpoint['head']]['predictions']
     print(gt_targets.shape)
     print(cluster_predictions.shape)
-    torch.save(gt_targets, 'scanc_gt_targets.pth.tar')
-    torch.save(cluster_predictions, 'scanc_cluster_predictions.pth.tar')
+    torch.save(gt_targets, os.path.join(p['scanc_dir'], 'gt_targets.pth.tar'))
+    torch.save(cluster_predictions, os.path.join(p['scanc_dir'], 'cluster_predictions.pth.tar'))
     clustering_stats = hungarian_evaluate(model_checkpoint['head'], predictions, 
                             class_names=val_dataset.dataset.classes, 
                             compute_confusion_matrix=True, 

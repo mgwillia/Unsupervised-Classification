@@ -135,6 +135,12 @@ def main():
     model_checkpoint = torch.load(p['scankl_model'], map_location='cpu')
     model.module.load_state_dict(model_checkpoint['model'])
     predictions = get_predictions(p, val_dataloader, model)
+    gt_targets = predictions[model_checkpoint['head']]['targets']
+    cluster_predictions = predictions[model_checkpoint['head']]['predictions']
+    print(gt_targets.shape)
+    print(cluster_predictions.shape)
+    torch.save(gt_targets, os.path.join(p['scankl_dir'], 'gt_targets.pth.tar'))
+    torch.save(cluster_predictions, os.path.join(p['scankl_dir'], 'cluster_predictions.pth.tar'))
     clustering_stats = hungarian_evaluate(model_checkpoint['head'], predictions, 
                             class_names=val_dataset.dataset.classes, 
                             compute_confusion_matrix=True, 
