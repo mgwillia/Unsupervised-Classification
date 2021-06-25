@@ -121,7 +121,7 @@ def get_model(p, pretrain_path=None):
 
     elif p['setup'] == 'scanh':
         from models.models import HierarchicalClusteringModel
-        model = HierarchicalClusteringModel(backbone, p['num_branches'], p['num_classes'])
+        model = HierarchicalClusteringModel(backbone, p['num_overclusters'], p['num_classes'])
 
     elif p['setup'] == 'linearprobe':
         from models.models import LinearModel
