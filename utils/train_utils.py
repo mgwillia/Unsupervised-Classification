@@ -364,12 +364,12 @@ def scanh_train(train_loader, model, criterion, optimizer, epoch, update_cluster
     """
     total_losses = AverageMeter('Total Loss', ':.4e')
     cluster_consistency_losses = AverageMeter('Cluster Consistency Loss', ':.4e')
-    overcluster_consistency_losses = AverageMeter('Overcluster Consistency Loss', ':.4e')
+    branch_consistency_losses = AverageMeter('Branch Consistency Loss', ':.4e')
     cluster_entropy_losses = AverageMeter('Entropy', ':.4e')
-    overcluster_entropy_losses = AverageMeter('Entropy', ':.4e')
+    branch_entropy_losses = AverageMeter('Entropy', ':.4e')
     medoid_losses = AverageMeter('Medoid Loss', ':.4e')
     progress = ProgressMeter(len(train_loader),
-        [total_losses, cluster_consistency_losses, overcluster_consistency_losses, cluster_entropy_losses, overcluster_entropy_losses, medoid_losses],
+        [total_losses, cluster_consistency_losses, branch_consistency_losses, cluster_entropy_losses, branch_entropy_losses, medoid_losses],
         prefix="Epoch: [{}]".format(epoch))
 
     ## TODO: try freezing backbone
@@ -386,20 +386,20 @@ def scanh_train(train_loader, model, criterion, optimizer, epoch, update_cluster
         medoids_output = model(medoids, forward_pass='cluster')
 
         # Loss for every head
-        total_loss_, cluster_consistency_loss_, overcluster_consistency_loss_, cluster_entropy_loss_, overcluster_entropy_loss_, medoid_loss_ = criterion(anchors_output, neighbors_output, medoids_output, medoid_labels)
+        total_loss_, cluster_consistency_loss_, branch_consistency_loss_, cluster_entropy_loss_, branch_entropy_loss_, medoid_loss_ = criterion(anchors_output, neighbors_output, medoids_output, medoid_labels)
         total_loss = [total_loss_]
         cluster_consistency_loss = [cluster_consistency_loss_]
-        overcluster_consistency_loss = [overcluster_consistency_loss_]
+        branch_consistency_loss = [branch_consistency_loss_]
         cluster_entropy_loss = [cluster_entropy_loss_]
-        overcluster_entropy_loss = [overcluster_entropy_loss_]
+        branch_entropy_loss = [branch_entropy_loss_]
         medoid_loss = [medoid_loss_]
 
         # Register the mean loss and backprop the total loss to cover all subheads
         total_losses.update(np.mean([v.item() for v in total_loss]))
         cluster_consistency_losses.update(np.mean([v.item() for v in cluster_consistency_loss]))
-        overcluster_consistency_losses.update(np.mean([v.item() for v in overcluster_consistency_loss]))
+        branch_consistency_losses.update(np.mean([v.item() for v in branch_consistency_loss]))
         cluster_entropy_losses.update(np.mean([v.item() for v in cluster_entropy_loss]))
-        overcluster_entropy_losses.update(np.mean([v.item() for v in overcluster_entropy_loss]))
+        branch_entropy_losses.update(np.mean([v.item() for v in branch_entropy_loss]))
         medoid_losses.update(np.mean([v.item() for v in medoid_loss]))
 
         total_loss = torch.sum(torch.stack(total_loss, dim=0))

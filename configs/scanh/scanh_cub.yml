@@ -4,7 +4,7 @@ setup: scanh
 # Loss
 criterion: scanh
 criterion_kwargs:
-   overcluster_weight: 1.0
+   branch_weight: 1.0
    entropy_weight: 5.0
    medoid_weight: 0.1
 
@@ -19,7 +19,7 @@ backbone: resnet50
 train_db_name: cub
 val_db_name: cub
 num_classes: 200
-num_overclusters: 1000
+num_branches: 10
 num_neighbors: 10
 
 # Transformations

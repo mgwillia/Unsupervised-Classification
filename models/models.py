@@ -63,30 +63,28 @@ class ClusteringModel(nn.Module):
 
 
 class HierarchicalClusteringModel(nn.Module):
-    def __init__(self, backbone, noverclusters, nclusters):
+    def __init__(self, backbone, nbranches, nclusters):
         super(HierarchicalClusteringModel, self).__init__()
         self.backbone = backbone['backbone']
         self.backbone_dim = backbone['dim']
         #assert(isinstance(self.nheads, int))
         #assert(self.nheads > 0)
-        self.overcluster_head = nn.Linear(self.backbone_dim, noverclusters)
-        self.cluster_head = nn.Linear(noverclusters, nclusters)
+        self.cluster_head = nn.Linear(self.backbone_dim, nclusters)
+        self.branch_head = nn.Linear(nclusters, nbranches)
         ## TODO: allow for multiple heads
 
     def forward(self, x, forward_pass='default'):
         if forward_pass == 'default':
             features = self.backbone(x)
-            overcluster_out = self.overcluster_head(features)
-            cluster_out = self.cluster_head(overcluster_out)
-            out = {'features': features, 'overcluster_output': overcluster_out, 'cluster_output': cluster_out}
+            cluster_out = self.cluster_head(features)
+            branch_out = self.branch_head(cluster_out)
+            out = {'features': features, 'branch_output': branch_out, 'cluster_output': cluster_out}
         elif forward_pass == 'return_all':
             features = self.backbone(x)
-            overcluster_out = self.overcluster_head(features)
-            out = {'features': features, 'output': [self.cluster_head(overcluster_out)]}
+            out = {'features': features, 'output': [self.cluster_head(features)]}
         elif forward_pass == 'cluster':
             features = self.backbone(x)
-            overcluster_out = self.overcluster_head(features)
-            out = self.cluster_head(overcluster_out)
+            out = self.cluster_head(features)
 
         return out
 
