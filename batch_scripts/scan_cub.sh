@@ -1,13 +1,14 @@
 #!/bin/bash
 
-#SBATCH --job-name=scan_cub                                 # sets the job name
-#SBATCH --output=outfiles/scan_cub.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
-#SBATCH --error=outfiles/scan_cub.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
-#SBATCH --time=24:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
-#SBATCH --qos=high                                           # set QOS, this will determine what resources can be requested
-#SBATCH --mem=128G
-#SBATCH --gres gpu:p6000:4
-#SBATCH --cpus-per-task=16
+#SBATCH --job-name=scn_cub                                 # sets the job name
+#SBATCH --output=outfiles/scn_cub.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
+#SBATCH --error=outfiles/scn_cub.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
+#SBATCH --time=72:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
+#SBATCH --account=scavenger
+#SBATCH --partition=scavenger
+#SBATCH --mem=64G
+#SBATCH --gres=gpu:4
+#SBATCH --cpus-per-task=8
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
