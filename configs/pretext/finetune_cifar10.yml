@@ -2,10 +2,10 @@
 setup: simclr-distill
 teacher: selflabel
 num_heads: 1
-teacher_path: tutorial/cifar-10/selflabel/model.pth.tar
+teacher_path: /vulcanscratch/mgwillia/unsupervised-classification/cifar-10/selflabel/model.pth.tar
 
 finetune: True
-finetune_model: tutorial/cifar-10/pretext/model.pth.tar
+finetune_model: /vulcanscratch/mgwillia/unsupervised-classification/cifar-10/pretext/model.pth.tar
 
 # Model
 backbone: resnet18

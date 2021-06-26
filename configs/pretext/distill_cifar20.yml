@@ -2,7 +2,7 @@
 setup: simclr-distill
 teacher: selflabel
 num_heads: 1
-teacher_path: tutorial/cifar-20/selflabel/model.pth.tar
+teacher_path: /vulcanscratch/mgwillia/unsupervised-classification/cifar-20/selflabel/model.pth.tar
 
 finetune: False
 finetune_model: none
