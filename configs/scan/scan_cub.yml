@@ -50,4 +50,6 @@ batch_size: 128
 num_workers: 8
 
 # Scheduler
-scheduler: constant
+scheduler: cosine
+scheduler_kwargs:
+   lr_decay_rate: 0.05
