@@ -397,7 +397,7 @@ def get_train_transformations(p):
 
 
 def get_val_transformations(p):
-    if p['augmentation_strategy'] == 'cub':
+    if 'augmentation_strategy' in p and p['augmentation_strategy'] == 'cub':
         return transforms.Compose([
             transforms.Resize((p['transformation_kwargs']['resize'],p['transformation_kwargs']['resize'])),
             transforms.CenterCrop(p['transformation_kwargs']['crop_size']),
