@@ -132,7 +132,7 @@ def main():
     # These will be served as input to the SCAN loss.
     print(colored('Fill memory bank for mining the nearest neighbors (train) ...', 'blue'))
     fill_memory_bank(base_dataloader, model, memory_bank_base)
-    topk = 10
+    topk = p['num_neighbors']
     print('Mine the nearest neighbors (Top-%d)' %(topk)) 
     indices, acc = memory_bank_base.mine_nearest_neighbors(topk)
     print('Accuracy of top-%d nearest neighbors on train set is %.2f' %(topk, 100*acc))

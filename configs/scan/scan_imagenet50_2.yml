@@ -17,7 +17,7 @@ num_heads: 1 # Use multiple heads
 train_db_name: imagenet_50-2
 val_db_name: imagenet_50-2
 num_classes: 50
-num_neighbors: 20 
+num_neighbors: 20
 
 # Transformations
 augmentation_strategy: ours 
