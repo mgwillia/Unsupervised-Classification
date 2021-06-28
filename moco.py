@@ -61,9 +61,10 @@ def main():
 
     
     # Load the official MoCoV2 checkpoint
-    print(colored('Downloading moco v2 checkpoint', 'blue'))
-    os.system('wget -L https://dl.fbaipublicfiles.com/moco/moco_checkpoints/moco_v2_800ep/moco_v2_800ep_pretrain.pth.tar')
-    moco_state = torch.load('moco_v2_800ep_pretrain.pth.tar', map_location='cpu')
+    #print(colored('Downloading moco v2 checkpoint', 'blue'))
+    #os.system('wget -L https://dl.fbaipublicfiles.com/moco/moco_checkpoints/moco_v2_800ep/moco_v2_800ep_pretrain.pth.tar')
+    
+    moco_state = torch.load(p['pretrain_path'], map_location='cpu')
 
     
     # Transfer moco weights
@@ -96,7 +97,7 @@ def main():
     
     # Mine the topk nearest neighbors (Train)
     # These will be used for training with the SCAN-Loss.
-    topk = 50
+    topk = p['num_neighbors']
     print(colored('Mine the nearest neighbors (Train)(Top-%d)' %(topk), 'blue'))
     transforms = get_val_transformations(p)
     train_dataset = get_train_dataset(p, transforms) 

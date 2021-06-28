@@ -11,6 +11,7 @@ model_kwargs:
 train_db_name: imagenet
 val_db_name: imagenet
 num_classes: 1000
+num_neighbors: 20
 
 # Loss
 criterion: simclr

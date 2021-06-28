@@ -7,37 +7,37 @@ criterion: linearprobe
 update_cluster_head_only: True
 
 # Model
-backbone: resnet50
+backbone: resnet18
 
 # Dataset
-train_db_name: imagenet_50-d
-val_db_name: imagenet_50-d
-num_classes: 50
+train_db_name: cifar-20
+val_db_name: cifar-20
+num_classes: 20
 
 # Transformations
 augmentation_strategy: standard 
 augmentation_kwargs:
    random_resized_crop:
-      size: 224
+      size: 32
       scale: [0.5, 1.0]
    normalize:
-      mean: [0.485, 0.456, 0.406]
-      std: [0.229, 0.224, 0.225]
+      mean: [0.5071, 0.4867, 0.4408]
+      std: [0.2675, 0.2565, 0.2761]
 
 transformation_kwargs:
-   crop_size: 224
+   crop_size: 32
    normalize:
-      mean: [0.485, 0.456, 0.406]
-      std: [0.229, 0.224, 0.225]
+      mean: [0.5071, 0.4867, 0.4408]
+      std: [0.2675, 0.2565, 0.2761]
 
 # Hyperparameters
 optimizer: adam
 optimizer_kwargs:
    lr: 0.001
-   weight_decay: 0.000001
+   weight_decay: 0.0001
 epochs: 50
 batch_size: 512
-num_workers: 8
+num_workers: 4
 
 # Scheduler
 scheduler: constant
