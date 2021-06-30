@@ -132,15 +132,17 @@ def main():
         torch.save(model.state_dict(), p['pretext_model'])
 
     elif args.mode == 'mine':
-        saved_model = torch.load(args.backbone, map_location='cpu')
+        saved_model = torch.load(p['pretext_model'], map_location='cpu')
         try:
-            model.load_state_dict(saved_model)
+            missing = model.load_state_dict(saved_model, strict=False)
+            print(missing)
             model = torch.nn.DataParallel(model) # I added this to support ImageNet
             model.cuda()
         except:
             try:
                 model = torch.nn.DataParallel(model) # I added this to support ImageNet
-                model.load_state_dict(saved_model)
+                missing = model.load_state_dict(saved_model, strict=False)
+                print(missing)
                 model.cuda()
             except:
                 print('Failure, couldn\'t load model!')
