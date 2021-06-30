@@ -25,6 +25,7 @@ parser.add_argument('--config_env',
                     help='Config file for the environment')
 parser.add_argument('--config_exp',
                     help='Config file for the experiment')
+parser.add_argument('--mode', help='evaluate or train')
 args = parser.parse_args()
 
 def main():
@@ -39,8 +40,6 @@ def main():
     print('Model is {}'.format(model.__class__.__name__))
     print('Model parameters: {:.2f}M'.format(sum(p.numel() for p in model.parameters()) / 1e6))
     print(model)
-    model = torch.nn.DataParallel(model) # I added this to support ImageNet
-    model = model.cuda()
    
     # CUDNN
     print(colored('Set CuDNN benchmark', 'blue')) 
@@ -72,79 +71,97 @@ def main():
                                 p['num_classes'], p['criterion_kwargs']['temperature'])
     memory_bank_val.cuda()
 
-    # Criterion
-    print(colored('Retrieve criterion', 'blue'))
-    criterion = get_criterion(p)
-    print('Criterion is {}'.format(criterion.__class__.__name__))
-    criterion = criterion.cuda()
 
-    # Optimizer and scheduler
-    print(colored('Retrieve optimizer', 'blue'))
-    optimizer = get_optimizer(p, model)
-    print(optimizer)
- 
-    # Checkpoint
-    if os.path.exists(p['pretext_checkpoint']):
-        print(colored('Restart from checkpoint {}'.format(p['pretext_checkpoint']), 'blue'))
-        checkpoint = torch.load(p['pretext_checkpoint'], map_location='cpu')
-        optimizer.load_state_dict(checkpoint['optimizer'])
-        model.load_state_dict(checkpoint['model'])
-        start_epoch = checkpoint['epoch']
-    elif p['finetune']:
-        print(colored('Finetune from trained model {}'.format(p['finetune_model']), 'blue'))
-        checkpoint = torch.load(p['finetune_model'], map_location='cpu')
-        model.load_state_dict(checkpoint)
-        start_epoch = 0
-    else:
-        print(colored('No checkpoint file at {}'.format(p['pretext_checkpoint']), 'blue'))
-        start_epoch = 0
+    if args.mode == 'train':
+        model = torch.nn.DataParallel(model) # I added this to support ImageNet
+        model = model.cuda()
+        # Criterion
+        print(colored('Retrieve criterion', 'blue'))
+        criterion = get_criterion(p)
+        print('Criterion is {}'.format(criterion.__class__.__name__))
+        criterion = criterion.cuda()
 
-    teacher = get_teacher(p)
-    print(teacher)
-    state_dict = torch.load(p['teacher_path'], map_location='cpu')
-    if p['teacher'] == 'selflabel':
-        teacher.load_state_dict(state_dict)
-    elif p['teacher'] == 'scan':
-        teacher.load_state_dict(state_dict['model'])
-    else:
-        raise NotImplementedError
-    for param in teacher.parameters():
-        param.requires_grad = False
-    teacher = torch.nn.DataParallel(teacher) # I added this to support ImageNet
-    teacher = teacher.cuda()
+        # Optimizer and scheduler
+        print(colored('Retrieve optimizer', 'blue'))
+        optimizer = get_optimizer(p, model)
+        print(optimizer)
     
-    # Training
-    print(colored('Starting main loop', 'blue'))
-    for epoch in range(start_epoch, p['epochs']):
-        print(colored('Epoch %d/%d' %(epoch, p['epochs']), 'yellow'))
-        print(colored('-'*15, 'yellow'))
-
-        # Adjust lr
-        lr = adjust_learning_rate(p, optimizer, epoch)
-        print('Adjusted learning rate to {:.5f}'.format(lr))
-        
-        # Train
-        print('Train ...')
-        simclr_distill_train(train_dataloader, model, teacher, criterion, optimizer, epoch)
-        #simclr_distill_train(train_dataloader, model, criterion, optimizer, epoch)
-
-        if epoch % 10 == 0 or epoch == p['epochs'] - 1:
-            # Fill memory bank
-            print('Fill memory bank for kNN...')
-            fill_memory_bank(base_dataloader, model, memory_bank_base)
-            
-            # Evaluate (To monitor progress - Not for validation)
-            print('Evaluate ...')
-            top1 = contrastive_evaluate(val_dataloader, model, memory_bank_base)
-            print('Result of kNN evaluation is %.2f' %(top1)) 
-            
         # Checkpoint
-        print('Checkpoint ...')
-        torch.save({'optimizer': optimizer.state_dict(), 'model': model.state_dict(), 
-                    'epoch': epoch + 1}, p['pretext_checkpoint'])
+        if os.path.exists(p['pretext_checkpoint']):
+            print(colored('Restart from checkpoint {}'.format(p['pretext_checkpoint']), 'blue'))
+            checkpoint = torch.load(p['pretext_checkpoint'], map_location='cpu')
+            optimizer.load_state_dict(checkpoint['optimizer'])
+            model.load_state_dict(checkpoint['model'])
+            start_epoch = checkpoint['epoch']
+        elif p['finetune']:
+            print(colored('Finetune from trained model {}'.format(p['finetune_model']), 'blue'))
+            checkpoint = torch.load(p['finetune_model'], map_location='cpu')
+            model.load_state_dict(checkpoint)
+            start_epoch = 0
+        else:
+            print(colored('No checkpoint file at {}'.format(p['pretext_checkpoint']), 'blue'))
+            start_epoch = 0
 
-    # Save final model
-    torch.save(model.state_dict(), p['pretext_model'])
+        teacher = get_teacher(p)
+        print(teacher)
+        state_dict = torch.load(p['teacher_path'], map_location='cpu')
+        if p['teacher'] == 'selflabel':
+            teacher.load_state_dict(state_dict)
+        elif p['teacher'] == 'scan':
+            teacher.load_state_dict(state_dict['model'])
+        else:
+            raise NotImplementedError
+        for param in teacher.parameters():
+            param.requires_grad = False
+        teacher = torch.nn.DataParallel(teacher) # I added this to support ImageNet
+        teacher = teacher.cuda()
+        
+        # Training
+        print(colored('Starting main loop', 'blue'))
+        for epoch in range(start_epoch, p['epochs']):
+            print(colored('Epoch %d/%d' %(epoch, p['epochs']), 'yellow'))
+            print(colored('-'*15, 'yellow'))
+
+            # Adjust lr
+            lr = adjust_learning_rate(p, optimizer, epoch)
+            print('Adjusted learning rate to {:.5f}'.format(lr))
+            
+            # Train
+            print('Train ...')
+            simclr_distill_train(train_dataloader, model, teacher, criterion, optimizer, epoch)
+            #simclr_distill_train(train_dataloader, model, criterion, optimizer, epoch)
+
+            if epoch % 10 == 0 or epoch == p['epochs'] - 1:
+                # Fill memory bank
+                print('Fill memory bank for kNN...')
+                fill_memory_bank(base_dataloader, model, memory_bank_base)
+                
+                # Evaluate (To monitor progress - Not for validation)
+                print('Evaluate ...')
+                top1 = contrastive_evaluate(val_dataloader, model, memory_bank_base)
+                print('Result of kNN evaluation is %.2f' %(top1)) 
+                
+            # Checkpoint
+            print('Checkpoint ...')
+            torch.save({'optimizer': optimizer.state_dict(), 'model': model.state_dict(), 
+                        'epoch': epoch + 1}, p['pretext_checkpoint'])
+
+        # Save final model
+        torch.save(model.state_dict(), p['pretext_model'])
+
+    elif args.mode == 'test':
+        saved_model = torch.load(p['pretext_model'], map_location='cpu')
+        try:
+            model.load_state_dict(saved_model)
+            model = torch.nn.DataParallel(model) # I added this to support ImageNet
+            model.cuda()
+        except:
+            try:
+                model = torch.nn.DataParallel(model) # I added this to support ImageNet
+                model.load_state_dict(saved_model)
+                model.cuda()
+            except:
+                print('Failure, couldn\'t load model!')
 
     # Mine the topk nearest neighbors at the very end (Train) 
     # These will be served as input to the SCAN loss.
