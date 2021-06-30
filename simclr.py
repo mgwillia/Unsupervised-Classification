@@ -26,6 +26,7 @@ parser.add_argument('--config_env',
 parser.add_argument('--config_exp',
                     help='Config file for the experiment')
 parser.add_argument('--mode', type=str, default='train', help='evaluate or train')
+parser.add_argument('--backbone', default='', type=str, help='backbone to use for mining')
 args = parser.parse_args()
 
 def main():
@@ -130,8 +131,8 @@ def main():
         # Save final model
         torch.save(model.state_dict(), p['pretext_model'])
 
-    elif args.mode == 'test':
-        saved_model = torch.load(p['pretext_model'], map_location='cpu')
+    elif args.mode == 'mine':
+        saved_model = torch.load(args.backbone, map_location='cpu')
         try:
             model.load_state_dict(saved_model)
             model = torch.nn.DataParallel(model) # I added this to support ImageNet

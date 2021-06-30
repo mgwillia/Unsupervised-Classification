@@ -149,7 +149,7 @@ def main():
         # Save final model
         torch.save(model.state_dict(), p['pretext_model'])
 
-    elif args.mode == 'test':
+    elif args.mode == 'mine':
         saved_model = torch.load(p['pretext_model'], map_location='cpu')
         try:
             model.load_state_dict(saved_model)
