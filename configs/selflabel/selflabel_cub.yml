@@ -1,11 +1,12 @@
 # setup
 setup: selflabel
 
-# ema
-use_ema: False
-
 # Threshold
 confidence_threshold: 0.4
+
+# EMA
+use_ema: True
+ema_alpha: 0.999
 
 # Criterion
 criterion: confidence-cross-entropy
@@ -32,7 +33,7 @@ augmentation_kwargs:
    num_strong_augs: 4
    cutout_kwargs:
      n_holes: 1
-     length: 16
+     length: 75
      random: True
 
 transformation_kwargs:
@@ -48,7 +49,7 @@ optimizer: adam
 optimizer_kwargs:
    lr: 0.0001
    weight_decay: 0.0001
-batch_size: 128
+batch_size: 512
 num_workers: 8
 
 # Scheduler
