@@ -12,4 +12,4 @@
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python simclr.py --config_env configs/env.yml --config_exp configs/pretext/mine_cub.yml --mode mine --backbone /vulcanscratch/mgwillia/unsupervised-classification/backbones/backbones/moco_r50_200.pth.tar"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python simclr.py --config_env configs/env.yml --config_exp configs/pretext/mine_cub.yml --mode mine --backbone /vulcanscratch/mgwillia/unsupervised-classification/backbones/moco_r50_200.pth.tar"
