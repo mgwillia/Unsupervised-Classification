@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=sclr_cub                               # sets the job name
-#SBATCH --output=outfiles/sclr_cub.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
-#SBATCH --error=outfiles/sclr_cub.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
+#SBATCH --job-name=mine_cub                               # sets the job name
+#SBATCH --output=outfiles/mine_cub.out.%j                            # indicates a file to redirect STDOUT to; %j is the jobid 
+#SBATCH --error=outfiles/mine_cub.out.%j                             # indicates a file to redirect STDERR to; %j is the jobid
 #SBATCH --time=72:00:00                                          # how long you think your job will take to complete; format=hh:mm:ss
 #SBATCH --account=scavenger
 #SBATCH --partition=scavenger
