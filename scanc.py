@@ -34,7 +34,7 @@ def main():
     train_transformations = get_train_transformations(p)
     val_transformations = get_val_transformations(p)
     train_dataset = get_train_dataset(p, train_transformations, 
-                                        split='train', to_neighbors_anchors_dataset = True)
+                                        split='train+unlabeled', to_neighbors_anchors_dataset = True)
     val_dataset = get_val_dataset(p, val_transformations, to_neighbors_dataset = True)
     train_dataloader = get_train_dataloader(p, train_dataset)
     val_dataloader = get_val_dataloader(p, val_dataset)

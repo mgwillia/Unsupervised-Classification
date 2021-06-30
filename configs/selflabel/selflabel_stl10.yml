@@ -19,7 +19,7 @@ num_heads: 1
 # Dataset
 train_db_name: stl-10
 val_db_name: stl-10
-num_classes: 10
+num_classes: 20
 
 # Transformations
 augmentation_strategy: ours 
@@ -45,7 +45,7 @@ optimizer: adam
 optimizer_kwargs:
    lr: 0.0001
    weight_decay: 0.0001
-epochs: 100
+epochs: 25
 batch_size: 1028
 num_workers: 8
 

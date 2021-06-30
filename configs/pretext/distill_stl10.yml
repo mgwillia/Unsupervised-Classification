@@ -16,7 +16,8 @@ model_kwargs:
 # Dataset
 train_db_name: stl-10-d
 val_db_name: stl-10-d
-num_classes: 10
+num_classes: 20
+num_neighbors: 50
 
 # Loss
 criterion: simclr-distill
