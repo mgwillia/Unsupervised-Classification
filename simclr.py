@@ -136,11 +136,11 @@ def main():
         try:
             missing = model.load_state_dict(saved_model, strict=False)
             print(missing)
-            model = torch.nn.DataParallel(model) # I added this to support ImageNet
+            model = torch.nn.DataParallel(model)
             model.cuda()
         except:
             try:
-                model = torch.nn.DataParallel(model) # I added this to support ImageNet
+                model = torch.nn.DataParallel(model)
                 missing = model.load_state_dict(saved_model, strict=False)
                 print(missing)
                 model.cuda()
