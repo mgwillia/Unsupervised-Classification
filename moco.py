@@ -33,6 +33,11 @@ def main():
     model = get_model(p)
     print('Model is {}'.format(model.__class__.__name__))
     print(model)
+    
+    state_dict = torch.load(p['pretrain_path'], map_location='cpu')
+
+    model.load_state_dict(state_dict)
+
     model = torch.nn.DataParallel(model)
     model = model.cuda()
    
@@ -63,35 +68,10 @@ def main():
     # Load the official MoCoV2 checkpoint
     #print(colored('Downloading moco v2 checkpoint', 'blue'))
     #os.system('wget -L https://dl.fbaipublicfiles.com/moco/moco_checkpoints/moco_v2_800ep/moco_v2_800ep_pretrain.pth.tar')
-    
-    moco_state = torch.load(p['pretrain_path'], map_location='cpu')
-
-    
-    # Transfer moco weights
-    print(colored('Transfer MoCo weights to model', 'blue'))
-    new_state_dict = {}
-    state_dict = moco_state['state_dict']
-    for k in list(state_dict.keys()):
-        # Copy backbone weights
-        if k.startswith('module.encoder_q') and not k.startswith('module.encoder_q.fc'):
-            new_k = 'module.backbone.' + k[len('module.encoder_q.'):]
-            new_state_dict[new_k] = state_dict[k]
-        
-        # Copy mlp weights
-        elif k.startswith('module.encoder_q.fc'):
-            new_k = 'module.contrastive_head.' + k[len('module.encoder_q.fc.'):] 
-            new_state_dict[new_k] = state_dict[k] 
-
-        else:
-            raise ValueError('Unexpected key {}'.format(k)) 
-
-    model.load_state_dict(new_state_dict)
-    os.system('rm -rf moco_v2_800ep_pretrain.pth.tar')
-   
  
     # Save final model
     print(colored('Save pretext model', 'blue'))
-    torch.save(model.module.state_dict(), p['pretext_model'])
+    torch.save(model.state_dict(), p['pretext_model'])
     model.module.contrastive_head = torch.nn.Identity() # In this case, we mine the neighbors before the MLP. 
 
     
