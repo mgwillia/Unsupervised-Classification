@@ -36,7 +36,7 @@ def main():
     
     state_dict = torch.load(p['pretrain_path'], map_location='cpu')
 
-    model.load_state_dict(state_dict)
+    model.backbone.load_state_dict(state_dict)
 
     model = torch.nn.DataParallel(model)
     model = model.cuda()
