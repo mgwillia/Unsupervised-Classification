@@ -11,6 +11,7 @@ model_kwargs:
 train_db_name: cub
 val_db_name: cub
 num_classes: 200
+num_neighbors: 10
 
 # Loss
 criterion: simclr

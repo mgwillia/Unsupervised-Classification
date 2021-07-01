@@ -1,7 +1,7 @@
 # Setup
 setup: moco # MoCo is used here
 
-pretrain_path: /vulcanscratch/mgwillia/unsupervised-classification/backbones/moco_r50_200.pth.tar
+pretrain_path: /vulcanscratch/mgwillia/unsupervised-classification/backbones/dcv2_r50_800.pth.tar
 
 # Model
 backbone: resnet50
@@ -17,7 +17,7 @@ temperature: 0.07
 num_neighbors: 20
 
 # Batch size and workers
-batch_size: 128 
+batch_size: 64 
 num_workers: 8
 
 # Transformations
