@@ -1,6 +1,8 @@
 # Setup
 setup: simclr
 
+pretrain_path: /vulcanscratch/mgwillia/unsupervised-classification/backbones/moco_r50_200.pth.tar
+
 # Model
 backbone: resnet50
 model_kwargs:
