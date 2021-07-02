@@ -86,7 +86,7 @@ class MemoryBank(object):
         #index = faiss.GpuIndexFlatIP(dim)
         print(os.environ['CUDA_VISIBLE_DEVICES'])
         index = faiss.IndexFlatIP(dim)
-        index = faiss.index_cpu_to_all_gpus(index, ngpu=len(os.environ['CUDA_VISIBLE_DEVICES']))
+        index = faiss.index_cpu_to_all_gpus(index, ngpu=len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')))
         print(index)
         index.add(features)
         _, indices = index.search(features, topk+1) # Sample itself is included
