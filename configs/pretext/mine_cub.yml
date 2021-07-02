@@ -1,7 +1,7 @@
 # Setup
 setup: simclr
 
-pretrain_path: /vulcanscratch/mgwillia/unsupervised-classification/backbones/dcv2_r50_800.pth.tar
+pretrain_path: /vulcanscratch/mgwillia/unsupervised-classification/backbones/btwins_r50_1000.pth.tar
 
 # Model
 backbone: resnet50
