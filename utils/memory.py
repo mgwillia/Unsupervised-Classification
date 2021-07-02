@@ -8,6 +8,7 @@ from sklearn import cluster
 from sklearn.cluster import KMeans
 import numpy as np
 import torch
+import os
 
 
 class MemoryBank(object):
@@ -83,8 +84,9 @@ class MemoryBank(object):
         features = self.features.cpu().numpy()
         _, dim = features.shape[0], features.shape[1]
         #index = faiss.GpuIndexFlatIP(dim)
+        print(os.environ['CUDA_VISIBLE_DEVICES'])
         index = faiss.IndexFlatIP(dim)
-        index = faiss.index_cpu_to_all_gpus(index)
+        index = faiss.index_cpu_to_all_gpus(index, ngpu=len(os.environ['CUDA_VISIBLE_DEVICES']))
         print(index)
         index.add(features)
         _, indices = index.search(features, topk+1) # Sample itself is included
