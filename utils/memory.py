@@ -82,8 +82,10 @@ class MemoryBank(object):
         import faiss
         features = self.features.cpu().numpy()
         _, dim = features.shape[0], features.shape[1]
+        #index = faiss.GpuIndexFlatIP(dim)
         index = faiss.IndexFlatIP(dim)
         index = faiss.index_cpu_to_all_gpus(index)
+        print(index)
         index.add(features)
         _, indices = index.search(features, topk+1) # Sample itself is included
 

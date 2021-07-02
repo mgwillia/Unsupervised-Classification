@@ -80,9 +80,6 @@ def main():
     # These will be used for training with the SCAN-Loss.
     topk = p['num_neighbors']
     print(colored('Mine the nearest neighbors (Train)(Top-%d)' %(topk), 'blue'))
-    transforms = get_val_transformations(p)
-    print(colored(transforms))
-    train_dataset = get_train_dataset(p, transforms) 
     fill_memory_bank(train_dataloader, model, memory_bank_train)
     indices, acc = memory_bank_train.mine_nearest_neighbors(topk)
     print('Accuracy of top-%d nearest neighbors on train set is %.2f' %(topk, 100*acc))
