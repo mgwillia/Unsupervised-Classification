@@ -89,6 +89,10 @@ def get_model(p, pretrain_path=None):
             from models.resnet_wider import resnet50x1
             backbone = resnet50x1()
 
+        elif p['train_db_name'] in ['cifar-10', 'cifar-10-d', 'cifar-10-f', 'cifar-20', 'cifar-20-d', 'cifar-20-f']:
+            from models.resnet_wider import resnet50x1
+            backbone = resnet50x1()
+
         elif 'pascal-pretrained' in p['train_db_name'] or p['train_db_name'] == 'pascal-large-batches' or p['train_db_name'] == 'pascal-retrain':
             from models.resnet_wider import resnet50x1
             backbone = resnet50x1()

@@ -14,7 +14,7 @@ train_db_name: cub
 val_db_name: cub
 num_classes: 200
 temperature: 0.07
-num_neighbors: 10
+num_neighbors: 5
 
 batch_size: 64 
 num_workers: 8

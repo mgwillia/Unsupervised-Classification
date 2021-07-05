@@ -17,7 +17,7 @@ backbone: resnet50
 train_db_name: cub
 val_db_name: cub
 num_classes: 200
-num_neighbors: 10
+num_neighbors: 5
 
 # Transformations
 augmentation_strategy: cub 
