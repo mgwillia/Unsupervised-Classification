@@ -12,4 +12,7 @@
 
 module load cuda/10.0.130                                    # run any commands necessary to setup your environment
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python simclr-distill.py --config_env configs/env.yml --config_exp configs/pretext/distill_imagenet_50_2.yml"
+srun bash -c "mkdir -p /scratch0/mgwillia"
+srun bash -c "rsync -r /fs/vulcan-datasets/imagenet /scratch0/mgwillia/"
+
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python simclr-distill.py --config_env configs/env.yml --config_exp configs/pretext/distill_imagenet_50_2.yml --mode train"
