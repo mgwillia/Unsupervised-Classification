@@ -61,7 +61,7 @@ def main():
     
     # Memory Bank
     print(colored('Build MemoryBank', 'blue'))
-    base_dataset = get_train_dataset(p, val_transforms, split='train') # Dataset w/o augs for knn eval
+    base_dataset = get_train_dataset(p, val_transforms, split='train+unlabeled') # Dataset w/o augs for knn eval
     base_dataloader = get_val_dataloader(p, base_dataset) 
     memory_bank_base = MemoryBank(len(base_dataset), 
                                 p['model_kwargs']['features_dim'],
