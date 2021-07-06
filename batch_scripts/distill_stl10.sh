@@ -17,7 +17,7 @@ srun bash -c "rsync -r /vulcanscratch/mgwillia/stl10_binary.tar.gz /scratch0/mgw
 srun bash -c "tar -zxf /scratch0/mgwillia/stl10_binary.tar.gz -C /scratch0/mgwillia/;"
 srun bash -c "ls /scratch0/mgwillia/*;"
 
-srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python simclr-distill.py --config_env configs/env.yml --config_exp configs/pretext/distill_stl10.yml"
+srun bash -c "hostname; CUDA_VISIBLE_DEVICES=0,1,2,3 python simclr-distill.py --config_env configs/env.yml --config_exp configs/pretext/distill_stl10.yml --mode train"
 
 srun bash -c "rm -r /scratch0/mgwillia/stl10_binary"
 srun bash -c "rm /scratch0/mgwillia/stl10_binary.tar.gz"
