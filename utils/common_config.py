@@ -72,7 +72,7 @@ def get_model(p, pretrain_path=None):
             from models.resnet_cifar import resnet18
             backbone = resnet18()
 
-        elif p['train_db_name'] in ['stl-10', 'stl-10-d', 'stl-10-f']:
+        elif 'stl-10' in p['train_db_name']:
             from models.resnet_stl import resnet18
             backbone = resnet18()
 
@@ -186,7 +186,7 @@ def get_teacher(p):
             from models.resnet_cifar import resnet18
             backbone = resnet18()
 
-        elif p['train_db_name'] in ['stl-10', 'stl-10-d', 'stl-10-f']:
+        elif 'stl-10' in p['train_db_name']:
             from models.resnet_stl import resnet18
             backbone = resnet18()
 
@@ -222,7 +222,7 @@ def get_train_dataset(p, transform, to_augmented_dataset=False, to_teachers_data
         from data.cifar import CIFAR20
         dataset = CIFAR20(train=True, transform=transform, download=False)
 
-    elif p['train_db_name'] in ['stl-10', 'stl-10-d', 'stl-10-f']:
+    elif 'stl-10' in p['train_db_name']:
         from data.stl import STL10
         dataset = STL10(split=split, transform=transform, download=False)
 
@@ -289,7 +289,7 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
         from data.cifar import CIFAR20
         dataset = CIFAR20(train=False, transform=transform, download=False)
 
-    elif p['val_db_name'] in ['stl-10', 'stl-10-d', 'stl-10-f']:
+    elif 'stl-10' in p['val_db_name']:
         from data.stl import STL10
         dataset = STL10(split='test', transform=transform, download=False)
 

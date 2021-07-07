@@ -12,8 +12,8 @@ update_cluster_head_only: True
 backbone: resnet18
 
 # Dataset
-train_db_name: stl-10-d
-val_db_name: stl-10-d
+train_db_name: stl-10-scn
+val_db_name: stl-10-scn
 num_classes: 10
 
 # Transformations
