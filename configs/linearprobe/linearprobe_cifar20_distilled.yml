@@ -4,6 +4,8 @@ setup: linearprobe
 # Loss
 criterion: linearprobe
 
+backbone_path: /vulcanscratch/mgwillia/unsupervised-classification/cifar-20-d/pretext/model.pth.tar
+
 update_cluster_head_only: True
 
 # Model

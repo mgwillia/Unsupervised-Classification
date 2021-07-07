@@ -4,6 +4,8 @@ setup: linearprobe
 # Loss
 criterion: linearprobe
 
+backbone_path: /vulcanscratch/mgwillia/unsupervised-classification/imagenet_50-f/pretext/model.pth.tar
+
 update_cluster_head_only: True
 
 # Model
