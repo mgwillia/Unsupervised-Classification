@@ -65,7 +65,10 @@ def main():
     model = torch.nn.DataParallel(model)
     model = model.cuda()
     state = torch.load(p['backbone_path'], map_location='cpu')
-    missing = model.load_state_dict(state, strict=False)
+    if 'scan' in p['backbone_path'] or 'selflabel' in p['backbone_path']:
+        missing = model.load_state_dict(state['model'], strict=False)
+    else:
+        missing = model.load_state_dict(state, strict=False)
     print('missing components', missing)
 
     if args.mode == 'train':
