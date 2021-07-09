@@ -59,7 +59,7 @@ def main():
     strong_transforms = get_train_transformations(p)
     val_transforms = get_val_transformations(p)
     train_dataset = get_train_dataset(p, {'standard': val_transforms, 'augment': strong_transforms},
-                                        split='train+unlabeled', to_augmented_dataset=True) 
+                                        split='train', to_augmented_dataset=True) 
     train_dataloader = get_train_dataloader(p, train_dataset)
     val_dataset = get_val_dataset(p, val_transforms) 
     val_dataloader = get_val_dataloader(p, val_dataset)

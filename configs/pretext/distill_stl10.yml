@@ -2,7 +2,7 @@
 setup: simclr-distill
 teacher: selflabel
 num_heads: 1
-teacher_path: /vulcanscratch/mgwillia/unsupervised-classification/stl-10/selflabel/model.pth.tar
+teacher_path: /vulcanscratch/mgwillia/unsupervised-classification/stl-10/selflabel/selflabel_stl-10.pth.tar
 
 finetune: False
 finetune_model: none
@@ -16,7 +16,7 @@ model_kwargs:
 # Dataset
 train_db_name: stl-10-d
 val_db_name: stl-10-d
-num_classes: 20
+num_classes: 10
 num_neighbors: 50
 
 # Loss
