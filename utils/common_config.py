@@ -310,7 +310,7 @@ def get_val_dataset(p, transform=None, to_neighbors_dataset=False, to_neighbors_
 
     elif 'imagenet' in p['val_db_name']:
         from data.imagenet import ImageNet
-        dataset = ImageNet(split='train', transform=transform)
+        dataset = ImageNet(split='val', transform=transform)
     
     else:
         raise ValueError('Invalid validation dataset {}'.format(p['val_db_name']))
